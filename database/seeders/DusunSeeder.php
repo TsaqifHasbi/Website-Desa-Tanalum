@@ -14,10 +14,10 @@ class DusunSeeder extends Seeder
     {
         Dusun::create([
             'nama' => 'Padang',
-            'kepala_dusun' => 'Sumarlin, A.Md',
-            'jumlah_rt' => 5,
-            'jumlah_rw' => 2,
-            'keterangan' => 'Dusun Padang terletak di bagian utara desa',
+            'kepala_dusun' => 'Alfatah',
+            'jumlah_rt' => 9,
+            'jumlah_rw' => 5,
+            'keterangan' => 'Dusun 1 terletak di bagian selatan desa, merupakan pusat kegiatan pemerintahan desa',
             'is_active' => true,
         ]);
 

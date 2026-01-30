@@ -61,6 +61,12 @@
             display: none !important;
         }
 
+        html,
+        body {
+            overflow-x: hidden;
+            max-width: 100vw;
+        }
+
         /* Scrollbar */
         ::-webkit-scrollbar {
             width: 6px;

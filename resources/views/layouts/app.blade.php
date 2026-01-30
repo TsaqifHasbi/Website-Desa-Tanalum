@@ -75,6 +75,12 @@
             display: none !important;
         }
 
+        html,
+        body {
+            overflow-x: hidden;
+            max-width: 100vw;
+        }
+
         .line-clamp-2 {
             display: -webkit-box;
             -webkit-line-clamp: 2;

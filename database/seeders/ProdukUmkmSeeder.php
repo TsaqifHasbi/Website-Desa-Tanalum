@@ -18,16 +18,16 @@ class ProdukUmkmSeeder extends Seeder
 
         $produks = [
             [
-                'nama' => 'Cookies',
-                'deskripsi' => 'Roti tawar segar buatan rumahan dengan bahan berkualitas',
+                'nama' => 'Intan Cookies',
+                'deskripsi' => 'Kue kering homemade dengan berbagai varian rasa',
                 'harga' => 10000,
                 'kategori' => 'makanan',
                 'pemilik' => 'Ibu Siti',
                 'kontak_pemilik' => '081234567890',
             ],
             [
-                'nama' => 'Galon',
-                'deskripsi' => 'Konektor masker handmade untuk kenyamanan penggunaan masker',
+                'nama' => 'Galon Sejuk',
+                'deskripsi' => 'Isi Ulang air galon mineral segar',
                 'harga' => 10000,
                 'kategori' => 'kerajinan',
                 'pemilik' => 'Bu Ani',
@@ -50,7 +50,7 @@ class ProdukUmkmSeeder extends Seeder
                 'kontak_pemilik' => '081234567893',
             ],
             [
-                'nama' => 'Catering',
+                'nama' => 'Warung Nadinda sCatering',
                 'deskripsi' => 'Souvenir khas Desa Tanalum untuk oleh-oleh',
                 'harga' => 150000,
                 'kategori' => 'kerajinan',

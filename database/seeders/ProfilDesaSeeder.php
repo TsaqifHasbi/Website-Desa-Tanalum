@@ -18,7 +18,7 @@ class ProfilDesaSeeder extends Seeder
             'kecamatan' => 'Rembang',
             'kabupaten' => 'Purbalingga',
             'provinsi' => 'Jawa Tengah',
-            'kode_pos' => '75385',
+            'kode_pos' => '53356',
             'alamat_kantor' => 'Jalan Langaseng Dusun Empang RT.003',
             'telepon' => '082150208664',
             'email' => 'tanalum@desa.com',
@@ -29,14 +29,14 @@ class ProfilDesaSeeder extends Seeder
                         3. Meningkatkan kualitas pendidikan dan sumber daya manusia
                         4. Mengembangkan teknologi informasi
                         5. Pembangunan infrastruktur, sarana dan prasarana',
-            'sejarah' => 'Desa Tanalum merupakan salah satu desa yang terletak di Kecamatan Marang Kayu, Kabupaten Kutai Kartanegara, Provinsi Kalimantan Timur. Desa ini memiliki sejarah panjang yang dimulai dari pemukiman masyarakat pesisir yang mengandalkan hasil laut dan pertanian sebagai mata pencaharian utama. Seiring berjalannya waktu, Desa Tanalum berkembang menjadi desa yang memiliki potensi wisata pantai yang menarik.',
-            'luas_wilayah' => 3880000, // dalam m2
+            'sejarah' => 'Desa Tanalum merupakan salah satu desa yang terletak di Kecamatan Rembang, Kabupaten Purbalingga, Provinsi Jawa Tengah. Desa ini memiliki sejarah panjang yang dimulai dari pemukiman masyarakat pesisir yang mengandalkan hasil perkebunan dan pertanian sebagai mata pencaharian utama. Seiring berjalannya waktu, Desa Tanalum berkembang menjadi desa yang memiliki potensi wisata curug yang menarik.',
+            'luas_wilayah' => 485, // dalam km2
             'jumlah_penduduk' => 1162,
             'jumlah_kk' => 310,
-            'batas_utara' => 'Desa Santan Ulu dan Desa Santan Ilir',
-            'batas_selatan' => 'Selat Makassar dan Desa Semangko',
-            'batas_timur' => 'Selat Makassar',
-            'batas_barat' => 'Desa Santan Ulu',
+            'batas_utara' => 'Kabupaten Pekalongan dan Kabupaten Banjarnegara',
+            'batas_selatan' => 'Desa Losari dan Desa Sumampir',
+            'batas_timur' => 'Desa Losari dan Desa Gunungwuled',
+            'batas_barat' => 'Desa Sumampir dan Desa Panusupan',
             'latitude' => -0.3750,
             'longitude' => 117.2500,
             'kode_wilayah' => '64.02.17.2005',

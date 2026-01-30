@@ -26,8 +26,8 @@
                         class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent"></div>
                     <div class="absolute inset-0 flex items-center">
-                        <div class="container mx-auto px-4">
-                            <div class="max-w-2xl text-white">
+                        <div class="container mx-auto px-6 md:px-12 lg:px-20 md:px-8 lg:px-16">
+                            <div class="max-w-2xl text-white ml-4 md:ml-8 lg:ml-16">
                                 @if ($slider->judul)
                                     <h2 class="text-3xl md:text-5xl font-bold mb-4">{{ $slider->judul }}</h2>
                                 @endif
@@ -47,8 +47,8 @@
                 </div>
             @empty
                 <div class="absolute inset-0 bg-gradient-to-r from-primary-700 to-primary-500 flex items-center">
-                    <div class="container mx-auto px-4">
-                        <div class="max-w-2xl text-white">
+                    <div class="container mx-auto px-6 md:px-12 lg:px-20 md:px-8 lg:px-16">
+                        <div class="max-w-2xl text-white ml-4 md:ml-8 lg:ml-16">
                             <h2 class="text-3xl md:text-5xl font-bold mb-4">Selamat Datang di
                                 {{ $profil->nama_desa ?? 'Desa Tanalum' }}</h2>
                             <p class="text-lg md:text-xl mb-6 text-gray-100">{{ $profil->kecamatan ?? 'Kec. Marang Kayu' }},
@@ -87,7 +87,7 @@
 
     <!-- Quick Stats -->
     <section class="py-8 bg-white shadow-sm">
-        <div class="container mx-auto px-4">
+        <div class="container mx-auto px-6 md:px-12 lg:px-20">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div class="text-center p-4" data-aos="fade-up" data-aos-delay="0">
                     <div class="text-3xl md:text-4xl font-bold text-primary-600">
@@ -114,7 +114,7 @@
 
     <!-- About Section -->
     <section class="py-16">
-        <div class="container mx-auto px-4">
+        <div class="container mx-auto px-6 md:px-12 lg:px-20">
             <div class="grid lg:grid-cols-2 gap-12 items-center">
                 <div data-aos="fade-right">
                     @if ($profil->foto_kantor)
@@ -167,9 +167,9 @@
     <!-- Kepala Desa Section -->
     @if ($kepalaDesa)
         <section class="py-16 bg-gradient-to-br from-primary-600 to-primary-700 text-white">
-            <div class="container mx-auto px-4">
+            <div class="container mx-auto px-6 md:px-12 lg:px-20">
                 <div class="grid lg:grid-cols-2 gap-12 items-center">
-                    <div class="text-center lg:text-left order-2 lg:order-1" data-aos="fade-right">
+                    <div class="text-center lg:text-left order-2 lg:order-1 lg:pl-8" data-aos="fade-right">
                         <span class="text-primary-200 font-semibold">Sambutan Kepala Desa</span>
                         <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-6">{{ $kepalaDesa->nama }}</h2>
                         <p class="text-primary-100 leading-relaxed mb-6">
@@ -202,7 +202,7 @@
 
     <!-- Berita Section -->
     <section class="py-16 bg-gray-50">
-        <div class="container mx-auto px-4">
+        <div class="container mx-auto px-6 md:px-12 lg:px-20">
             <div class="text-center mb-12" data-aos="fade-up">
                 <span class="text-primary-600 font-semibold">Berita Terbaru</span>
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mt-2">Kabar Desa</h2>
@@ -264,7 +264,7 @@
 
     <!-- Infografis Section -->
     <section class="py-16">
-        <div class="container mx-auto px-4">
+        <div class="container mx-auto px-6 md:px-12 lg:px-20">
             <div class="text-center mb-12" data-aos="fade-up">
                 <span class="text-primary-600 font-semibold">Infografis</span>
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mt-2">Data & Statistik Desa</h2>
@@ -363,7 +363,7 @@
     <!-- Produk UMKM Section -->
     @if ($produks->count() > 0)
         <section class="py-16 bg-gray-50">
-            <div class="container mx-auto px-4">
+            <div class="container mx-auto px-6 md:px-12 lg:px-20">
                 <div class="text-center mb-12" data-aos="fade-up">
                     <span class="text-primary-600 font-semibold">Belanja Produk Desa</span>
                     <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mt-2">Produk UMKM</h2>
@@ -415,7 +415,7 @@
     <!-- Galeri Section -->
     @if ($galeris->count() > 0)
         <section class="py-16">
-            <div class="container mx-auto px-4">
+            <div class="container mx-auto px-6 md:px-12 lg:px-20">
                 <div class="text-center mb-12" data-aos="fade-up">
                     <span class="text-primary-600 font-semibold">Dokumentasi</span>
                     <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mt-2">Galeri Desa</h2>
@@ -451,7 +451,7 @@
     <!-- Aparatur Section -->
     @if ($aparaturs->count() > 0)
         <section class="py-16 bg-gray-50">
-            <div class="container mx-auto px-4">
+            <div class="container mx-auto px-6 md:px-12 lg:px-20">
                 <div class="text-center mb-12" data-aos="fade-up">
                     <span class="text-primary-600 font-semibold">Pemerintahan</span>
                     <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mt-2">Aparatur Desa</h2>
@@ -490,7 +490,7 @@
 
     <!-- CTA Section -->
     <section class="py-16 bg-primary-600">
-        <div class="container mx-auto px-4">
+        <div class="container mx-auto px-6 md:px-12 lg:px-20">
             <div class="max-w-3xl mx-auto text-center text-white">
                 <h2 class="text-3xl md:text-4xl font-bold mb-4" data-aos="fade-up">Ada Keluhan atau Pengaduan?</h2>
                 <p class="text-lg text-primary-100 mb-8" data-aos="fade-up" data-aos-delay="100">
