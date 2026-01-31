@@ -42,17 +42,18 @@
         <div class="flex items-center justify-between h-20">
             <!-- Logo -->
             <a href="{{ route('home') }}" class="flex items-center space-x-3">
-                @php $logo = App\Models\Setting::getValue('site_logo'); @endphp
-                @if ($logo)
+                @php $logo = App\Models\Setting::getValue('site_logo', 'slider/logo-tanalum.png'); @endphp
+                @if ($logo && Storage::disk('public')->exists($logo))
                     <img src="{{ Storage::url($logo) }}" alt="Logo" class="h-12 w-auto">
                 @else
-                    <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-12 w-auto"
-                        onerror="this.style.display='none'">
+                    <div class="w-12 h-12 bg-primary-600 rounded-full flex items-center justify-center">
+                        <i class="fas fa-landmark text-white text-lg"></i>
+                    </div>
                 @endif
                 <div>
                     <h1 class="font-bold text-lg text-gray-800 leading-tight">{{ $profil->nama_desa ?? 'Desa Tanalum' }}
                     </h1>
-                    <p class="text-xs text-gray-500">{{ $profil->kabupaten ?? 'Kab. Rembang' }}</p>
+                    <p class="text-xs text-gray-500">{{ $profil->kecamatan ?? 'Kec. Marang Kayu' }}</p>
                 </div>
             </a>
 

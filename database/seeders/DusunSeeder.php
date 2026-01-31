@@ -13,7 +13,7 @@ class DusunSeeder extends Seeder
     public function run(): void
     {
         Dusun::create([
-            'nama' => 'Padang',
+            'nama' => 'Tanalum',
             'kepala_dusun' => 'Alfatah',
             'jumlah_rt' => 9,
             'jumlah_rw' => 5,
@@ -22,7 +22,25 @@ class DusunSeeder extends Seeder
         ]);
 
         Dusun::create([
-            'nama' => 'Empang',
+            'nama' => 'Datar',
+            'kepala_dusun' => 'Mujil Amin M',
+            'jumlah_rt' => 4,
+            'jumlah_rw' => 2,
+            'keterangan' => 'Dusun Empang terletak di bagian selatan desa, dekat dengan pantai',
+            'is_active' => true,
+        ]);
+
+        Dusun::create([
+            'nama' => 'Pucung Rumbak',
+            'kepala_dusun' => 'Mujil Amin M',
+            'jumlah_rt' => 4,
+            'jumlah_rw' => 2,
+            'keterangan' => 'Dusun Empang terletak di bagian selatan desa, dekat dengan pantai',
+            'is_active' => true,
+        ]);
+
+        Dusun::create([
+            'nama' => 'Buret',
             'kepala_dusun' => 'Mujil Amin M',
             'jumlah_rt' => 4,
             'jumlah_rw' => 2,

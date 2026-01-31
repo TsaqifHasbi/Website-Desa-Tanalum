@@ -1,13 +1,17 @@
 <footer class="bg-gray-900 text-white">
     <!-- Main Footer -->
-    <div class="container mx-auto px-4 py-12">
+    <div class="container mx-auto px-6 md:px-12 lg:px-32 py-12">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <!-- About -->
             <div>
                 <div class="flex items-center space-x-3 mb-4">
-                    @php $logo = App\Models\Setting::getValue('site_logo'); @endphp
-                    @if ($logo)
+                    @php $logo = App\Models\Setting::getValue('site_logo', 'slider/logo-tanalum.png'); @endphp
+                    @if ($logo && Storage::disk('public')->exists($logo))
                         <img src="{{ Storage::url($logo) }}" alt="Logo" class="h-12 w-auto">
+                    @else
+                        <div class="w-12 h-12 bg-primary-600 rounded-full flex items-center justify-center">
+                            <i class="fas fa-landmark text-white text-lg"></i>
+                        </div>
                     @endif
                     <div>
                         <h3 class="font-bold text-lg">{{ $profil->nama_desa ?? 'Desa Tanalum' }}</h3>
@@ -130,10 +134,9 @@
 
     <!-- Bottom Footer -->
     <div class="border-t border-gray-800">
-        <div class="container mx-auto px-4 py-4">
+        <div class="container mx-auto px-6 md:px-12 lg:px-28 py-4">
             <div class="flex flex-col md:flex-row items-center justify-between text-sm text-gray-400">
-                <p>{{ App\Models\Setting::getValue('footer_copyright', '© ' . date('Y') . ' Desa Tanalum. All rights reserved.') }}
-                </p>
+                <p>© {{ date('Y') }} Desa Tanalum. All rights reserved.</p>
                 <p class="mt-2 md:mt-0">
                     {{ App\Models\Setting::getValue('footer_text', 'Dibangun dengan ❤️ untuk Desa Tanalum') }}</p>
             </div>

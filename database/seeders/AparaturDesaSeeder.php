@@ -50,18 +50,18 @@ class AparaturDesaSeeder extends Seeder
                 'jenis' => 'pemerintah_desa',
                 'urutan' => 6,
             ],
-            [
-                'nama' => 'Riyadi Ratim',
-                'jabatan' => 'Kaur Perencanaan',
-                'jenis' => 'pemerintah_desa',
-                'urutan' => 7,
-            ],
-            [
-                'nama' => 'Mujil Amin M',
-                'jabatan' => 'Kepala Dusun Empang',
-                'jenis' => 'pemerintah_desa',
-                'urutan' => 8,
-            ],
+            // [
+            //     'nama' => 'Riyadi Ratim',
+            //     'jabatan' => 'Kaur Perencanaan',
+            //     'jenis' => 'pemerintah_desa',
+            //     'urutan' => 7,
+            // ],
+            // [
+            //     'nama' => 'Mujil Amin M',
+            //     'jabatan' => 'Kepala Dusun Empang',
+            //     'jenis' => 'pemerintah_desa',
+            //     'urutan' => 8,
+            // ],
         ];
 
         foreach ($pemerintahDesa as $aparatur) {
@@ -73,35 +73,35 @@ class AparaturDesaSeeder extends Seeder
         // Struktur BPD
         $bpd = [
             [
-                'nama' => 'Saharuddin',
+                'nama' => 'Sutarno',
                 'jabatan' => 'Ketua BPD',
                 'jenis' => 'bpd',
                 'urutan' => 1,
             ],
-            [
-                'nama' => 'Sukarno',
-                'jabatan' => 'Wakil Ketua BPD',
-                'jenis' => 'bpd',
-                'urutan' => 2,
-            ],
-            [
-                'nama' => 'Dahlia',
-                'jabatan' => 'Sekretaris BPD',
-                'jenis' => 'bpd',
-                'urutan' => 3,
-            ],
-            [
-                'nama' => 'Ahmad Yani',
-                'jabatan' => 'Anggota BPD',
-                'jenis' => 'bpd',
-                'urutan' => 4,
-            ],
-            [
-                'nama' => 'Siti Aminah',
-                'jabatan' => 'Anggota BPD',
-                'jenis' => 'bpd',
-                'urutan' => 5,
-            ],
+            // [
+            //     'nama' => 'Sukarno',
+            //     'jabatan' => 'Wakil Ketua BPD',
+            //     'jenis' => 'bpd',
+            //     'urutan' => 2,
+            // ],
+            // [
+            //     'nama' => 'Dahlia',
+            //     'jabatan' => 'Sekretaris BPD',
+            //     'jenis' => 'bpd',
+            //     'urutan' => 3,
+            // ],
+            // [
+            //     'nama' => 'Ahmad Yani',
+            //     'jabatan' => 'Anggota BPD',
+            //     'jenis' => 'bpd',
+            //     'urutan' => 4,
+            // ],
+            // [
+            //     'nama' => 'Siti Aminah',
+            //     'jabatan' => 'Anggota BPD',
+            //     'jenis' => 'bpd',
+            //     'urutan' => 5,
+            // ],
         ];
 
         foreach ($bpd as $aparatur) {

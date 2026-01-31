@@ -17,7 +17,7 @@ class SettingSeeder extends Seeder
             ['key' => 'site_name', 'value' => 'Website Desa Tanalum', 'type' => 'text', 'group' => 'general', 'label' => 'Nama Website'],
             ['key' => 'site_tagline', 'value' => 'Desa Wisata yang Asri dan Sejahtera', 'type' => 'text', 'group' => 'general', 'label' => 'Tagline'],
             ['key' => 'site_description', 'value' => 'Website resmi Desa Tanalum, Kecamatan Marang Kayu, Kabupaten Kutai Kartanegara, Kalimantan Timur', 'type' => 'textarea', 'group' => 'general', 'label' => 'Deskripsi'],
-            ['key' => 'site_logo', 'value' => 'logo/logo-desa.png', 'type' => 'image', 'group' => 'general', 'label' => 'Logo Website'],
+            ['key' => 'site_logo', 'value' => 'slider/logo-tanalum.png', 'type' => 'image', 'group' => 'general', 'label' => 'Logo Website'],
             ['key' => 'site_favicon', 'value' => 'logo/favicon.ico', 'type' => 'image', 'group' => 'general', 'label' => 'Favicon'],
 
             // Contact Settings

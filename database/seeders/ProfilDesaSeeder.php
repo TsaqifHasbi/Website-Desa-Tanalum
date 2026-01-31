@@ -13,7 +13,7 @@ class ProfilDesaSeeder extends Seeder
     public function run(): void
     {
         ProfilDesa::create([
-            'nama_desa' => 'Tanalum',
+            'nama_desa' => 'Desa Tanalum',
             'kode_desa' => '6402172005',
             'kecamatan' => 'Rembang',
             'kabupaten' => 'Purbalingga',
@@ -30,8 +30,8 @@ class ProfilDesaSeeder extends Seeder
                         4. Mengembangkan teknologi informasi
                         5. Pembangunan infrastruktur, sarana dan prasarana',
             'sejarah' => 'Desa Tanalum merupakan salah satu desa yang terletak di Kecamatan Rembang, Kabupaten Purbalingga, Provinsi Jawa Tengah. Desa ini memiliki sejarah panjang yang dimulai dari pemukiman masyarakat pesisir yang mengandalkan hasil perkebunan dan pertanian sebagai mata pencaharian utama. Seiring berjalannya waktu, Desa Tanalum berkembang menjadi desa yang memiliki potensi wisata curug yang menarik.',
-            'luas_wilayah' => 485, // dalam km2
-            'jumlah_penduduk' => 1162,
+            'luas_wilayah' => 4.53, // dalam km2
+            'jumlah_penduduk' => 3889,
             'jumlah_kk' => 310,
             'batas_utara' => 'Kabupaten Pekalongan dan Kabupaten Banjarnegara',
             'batas_selatan' => 'Desa Losari dan Desa Sumampir',
