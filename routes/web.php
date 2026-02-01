@@ -234,6 +234,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         Route::post('/bansos/import', [DataDesaController::class, 'bansosImport'])->name('bansos.import');
         Route::get('/bansos/penerima', [DataDesaController::class, 'bansosPenerima'])->name('bansos.penerima');
         Route::post('/bansos/penerima', [DataDesaController::class, 'bansosPenerimaStore'])->name('bansos.penerima.store');
+        Route::delete('/bansos/penerima/{penerima}', [DataDesaController::class, 'bansosPenerimaDestroy'])->name('bansos.penerima.destroy');
         Route::get('/idm', [DataDesaController::class, 'idm'])->name('idm');
         Route::post('/idm', [DataDesaController::class, 'idmStore'])->name('idm.store');
         Route::put('/idm', [DataDesaController::class, 'idmUpdate'])->name('idm.update');

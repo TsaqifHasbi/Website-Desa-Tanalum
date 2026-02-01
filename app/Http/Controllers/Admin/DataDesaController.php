@@ -484,14 +484,43 @@ class DataDesaController extends Controller
     }
 
     // Bansos
-    public function bansos()
+    public function bansos(Request $request)
     {
-        $jenisBansos = JenisBansos::withCount('penerima')->get();
+        $jenisBansosList = JenisBansos::withCount('penerima')->get();
         $statistiks = StatistikBansos::with('jenisBansos')
             ->where('tahun', date('Y'))
             ->get();
 
-        return view('admin.data-desa.bansos', compact('jenisBansos', 'statistiks'));
+        // Query penerima bansos
+        $query = PenerimaBansos::with('jenisBansos');
+
+        // Filter by search
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('nama', 'like', '%' . $request->search . '%')
+                    ->orWhere('nik', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        // Filter by jenis (using id)
+        if ($request->filled('jenis')) {
+            $query->where('jenis_bansos_id', $request->jenis);
+        }
+
+        // Filter by tahun
+        if ($request->filled('tahun')) {
+            $query->where('tahun_penerima', $request->tahun);
+        }
+
+        $penerimaBansos = $query->latest()->paginate(20);
+
+        // Get counts per jenis from database
+        $counts = [];
+        foreach ($jenisBansosList as $jenis) {
+            $counts[$jenis->id] = $jenis->penerima_count;
+        }
+
+        return view('admin.data-desa.bansos', compact('jenisBansosList', 'statistiks', 'penerimaBansos', 'counts'));
     }
 
     public function bansosJenisStore(Request $request)
@@ -571,6 +600,14 @@ class DataDesaController extends Controller
 
         return redirect()->route('admin.data.bansos.penerima')
             ->with('success', 'Penerima bansos berhasil ditambahkan.');
+    }
+
+    public function bansosPenerimaDestroy(PenerimaBansos $penerima)
+    {
+        $penerima->delete();
+
+        return redirect()->route('admin.data.bansos')
+            ->with('success', 'Data penerima bansos berhasil dihapus.');
     }
 
     protected function updateStatistikBansos($jenisId, $tahun)

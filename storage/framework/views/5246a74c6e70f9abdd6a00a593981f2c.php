@@ -1,8 +1,8 @@
-@extends('layouts.admin')
 
-@section('title', 'Data Bantuan Sosial')
 
-@section('content')
+<?php $__env->startSection('title', 'Data Bantuan Sosial'); ?>
+
+<?php $__env->startSection('content'); ?>
     <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
             <h1 class="text-2xl font-bold text-gray-800">Data Bantuan Sosial</h1>
@@ -17,52 +17,52 @@
     </div>
 
     <!-- Summary Cards -->
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-{{ min(count($jenisBansosList), 6) }} gap-4 mb-8">
-        @foreach ($jenisBansosList as $jenis)
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-<?php echo e(min(count($jenisBansosList), 6)); ?> gap-4 mb-8">
+        <?php $__currentLoopData = $jenisBansosList; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $jenis): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
             <div class="bg-white rounded-xl shadow-sm p-4">
                 <div class="flex items-center justify-between mb-2">
                     <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
                         <i class="fas fa-hand-holding-heart text-green-600"></i>
                     </div>
                 </div>
-                <div class="text-2xl font-bold text-gray-800">{{ $jenis->penerima_count ?? 0 }}</div>
-                <div class="text-sm text-gray-500">{{ $jenis->singkatan ?? $jenis->nama }}</div>
+                <div class="text-2xl font-bold text-gray-800"><?php echo e($jenis->penerima_count ?? 0); ?></div>
+                <div class="text-sm text-gray-500"><?php echo e($jenis->singkatan ?? $jenis->nama); ?></div>
             </div>
-        @endforeach
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     </div>
 
     <!-- Filter & Search -->
     <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
         <form action="" method="GET" class="flex flex-col md:flex-row gap-4">
             <div class="flex-1">
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama atau NIK..."
+                <input type="text" name="search" value="<?php echo e(request('search')); ?>" placeholder="Cari nama atau NIK..."
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">
             </div>
             <div>
                 <select name="jenis"
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">
                     <option value="">Semua Jenis</option>
-                    @foreach ($jenisBansosList as $jenis)
-                        <option value="{{ $jenis->id }}" {{ request('jenis') == $jenis->id ? 'selected' : '' }}>
-                            {{ $jenis->singkatan ?? $jenis->nama }}</option>
-                    @endforeach
+                    <?php $__currentLoopData = $jenisBansosList; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $jenis): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo e($jenis->id); ?>" <?php echo e(request('jenis') == $jenis->id ? 'selected' : ''); ?>>
+                            <?php echo e($jenis->singkatan ?? $jenis->nama); ?></option>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </select>
             </div>
             <div>
                 <select name="tahun"
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">
                     <option value="">Semua Tahun</option>
-                    @for ($y = date('Y'); $y >= 2020; $y--)
-                        <option value="{{ $y }}" {{ request('tahun') == $y ? 'selected' : '' }}>
-                            {{ $y }}</option>
-                    @endfor
+                    <?php for($y = date('Y'); $y >= 2020; $y--): ?>
+                        <option value="<?php echo e($y); ?>" <?php echo e(request('tahun') == $y ? 'selected' : ''); ?>>
+                            <?php echo e($y); ?></option>
+                    <?php endfor; ?>
                 </select>
             </div>
             <div class="flex gap-2">
                 <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
                     <i class="fas fa-search mr-2"></i>Cari
                 </button>
-                <a href="{{ route('admin.data.bansos') }}"
+                <a href="<?php echo e(route('admin.data.bansos')); ?>"
                     class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">
                     Reset
                 </a>
@@ -91,54 +91,60 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                    @forelse($penerimaBansos ?? [] as $index => $penerima)
+                    <?php $__empty_1 = true; $__currentLoopData = $penerimaBansos ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $penerima): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ ($penerimaBansos->currentPage() - 1) * $penerimaBansos->perPage() + $index + 1 }}
+                                <?php echo e(($penerimaBansos->currentPage() - 1) * $penerimaBansos->perPage() + $index + 1); ?>
+
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
-                                {{ $penerima->nik }}
+                                <?php echo e($penerima->nik); ?>
+
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-                                {{ $penerima->nama }}
+                                <?php echo e($penerima->nama); ?>
+
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-600">
-                                {{ Str::limit($penerima->alamat, 30) }}
+                                <?php echo e(Str::limit($penerima->alamat, 30)); ?>
+
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                @if ($penerima->jenisBansos)
+                                <?php if($penerima->jenisBansos): ?>
                                     <span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
-                                        {{ $penerima->jenisBansos->nama }}
+                                        <?php echo e($penerima->jenisBansos->nama); ?>
+
                                     </span>
-                                @else
+                                <?php else: ?>
                                     <span class="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-800">
                                         -
                                     </span>
-                                @endif
+                                <?php endif; ?>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                                {{ $penerima->tahun_penerima }}
+                                <?php echo e($penerima->tahun_penerima); ?>
+
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                @if ($penerima->status == 'aktif')
+                                <?php if($penerima->status == 'aktif'): ?>
                                     <span
                                         class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">Aktif</span>
-                                @else
+                                <?php else: ?>
                                     <span
                                         class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">Nonaktif</span>
-                                @endif
+                                <?php endif; ?>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex items-center gap-2">
-                                    <button onclick="editPenerima({{ $penerima->id }})"
+                                    <button onclick="editPenerima(<?php echo e($penerima->id); ?>)"
                                         class="text-blue-600 hover:text-blue-800">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <form action="{{ route('admin.data.bansos.penerima.destroy', $penerima) }}"
+                                    <form action="<?php echo e(route('admin.data.bansos.penerima.destroy', $penerima)); ?>"
                                         method="POST" class="inline"
                                         onsubmit="return confirm('Yakin ingin menghapus data ini?')">
-                                        @csrf
-                                        @method('DELETE')
+                                        <?php echo csrf_field(); ?>
+                                        <?php echo method_field('DELETE'); ?>
                                         <button type="submit" class="text-red-600 hover:text-red-800">
                                             <i class="fas fa-trash"></i>
                                         </button>
@@ -146,7 +152,7 @@
                                 </div>
                             </td>
                         </tr>
-                    @empty
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <tr>
                             <td colspan="8" class="px-6 py-12 text-center text-gray-500">
                                 <div class="flex flex-col items-center">
@@ -155,24 +161,25 @@
                                 </div>
                             </td>
                         </tr>
-                    @endforelse
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
 
-        @if (isset($penerimaBansos) && $penerimaBansos->hasPages())
+        <?php if(isset($penerimaBansos) && $penerimaBansos->hasPages()): ?>
             <div class="px-6 py-4 border-t border-gray-200">
-                {{ $penerimaBansos->links() }}
+                <?php echo e($penerimaBansos->links()); ?>
+
             </div>
-        @endif
+        <?php endif; ?>
     </div>
 
     <!-- Import Section -->
     <div class="bg-white rounded-xl shadow-sm p-6 mt-6">
         <h3 class="text-lg font-semibold text-gray-800 mb-4">Import Data</h3>
-        <form action="{{ route('admin.data.bansos.import') }}" method="POST" enctype="multipart/form-data"
+        <form action="<?php echo e(route('admin.data.bansos.import')); ?>" method="POST" enctype="multipart/form-data"
             class="flex flex-col md:flex-row gap-4">
-            @csrf
+            <?php echo csrf_field(); ?>
             <div class="flex-1">
                 <input type="file" name="file" accept=".xlsx,.xls,.csv" required
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">
@@ -199,7 +206,7 @@
                 <h3 class="text-xl font-semibold text-gray-800" id="modalTitle">Tambah Penerima Bansos</h3>
             </div>
             <form id="bansosForm" method="POST" class="p-6">
-                @csrf
+                <?php echo csrf_field(); ?>
                 <div id="methodField"></div>
 
                 <div class="grid gap-4">
@@ -226,9 +233,9 @@
                                     class="text-red-500">*</span></label>
                             <select name="jenis_bansos_id" id="jenis_bansos_id" required
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">
-                                @foreach ($jenisBansosList as $jenis)
-                                    <option value="{{ $jenis->id }}">{{ $jenis->singkatan ?? $jenis->nama }}</option>
-                                @endforeach
+                                <?php $__currentLoopData = $jenisBansosList; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $jenis): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($jenis->id); ?>"><?php echo e($jenis->singkatan ?? $jenis->nama); ?></option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                         </div>
                         <div>
@@ -236,9 +243,9 @@
                                     class="text-red-500">*</span></label>
                             <select name="tahun_penerima" id="tahun_penerima" required
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">
-                                @for ($y = date('Y'); $y >= 2020; $y--)
-                                    <option value="{{ $y }}">{{ $y }}</option>
-                                @endfor
+                                <?php for($y = date('Y'); $y >= 2020; $y--): ?>
+                                    <option value="<?php echo e($y); ?>"><?php echo e($y); ?></option>
+                                <?php endfor; ?>
                             </select>
                         </div>
                     </div>
@@ -263,15 +270,15 @@
             </form>
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
     <script>
         function openModal() {
             document.getElementById('modal').classList.remove('hidden');
             document.getElementById('modal').classList.add('flex');
             document.getElementById('modalTitle').textContent = 'Tambah Penerima Bansos';
-            document.getElementById('bansosForm').action = '{{ route('admin.data.bansos.store') }}';
+            document.getElementById('bansosForm').action = '<?php echo e(route('admin.data.bansos.store')); ?>';
             document.getElementById('methodField').innerHTML = '';
             document.getElementById('bansosForm').reset();
         }
@@ -290,7 +297,7 @@
                     document.getElementById('modal').classList.add('flex');
                     document.getElementById('modalTitle').textContent = 'Edit Penerima Bansos';
                     document.getElementById('bansosForm').action = '/admin/data/bansos/' + id;
-                    document.getElementById('methodField').innerHTML = '@method('PUT')';
+                    document.getElementById('methodField').innerHTML = '<?php echo method_field('PUT'); ?>';
 
                     document.getElementById('nik').value = data.nik;
                     document.getElementById('nama').value = data.nama;
@@ -308,4 +315,6 @@
             }
         });
     </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\website-desa-tanalum\resources\views/admin/data-desa/bansos.blade.php ENDPATH**/ ?>
