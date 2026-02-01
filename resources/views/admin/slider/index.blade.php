@@ -26,17 +26,17 @@
             @endif
 
             @if ($sliders->count() > 0)
-                <div class="divide-y divide-gray-200" x-data="{ draggedItem: null }">
+                <div id="slider-list" class="divide-y divide-gray-200">
                     @foreach ($sliders as $slider)
-                        <div class="p-6 flex flex-col md:flex-row md:items-center gap-4 hover:bg-gray-50 transition"
-                            draggable="true">
+                        <div class="slider-item p-6 flex flex-col md:flex-row md:items-center gap-4 hover:bg-gray-50 transition cursor-move"
+                            data-id="{{ $slider->id }}">
                             <!-- Order Handle -->
                             <div class="flex items-center gap-3">
-                                <div class="cursor-move text-gray-400 hover:text-gray-600">
+                                <div class="drag-handle text-gray-400 hover:text-gray-600">
                                     <i class="fas fa-grip-vertical text-lg"></i>
                                 </div>
                                 <span
-                                    class="w-8 h-8 bg-primary-100 text-primary-600 rounded-lg flex items-center justify-center font-bold text-sm">
+                                    class="order-badge w-8 h-8 bg-primary-100 text-primary-600 rounded-lg flex items-center justify-center font-bold text-sm">
                                     {{ $slider->urutan ?? $loop->iteration }}
                                 </span>
                             </div>
@@ -121,3 +121,54 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sliderList = document.getElementById('slider-list');
+
+            if (sliderList) {
+                new Sortable(sliderList, {
+                    animation: 150,
+                    handle: '.drag-handle',
+                    ghostClass: 'bg-primary-50',
+                    chosenClass: 'bg-primary-100',
+                    dragClass: 'shadow-lg',
+                    onEnd: function(evt) {
+                        // Get all slider IDs in new order
+                        const items = sliderList.querySelectorAll('.slider-item');
+                        const ids = Array.from(items).map(item => item.dataset.id);
+
+                        // Update order badges
+                        items.forEach((item, index) => {
+                            const badge = item.querySelector('.order-badge');
+                            if (badge) badge.textContent = index + 1;
+                        });
+
+                        // Send to server
+                        fetch('{{ route('admin.slider.reorder') }}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                },
+                                body: JSON.stringify({
+                                    ids: ids
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                // Show success notification (optional)
+                                console.log('Urutan berhasil diperbarui');
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert('Gagal memperbarui urutan. Silakan refresh halaman.');
+                            });
+                    }
+                });
+            }
+        });
+    </script>
+@endpush

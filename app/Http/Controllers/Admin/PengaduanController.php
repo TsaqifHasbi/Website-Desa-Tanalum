@@ -19,17 +19,25 @@ class PengaduanController extends Controller
         }
 
         // Search
-        if ($request->filled('q')) {
+        if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
-                $q->where('nama', 'like', '%' . $request->q . '%')
-                    ->orWhere('judul', 'like', '%' . $request->q . '%')
-                    ->orWhere('nomor_tiket', 'like', '%' . $request->q . '%');
+                $q->where('nama', 'like', '%' . $request->search . '%')
+                    ->orWhere('judul', 'like', '%' . $request->search . '%')
+                    ->orWhere('isi_pengaduan', 'like', '%' . $request->search . '%')
+                    ->orWhere('nomor_tiket', 'like', '%' . $request->search . '%');
             });
         }
 
         $pengaduans = $query->latest()->paginate(10);
 
-        return view('admin.pengaduan.index', compact('pengaduans'));
+        // Stats
+        $stats = [
+            'pending' => Pengaduan::where('status', 'pending')->count(),
+            'diproses' => Pengaduan::where('status', 'diproses')->count(),
+            'selesai' => Pengaduan::where('status', 'selesai')->count(),
+        ];
+
+        return view('admin.pengaduan.index', compact('pengaduans', 'stats'));
     }
 
     public function show(Pengaduan $pengaduan)
@@ -40,12 +48,12 @@ class PengaduanController extends Controller
     public function update(Request $request, Pengaduan $pengaduan)
     {
         $validated = $request->validate([
-            'status' => 'required|in:baru,dibaca,diproses,selesai,ditolak',
+            'status' => 'required|in:pending,diproses,selesai,ditolak',
             'tanggapan' => 'nullable|string',
         ]);
 
         if ($validated['status'] === 'selesai') {
-            $validated['tanggal_selesai'] = now();
+            $validated['tanggal_tanggapan'] = now();
         }
 
         $pengaduan->update($validated);

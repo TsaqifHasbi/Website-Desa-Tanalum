@@ -27,7 +27,7 @@ class ProdukController extends Controller
 
         // Filter by kategori
         if ($request->filled('kategori')) {
-            $query->where('kategori_produk_id', $request->kategori);
+            $query->where('kategori_id', $request->kategori);
         }
 
         // Sort

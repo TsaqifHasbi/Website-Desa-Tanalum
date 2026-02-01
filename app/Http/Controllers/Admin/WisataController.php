@@ -56,7 +56,8 @@ class WisataController extends Controller
 
         // Handle gambar upload
         if ($request->hasFile('gambar')) {
-            $validated['gambar'] = $request->file('gambar')->store('wisata', 'public');
+            $validated['gambar_utama'] = $request->file('gambar')->store('wisata', 'public');
+            unset($validated['gambar']);
         }
 
         Wisata::create($validated);
@@ -105,10 +106,11 @@ class WisataController extends Controller
         // Handle gambar upload
         if ($request->hasFile('gambar')) {
             // Delete old image
-            if ($wisata->gambar) {
-                Storage::disk('public')->delete($wisata->gambar);
+            if ($wisata->gambar_utama) {
+                Storage::disk('public')->delete($wisata->gambar_utama);
             }
-            $validated['gambar'] = $request->file('gambar')->store('wisata', 'public');
+            $validated['gambar_utama'] = $request->file('gambar')->store('wisata', 'public');
+            unset($validated['gambar']);
         }
 
         $wisata->update($validated);
@@ -125,8 +127,8 @@ class WisataController extends Controller
         $wisata = Wisata::findOrFail($id);
 
         // Delete gambar
-        if ($wisata->gambar) {
-            Storage::disk('public')->delete($wisata->gambar);
+        if ($wisata->gambar_utama) {
+            Storage::disk('public')->delete($wisata->gambar_utama);
         }
 
         $wisata->delete();

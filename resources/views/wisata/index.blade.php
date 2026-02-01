@@ -35,8 +35,8 @@
                             data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
                             <a href="{{ route('wisata.show', $wisata->slug) }}">
                                 <div class="aspect-video overflow-hidden relative">
-                                    @if ($wisata->gambar)
-                                        <img src="{{ Storage::url($wisata->gambar) }}" alt="{{ $wisata->nama }}"
+                                    @if ($wisata->gambar_utama)
+                                        <img src="{{ Storage::url($wisata->gambar_utama) }}" alt="{{ $wisata->nama }}"
                                             class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                                     @else
                                         <div

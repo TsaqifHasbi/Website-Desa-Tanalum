@@ -18,7 +18,7 @@
             prev() {
                 this.activeSlide = this.activeSlide === 0 ? this.slides - 1 : this.activeSlide - 1;
             }
-        }" class="relative h-[500px] md:h-[600px] overflow-hidden">
+        }" class="relative h-screen overflow-hidden">
             @forelse($sliders as $index => $slider)
                 <div x-show="activeSlide === {{ $index }}" x-transition:enter="transition ease-out duration-500"
                     x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="absolute inset-0">
@@ -100,7 +100,7 @@
                     <div class="text-sm text-gray-600 mt-1">Kepala Keluarga</div>
                 </div>
                 <div class="text-center p-4" data-aos="fade-up" data-aos-delay="200">
-                    <div class="text-3xl md:text-4xl font-bold text-primary-600">{{ $profil->jumlah_dusun ?? 0 }}</div>
+                    <div class="text-3xl md:text-4xl font-bold text-primary-600">{{ $jumlahDusun ?? 0 }}</div>
                     <div class="text-sm text-gray-600 mt-1">Jumlah Dusun</div>
                 </div>
                 <div class="text-center p-4" data-aos="fade-up" data-aos-delay="300">
@@ -141,7 +141,7 @@
                             </div>
                             <div>
                                 <p class="text-sm text-gray-500">Kecamatan</p>
-                                <p class="font-semibold text-gray-800">{{ $profil->kecamatan ?? 'Marang Kayu' }}</p>
+                                <p class="font-semibold text-gray-800">{{ $profil->kecamatan ?? 'Rembang' }}</p>
                             </div>
                         </div>
                         <div class="flex items-center">
@@ -150,7 +150,7 @@
                             </div>
                             <div>
                                 <p class="text-sm text-gray-500">Kabupaten</p>
-                                <p class="font-semibold text-gray-800">{{ $profil->kabupaten ?? 'Kutai Kartanegara' }}</p>
+                                <p class="font-semibold text-gray-800">{{ $profil->kabupaten ?? 'Purbalingga' }}</p>
                             </div>
                         </div>
                     </div>
@@ -167,9 +167,21 @@
     <!-- Kepala Desa Section -->
     @if ($kepalaDesa)
         <section class="py-16 bg-gradient-to-br from-primary-600 to-primary-700 text-white">
-            <div class="container mx-auto px-6 md:px-12 lg:px-64">
+            <div class="container mx-auto px-6 md:px-12 lg:px-72">
                 <div class="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
-                    <div class="text-center lg:text-left order-2 lg:order-1" data-aos="fade-right">
+                    <div class="text-center order-1" data-aos="fade-right">
+                        @php $logo = App\Models\Setting::getValue('site_logo', 'slider/logo-tanalum.png'); @endphp
+                        @if ($logo && Storage::disk('public')->exists($logo))
+                            <img src="{{ Storage::url($logo) }}" alt="Logo {{ $profil->nama_desa ?? 'Desa Tanalum' }}"
+                                class="w-80 h-80 mx-auto lg:ml-0 lg:mr-auto object-contain">
+                        @else
+                            <div
+                                class="w-80 h-80 mx-auto lg:ml-0 lg:mr-auto rounded-full bg-primary-500 flex items-center justify-center border-4 border-white shadow-xl">
+                                <i class="fas fa-landmark text-6xl text-white"></i>
+                            </div>
+                        @endif
+                    </div>
+                    <div class="text-center lg:text-left order-2" data-aos="fade-left">
                         <span class="text-primary-200 font-semibold">Sambutan Kepala Desa</span>
                         <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-6">{{ $kepalaDesa->nama }}</h2>
                         <p class="text-primary-100 leading-relaxed mb-6">
@@ -183,17 +195,6 @@
                                 <p class="text-primary-200">{{ $kepalaDesa->jabatan }}</p>
                             </div>
                         </div>
-                    </div>
-                    <div class="text-center order-1 lg:order-2" data-aos="fade-left">
-                        @if ($kepalaDesa->foto)
-                            <img src="{{ Storage::url($kepalaDesa->foto) }}" alt="{{ $kepalaDesa->nama }}"
-                                class="w-64 h-64 mx-auto lg:mr-0 lg:ml-auto rounded-full object-cover border-4 border-white shadow-xl">
-                        @else
-                            <div
-                                class="w-64 h-64 mx-auto lg:mr-0 lg:ml-auto rounded-full bg-primary-500 flex items-center justify-center border-4 border-white shadow-xl">
-                                <i class="fas fa-user text-6xl text-white"></i>
-                            </div>
-                        @endif
                     </div>
                 </div>
             </div>
@@ -296,7 +297,8 @@
                             <i class="fas fa-arrow-right opacity-0 group-hover:opacity-100 transition"></i>
                         </div>
                         <h3 class="font-bold text-xl mb-2">APBDes</h3>
-                        <p class="text-green-100 text-sm">Anggaran Pendapatan dan Belanja Desa tahun {{ date('Y') }}.
+                        <p class="text-green-100 text-sm">Anggaran Pendapatan dan Belanja Desa Tanalum pada tahun
+                            {{ date('Y') }}.
                         </p>
                     </div>
                 </a>
@@ -311,7 +313,7 @@
                             <i class="fas fa-arrow-right opacity-0 group-hover:opacity-100 transition"></i>
                         </div>
                         <h3 class="font-bold text-xl mb-2">IDM</h3>
-                        <p class="text-purple-100 text-sm">Indeks Desa Membangun dan status perkembangan desa.</p>
+                        <p class="text-purple-100 text-sm">Indeks Desa Membangun dan status perkembangan Desa Tanalum.</p>
                     </div>
                 </a>
 
@@ -325,7 +327,7 @@
                             <i class="fas fa-arrow-right opacity-0 group-hover:opacity-100 transition"></i>
                         </div>
                         <h3 class="font-bold text-xl mb-2">SDGs Desa</h3>
-                        <p class="text-orange-100 text-sm">Capaian Sustainable Development Goals (SDGs) Desa.</p>
+                        <p class="text-orange-100 text-sm">Capaian Sustainable Development Goals (SDGs) Desa Tanalum.</p>
                     </div>
                 </a>
 
@@ -339,7 +341,7 @@
                             <i class="fas fa-arrow-right opacity-0 group-hover:opacity-100 transition"></i>
                         </div>
                         <h3 class="font-bold text-xl mb-2">Bantuan Sosial</h3>
-                        <p class="text-pink-100 text-sm">Data penerima bantuan sosial di desa.</p>
+                        <p class="text-pink-100 text-sm">Pendataan penerima (BanSos) Bantuan Sosial di Desa Tanalum.</p>
                     </div>
                 </a>
 
@@ -353,7 +355,8 @@
                             <i class="fas fa-arrow-right opacity-0 group-hover:opacity-100 transition"></i>
                         </div>
                         <h3 class="font-bold text-xl mb-2">Cek Penerima Bansos</h3>
-                        <p class="text-teal-100 text-sm">Cek status penerima bantuan sosial berdasarkan NIK.</p>
+                        <p class="text-teal-100 text-sm">Cek status penerima (BanSos) Bantuan Sosial di Desa Tanalum
+                            berdasarkan NIK.</p>
                     </div>
                 </a>
             </div>
@@ -369,14 +372,14 @@
                     <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mt-2">Produk UMKM</h2>
                 </div>
 
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                     @foreach ($produks as $index => $produk)
                         <div class="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-lg transition group"
                             data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
                             <a href="{{ route('belanja.show', $produk->slug) }}">
                                 <div class="aspect-square overflow-hidden">
-                                    @if ($produk->gambar)
-                                        <img src="{{ Storage::url($produk->gambar) }}" alt="{{ $produk->nama }}"
+                                    @if ($produk->gambar_utama)
+                                        <img src="{{ Storage::url($produk->gambar_utama) }}" alt="{{ $produk->nama }}"
                                             class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                                     @else
                                         <div

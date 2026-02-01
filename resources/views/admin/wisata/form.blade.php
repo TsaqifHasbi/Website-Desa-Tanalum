@@ -29,7 +29,7 @@
 
                 <div class="p-6 space-y-6">
                     <!-- Gambar Utama -->
-                    <div x-data="{ preview: '{{ isset($wisata) && $wisata->gambar ? Storage::url($wisata->gambar) : '' }}' }">
+                    <div x-data="{ preview: '{{ isset($wisata) && $wisata->gambar_utama ? Storage::url($wisata->gambar_utama) : '' }}' }">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Gambar Utama
                             {{ isset($wisata) ? '' : '*' }}</label>
 

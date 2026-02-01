@@ -131,8 +131,9 @@
                                     data-aos="fade-up" data-aos-delay="{{ ($index % 6) * 50 }}">
                                     <a href="{{ route('belanja.show', $produk->slug) }}">
                                         <div class="aspect-square overflow-hidden relative">
-                                            @if ($produk->gambar)
-                                                <img src="{{ Storage::url($produk->gambar) }}" alt="{{ $produk->nama }}"
+                                            @if ($produk->gambar_utama)
+                                                <img src="{{ Storage::url($produk->gambar_utama) }}"
+                                                    alt="{{ $produk->nama }}"
                                                     class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                                             @else
                                                 <div
@@ -165,9 +166,9 @@
                                                 <span class="text-xs text-gray-500">Stok: {{ $produk->stok }}</span>
                                             @endif
                                         </div>
-                                        @if ($produk->penjual)
+                                        @if ($produk->pemilik)
                                             <p class="text-sm text-gray-500 mt-2">
-                                                <i class="fas fa-store mr-1"></i> {{ $produk->penjual }}
+                                                <i class="fas fa-store mr-1"></i> {{ $produk->pemilik }}
                                             </p>
                                         @endif
                                     </div>

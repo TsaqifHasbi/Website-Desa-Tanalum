@@ -235,7 +235,8 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">
                                 <i class="fab fa-whatsapp text-green-500 mr-2"></i>WhatsApp
                             </label>
-                            <input type="text" name="whatsapp" value="{{ $profilDesa->whatsapp ?? '' }}"
+                            <input type="text" name="whatsapp"
+                                value="{{ $profilDesa?->sosial_media['whatsapp'] ?? '' }}"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">
                         </div>
 
@@ -265,7 +266,8 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">
                                 <i class="fab fa-facebook text-blue-600 mr-2"></i>Facebook
                             </label>
-                            <input type="url" name="facebook" value="{{ $profilDesa->facebook ?? '' }}"
+                            <input type="url" name="facebook"
+                                value="{{ $profilDesa?->sosial_media['facebook'] ?? '' }}"
                                 placeholder="https://facebook.com/..."
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">
                         </div>
@@ -274,7 +276,8 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">
                                 <i class="fab fa-instagram text-pink-500 mr-2"></i>Instagram
                             </label>
-                            <input type="url" name="instagram" value="{{ $profilDesa->instagram ?? '' }}"
+                            <input type="url" name="instagram"
+                                value="{{ $profilDesa?->sosial_media['instagram'] ?? '' }}"
                                 placeholder="https://instagram.com/..."
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">
                         </div>
@@ -283,7 +286,8 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">
                                 <i class="fab fa-youtube text-red-600 mr-2"></i>YouTube
                             </label>
-                            <input type="url" name="youtube" value="{{ $profilDesa->youtube ?? '' }}"
+                            <input type="url" name="youtube"
+                                value="{{ $profilDesa?->sosial_media['youtube'] ?? '' }}"
                                 placeholder="https://youtube.com/..."
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">
                         </div>
@@ -292,8 +296,19 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">
                                 <i class="fab fa-twitter text-sky-500 mr-2"></i>Twitter
                             </label>
-                            <input type="url" name="twitter" value="{{ $profilDesa->twitter ?? '' }}"
+                            <input type="url" name="twitter"
+                                value="{{ $profilDesa?->sosial_media['twitter'] ?? '' }}"
                                 placeholder="https://twitter.com/..."
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fab fa-tiktok text-gray-800 mr-2"></i>TikTok
+                            </label>
+                            <input type="url" name="tiktok"
+                                value="{{ $profilDesa?->sosial_media['tiktok'] ?? '' }}"
+                                placeholder="https://tiktok.com/..."
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">
                         </div>
                     </div>

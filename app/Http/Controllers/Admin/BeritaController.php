@@ -67,7 +67,7 @@ class BeritaController extends Controller
         }
 
         // Set author
-        $validated['author_id'] = Auth::id();
+        $validated['user_id'] = Auth::id();
 
         // Handle featured
         $validated['is_featured'] = $request->boolean('is_featured');

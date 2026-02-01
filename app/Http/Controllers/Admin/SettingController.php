@@ -119,15 +119,48 @@ class SettingController extends Controller
             'telepon' => 'nullable|string|max:50',
             'whatsapp' => 'nullable|string|max:50',
             'email' => 'nullable|email|max:255',
+            'website' => 'nullable|url|max:255',
             'facebook' => 'nullable|string|max:255',
             'instagram' => 'nullable|string|max:255',
             'youtube' => 'nullable|string|max:255',
             'twitter' => 'nullable|string|max:255',
+            'tiktok' => 'nullable|string|max:255',
         ]);
 
         $profil = ProfilDesa::first();
         if ($profil) {
-            $profil->update($validated);
+            // Update kontak langsung
+            $profil->telepon = $validated['telepon'] ?? $profil->telepon;
+            $profil->email = $validated['email'] ?? $profil->email;
+            $profil->website = $validated['website'] ?? $profil->website;
+
+            // Simpan sosial media sebagai JSON array
+            $sosialMedia = [
+                'whatsapp' => $validated['whatsapp'] ?? null,
+                'facebook' => $validated['facebook'] ?? null,
+                'instagram' => $validated['instagram'] ?? null,
+                'youtube' => $validated['youtube'] ?? null,
+                'twitter' => $validated['twitter'] ?? null,
+                'tiktok' => $validated['tiktok'] ?? null,
+            ];
+            $profil->sosial_media = array_filter($sosialMedia);
+
+            $profil->save();
+        } else {
+            ProfilDesa::create([
+                'nama_desa' => 'Tanalum',
+                'telepon' => $validated['telepon'] ?? null,
+                'email' => $validated['email'] ?? null,
+                'website' => $validated['website'] ?? null,
+                'sosial_media' => array_filter([
+                    'whatsapp' => $validated['whatsapp'] ?? null,
+                    'facebook' => $validated['facebook'] ?? null,
+                    'instagram' => $validated['instagram'] ?? null,
+                    'youtube' => $validated['youtube'] ?? null,
+                    'twitter' => $validated['twitter'] ?? null,
+                    'tiktok' => $validated['tiktok'] ?? null,
+                ]),
+            ]);
         }
 
         return redirect()->route('admin.settings.index')

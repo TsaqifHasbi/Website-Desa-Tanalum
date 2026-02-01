@@ -5,8 +5,8 @@
 @section('content')
     <!-- Hero Section -->
     <section class="relative h-[50vh] min-h-[400px]">
-        @if ($wisata->gambar)
-            <img src="{{ Storage::url($wisata->gambar) }}" alt="{{ $wisata->nama }}" class="w-full h-full object-cover">
+        @if ($wisata->gambar_utama)
+            <img src="{{ Storage::url($wisata->gambar_utama) }}" alt="{{ $wisata->nama }}" class="w-full h-full object-cover">
         @else
             <div class="w-full h-full bg-gradient-to-br from-primary-600 to-primary-700"></div>
         @endif
@@ -148,16 +148,16 @@
                     </div>
 
                     <!-- Related -->
-                    @if ($relatedWisata->count() > 0)
+                    @if ($relatedWisatas->count() > 0)
                         <div class="bg-white rounded-2xl shadow-sm p-6" data-aos="fade-left" data-aos-delay="100">
                             <h3 class="font-bold text-gray-800 mb-4">Wisata Lainnya</h3>
                             <div class="space-y-4">
-                                @foreach ($relatedWisata as $related)
+                                @foreach ($relatedWisatas as $related)
                                     <a href="{{ route('wisata.show', $related->slug) }}" class="flex items-center group">
                                         <div class="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
-                                            @if ($related->gambar)
-                                                <img src="{{ Storage::url($related->gambar) }}" alt="{{ $related->nama }}"
-                                                    class="w-full h-full object-cover">
+                                            @if ($related->gambar_utama)
+                                                <img src="{{ Storage::url($related->gambar_utama) }}"
+                                                    alt="{{ $related->nama }}" class="w-full h-full object-cover">
                                             @else
                                                 <div class="w-full h-full bg-primary-100 flex items-center justify-center">
                                                     <i class="fas fa-mountain text-primary-400"></i>

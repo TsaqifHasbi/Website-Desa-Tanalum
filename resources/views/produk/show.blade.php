@@ -23,22 +23,23 @@
                 <!-- Product Images -->
                 <div data-aos="fade-right">
                     <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
-                        <div class="aspect-square" x-data="{ mainImage: '{{ $produk->gambar ? Storage::url($produk->gambar) : '' }}' }">
-                            @if ($produk->gambar)
-                                <img :src="mainImage" alt="{{ $produk->nama }}" class="w-full h-full object-cover">
+                        <div class="h-[450px] flex items-center justify-center bg-gray-50" x-data="{ mainImage: '{{ $produk->gambar_utama ? Storage::url($produk->gambar_utama) : '' }}' }">
+                            @if ($produk->gambar_utama)
+                                <img :src="mainImage" alt="{{ $produk->nama }}"
+                                    class="max-h-[450px] w-auto object-contain">
                             @else
                                 <div
-                                    class="w-full h-full bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center">
-                                    <i class="fas fa-box text-8xl text-primary-400"></i>
+                                    class="w-full h-64 bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center">
+                                    <i class="fas fa-box text-6xl text-primary-400"></i>
                                 </div>
                             @endif
                         </div>
 
                         @if ($produk->galeri && count($produk->galeri) > 0)
-                            <div class="p-4 grid grid-cols-4 gap-2">
-                                <button @click="mainImage = '{{ Storage::url($produk->gambar) }}'"
+                            <div class="p-4 grid grid-cols-5 gap-2">
+                                <button @click="mainImage = '{{ Storage::url($produk->gambar_utama) }}'"
                                     class="aspect-square rounded-lg overflow-hidden border-2 border-primary-500">
-                                    <img src="{{ Storage::url($produk->gambar) }}" alt="{{ $produk->nama }}"
+                                    <img src="{{ Storage::url($produk->gambar_utama) }}" alt="{{ $produk->nama }}"
                                         class="w-full h-full object-cover">
                                 </button>
                                 @foreach ($produk->galeri as $img)
@@ -64,7 +65,30 @@
 
                     <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">{{ $produk->nama }}</h1>
 
-                    <p class="text-4xl font-bold text-primary-600 mb-6">{{ $produk->formatted_harga }}</p>
+                    <!-- Price -->
+                    <div class="mb-6">
+                        @if ($produk->harga_diskon && $produk->harga_diskon < $produk->harga)
+                            <div class="flex items-center gap-3">
+                                <span class="text-3xl font-bold text-primary-600">
+                                    Rp {{ number_format($produk->harga_diskon, 0, ',', '.') }}
+                                </span>
+                                <span class="text-xl text-gray-400 line-through">
+                                    Rp {{ number_format($produk->harga, 0, ',', '.') }}
+                                </span>
+                            </div>
+                            <p class="text-sm text-green-600 mt-1">
+                                <i class="fas fa-tags mr-1"></i>
+                                Hemat Rp {{ number_format($produk->harga - $produk->harga_diskon, 0, ',', '.') }}
+                            </p>
+                        @else
+                            <span class="text-3xl font-bold text-primary-600">
+                                {{ $produk->formatted_harga ?? 'Rp ' . number_format($produk->harga, 0, ',', '.') }}
+                            </span>
+                        @endif
+                        @if ($produk->satuan)
+                            <span class="text-gray-500 ml-2">/ {{ $produk->satuan }}</span>
+                        @endif
+                    </div>
 
                     <!-- Stock & Status -->
                     <div class="flex items-center space-x-4 mb-6">
@@ -93,22 +117,22 @@
                     <div class="bg-gray-50 rounded-xl p-6 mb-6">
                         <h3 class="font-semibold text-gray-800 mb-4">Informasi Penjual</h3>
                         <div class="space-y-3">
-                            @if ($produk->penjual)
+                            @if ($produk->pemilik)
                                 <div class="flex items-center">
                                     <i class="fas fa-store text-primary-600 w-6"></i>
-                                    <span class="text-gray-600">{{ $produk->penjual }}</span>
+                                    <span class="text-gray-600">{{ $produk->pemilik }}</span>
                                 </div>
                             @endif
-                            @if ($produk->kontak)
+                            @if ($produk->kontak_pemilik)
                                 <div class="flex items-center">
                                     <i class="fas fa-phone text-primary-600 w-6"></i>
-                                    <span class="text-gray-600">{{ $produk->kontak }}</span>
+                                    <span class="text-gray-600">{{ $produk->kontak_pemilik }}</span>
                                 </div>
                             @endif
-                            @if ($produk->alamat)
+                            @if ($produk->alamat_pemilik)
                                 <div class="flex items-start">
                                     <i class="fas fa-map-marker-alt text-primary-600 w-6 mt-1"></i>
-                                    <span class="text-gray-600">{{ $produk->alamat }}</span>
+                                    <span class="text-gray-600">{{ $produk->alamat_pemilik }}</span>
                                 </div>
                             @endif
                         </div>
@@ -116,9 +140,9 @@
 
                     <!-- Action Buttons -->
                     <div class="flex flex-col sm:flex-row gap-4">
-                        @if ($produk->kontak)
+                        @if ($produk->kontak_pemilik)
                             @php
-                                $waNumber = preg_replace('/[^0-9]/', '', $produk->kontak);
+                                $waNumber = preg_replace('/[^0-9]/', '', $produk->kontak_pemilik);
                                 if (substr($waNumber, 0, 1) === '0') {
                                     $waNumber = '62' . substr($waNumber, 1);
                                 }
@@ -152,8 +176,9 @@
                                 data-aos="fade-up" data-aos-delay="{{ $index * 50 }}">
                                 <a href="{{ route('belanja.show', $related->slug) }}">
                                     <div class="aspect-square overflow-hidden">
-                                        @if ($related->gambar)
-                                            <img src="{{ Storage::url($related->gambar) }}" alt="{{ $related->nama }}"
+                                        @if ($related->gambar_utama)
+                                            <img src="{{ Storage::url($related->gambar_utama) }}"
+                                                alt="{{ $related->nama }}"
                                                 class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                                         @else
                                             <div

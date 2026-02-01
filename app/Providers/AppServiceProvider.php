@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\ProfilDesa;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +21,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Share profil desa ke semua view
+        View::composer('*', function ($view) {
+            $profil = ProfilDesa::first();
+            $view->with('profil', $profil);
+        });
     }
 }

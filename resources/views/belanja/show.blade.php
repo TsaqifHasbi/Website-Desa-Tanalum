@@ -43,27 +43,27 @@
                 <!-- Product Images -->
                 <div>
                     <!-- Main Image -->
-                    <div class="relative aspect-square rounded-2xl overflow-hidden bg-gray-100 mb-4"
-                        x-data="{ activeImage: '{{ $produk->gambar ? Storage::url($produk->gambar) : '' }}' }">
-                        @if ($produk->gambar)
-                            <img :src="activeImage" alt="{{ $produk->nama }}" class="w-full h-full object-cover">
+                    <div class="relative rounded-2xl overflow-hidden bg-gray-100 mb-4" x-data="{ activeImage: '{{ $produk->gambar_utama ? Storage::url($produk->gambar_utama) : '' }}' }">
+                        @if ($produk->gambar_utama)
+                            <img :src="activeImage" alt="{{ $produk->nama }}"
+                                class="w-full h-auto max-h-96 object-contain mx-auto">
                         @else
                             <div
-                                class="w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-100 to-orange-200">
-                                <i class="fas fa-box text-orange-300 text-8xl"></i>
+                                class="w-full h-64 flex items-center justify-center bg-gradient-to-br from-orange-100 to-orange-200">
+                                <i class="fas fa-box text-orange-300 text-6xl"></i>
                             </div>
                         @endif
 
                         <!-- Badges -->
                         <div class="absolute top-4 left-4 flex flex-col gap-2">
-                            @if ($produk->is_unggulan)
+                            @if ($produk->is_featured)
                                 <span class="px-3 py-1 bg-yellow-500 text-white text-sm font-medium rounded-lg shadow">
                                     <i class="fas fa-star mr-1"></i>Produk Unggulan
                                 </span>
                             @endif
-                            @if ($produk->diskon > 0)
+                            @if ($produk->harga_diskon && $produk->harga_diskon < $produk->harga)
                                 <span class="px-3 py-1 bg-red-500 text-white text-sm font-medium rounded-lg shadow">
-                                    Diskon {{ $produk->diskon }}%
+                                    Diskon
                                 </span>
                             @endif
                         </div>
@@ -72,13 +72,14 @@
                     <!-- Thumbnail Images -->
                     @if ($produk->galeri && count($produk->galeri) > 0)
                         <div class="grid grid-cols-5 gap-2">
-                            <button class="aspect-square rounded-lg overflow-hidden border-2 border-orange-500">
-                                <img src="{{ Storage::url($produk->gambar) }}" alt="{{ $produk->nama }}"
+                            <button @click="activeImage = '{{ Storage::url($produk->gambar_utama) }}'"
+                                class="aspect-square rounded-lg overflow-hidden border-2 border-orange-500 hover:opacity-80 transition">
+                                <img src="{{ Storage::url($produk->gambar_utama) }}" alt="{{ $produk->nama }}"
                                     class="w-full h-full object-cover">
                             </button>
                             @foreach ($produk->galeri as $galeri)
-                                <button
-                                    class="aspect-square rounded-lg overflow-hidden border-2 border-transparent hover:border-orange-500">
+                                <button @click="activeImage = '{{ Storage::url($galeri) }}'"
+                                    class="aspect-square rounded-lg overflow-hidden border-2 border-transparent hover:border-orange-500 transition">
                                     <img src="{{ Storage::url($galeri) }}" alt="{{ $produk->nama }}"
                                         class="w-full h-full object-cover">
                                 </button>
@@ -100,10 +101,10 @@
 
                     <!-- Price -->
                     <div class="mb-6">
-                        @if ($produk->diskon > 0)
+                        @if ($produk->harga_diskon && $produk->harga_diskon < $produk->harga)
                             <div class="flex items-center gap-3">
                                 <span class="text-3xl font-bold text-orange-600">
-                                    Rp {{ number_format(($produk->harga * (100 - $produk->diskon)) / 100, 0, ',', '.') }}
+                                    Rp {{ number_format($produk->harga_diskon, 0, ',', '.') }}
                                 </span>
                                 <span class="text-xl text-gray-400 line-through">
                                     Rp {{ number_format($produk->harga, 0, ',', '.') }}
@@ -111,55 +112,69 @@
                             </div>
                             <p class="text-sm text-green-600 mt-1">
                                 <i class="fas fa-tags mr-1"></i>
-                                Hemat Rp {{ number_format(($produk->harga * $produk->diskon) / 100, 0, ',', '.') }}
+                                Hemat Rp {{ number_format($produk->harga - $produk->harga_diskon, 0, ',', '.') }}
                             </p>
                         @else
                             <span class="text-3xl font-bold text-orange-600">
                                 Rp {{ number_format($produk->harga, 0, ',', '.') }}
                             </span>
                         @endif
+                        @if ($produk->satuan)
+                            <span class="text-gray-500 ml-2">/ {{ $produk->satuan }}</span>
+                        @endif
                     </div>
 
                     <!-- Description -->
-                    <div class="prose prose-sm max-w-none text-gray-600 mb-6">
-                        {!! $produk->deskripsi !!}
-                    </div>
+                    @if ($produk->deskripsi)
+                        <div class="prose prose-sm max-w-none text-gray-600 mb-6">
+                            {!! $produk->deskripsi !!}
+                        </div>
+                    @endif
 
                     <!-- Product Details -->
                     <div class="bg-gray-50 rounded-xl p-6 mb-6">
                         <h3 class="font-semibold text-gray-800 mb-4">Detail Produk</h3>
                         <div class="grid grid-cols-2 gap-4 text-sm">
-                            @if ($produk->berat)
-                                <div>
-                                    <span class="text-gray-500">Berat</span>
-                                    <p class="font-medium text-gray-800">{{ $produk->berat }} gram</p>
-                                </div>
-                            @endif
-                            @if ($produk->stok)
-                                <div>
-                                    <span class="text-gray-500">Stok</span>
-                                    <p class="font-medium text-gray-800">
-                                        @if ($produk->stok > 10)
-                                            <span class="text-green-600">Tersedia</span>
-                                        @elseif($produk->stok > 0)
-                                            <span class="text-yellow-600">Stok Terbatas ({{ $produk->stok }})</span>
-                                        @else
-                                            <span class="text-red-600">Habis</span>
-                                        @endif
-                                    </p>
-                                </div>
-                            @endif
+                            <div>
+                                <span class="text-gray-500">Stok</span>
+                                <p class="font-medium text-gray-800">
+                                    @if ($produk->stok > 10)
+                                        <span class="text-green-600">Tersedia ({{ $produk->stok }})</span>
+                                    @elseif($produk->stok > 0)
+                                        <span class="text-yellow-600">Stok Terbatas ({{ $produk->stok }})</span>
+                                    @else
+                                        <span class="text-red-600">Habis</span>
+                                    @endif
+                                </p>
+                            </div>
                             @if ($produk->satuan)
                                 <div>
                                     <span class="text-gray-500">Satuan</span>
                                     <p class="font-medium text-gray-800">{{ $produk->satuan }}</p>
                                 </div>
                             @endif
-                            @if ($produk->min_order)
+                            @if ($produk->rating)
                                 <div>
-                                    <span class="text-gray-500">Min. Pembelian</span>
-                                    <p class="font-medium text-gray-800">{{ $produk->min_order }}
-                                        {{ $produk->satuan ?? 'pcs' }}</p>
+                                    <span class="text-gray-500">Rating</span>
+                                    <p class="font-medium text-gray-800">
+                                        <i class="fas fa-star text-yellow-500"></i>
+                                        {{ number_format($produk->rating, 1) }}
+                                        @if ($produk->jumlah_rating)
+                                            ({{ $produk->jumlah_rating }} ulasan)
+                                        @endif
+                                    </p>
+                                </div>
+                            @endif
+                            @if ($produk->views)
+                                <div>
+                                    <span class="text-gray-500">Dilihat</span>
+                                    <p class="font-medium text-gray-800">{{ number_format($produk->views) }} kali</p>
+                                </div>
+                            @endif
+                            @if ($produk->kategori)
+                                <div>
+                                    <span class="text-gray-500">Kategori</span>
+                                    <p class="font-medium text-gray-800">{{ $produk->kategori->nama }}</p>
                                 </div>
                             @endif
                         </div>
@@ -173,10 +188,10 @@
                                 <i class="fas fa-store text-orange-500 text-xl"></i>
                             </div>
                             <div>
-                                <p class="font-semibold text-gray-800">{{ $produk->penjual ?? 'UMKM Desa Tanalum' }}</p>
+                                <p class="font-semibold text-gray-800">{{ $produk->pemilik }}</p>
                                 <p class="text-sm text-gray-500">
                                     <i class="fas fa-map-marker-alt mr-1"></i>
-                                    {{ $produk->alamat_penjual ?? 'Desa Tanalum, Marang Kayu' }}
+                                    {{ $produk->alamat_pemilik ?? 'Desa Tanalum, Marang Kayu' }}
                                 </p>
                             </div>
                         </div>
@@ -184,8 +199,8 @@
 
                     <!-- Action Buttons -->
                     <div class="flex flex-col sm:flex-row gap-4">
-                        @if ($produk->whatsapp)
-                            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $produk->whatsapp) }}?text={{ urlencode('Halo, saya tertarik dengan produk ' . $produk->nama . ' di Website Desa Tanalum') }}"
+                        @if ($produk->kontak_pemilik)
+                            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $produk->kontak_pemilik) }}?text={{ urlencode('Halo, saya tertarik dengan produk ' . $produk->nama . ' di Website Desa Tanalum') }}"
                                 target="_blank"
                                 class="flex-1 inline-flex items-center justify-center px-6 py-4 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition-colors">
                                 <i class="fab fa-whatsapp mr-2 text-xl"></i>
@@ -220,8 +235,8 @@
                     @foreach ($relatedProducts as $related)
                         <article class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-all group">
                             <div class="relative aspect-square overflow-hidden">
-                                @if ($related->gambar)
-                                    <img src="{{ Storage::url($related->gambar) }}" alt="{{ $related->nama }}"
+                                @if ($related->gambar_utama)
+                                    <img src="{{ Storage::url($related->gambar_utama) }}" alt="{{ $related->nama }}"
                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                                 @else
                                     <div

@@ -249,13 +249,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     });
 
     // Slider
+    Route::post('slider/reorder', [\App\Http\Controllers\Admin\SliderController::class, 'reorder'])->name('slider.reorder');
     Route::resource('slider', \App\Http\Controllers\Admin\SliderController::class);
 
     // Pengaduan
     Route::prefix('pengaduan')->name('pengaduan.')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\PengaduanController::class, 'index'])->name('index');
-        Route::get('/{id}', [\App\Http\Controllers\Admin\PengaduanController::class, 'show'])->name('show');
-        Route::put('/{id}', [\App\Http\Controllers\Admin\PengaduanController::class, 'update'])->name('update');
+        Route::get('/{pengaduan}', [\App\Http\Controllers\Admin\PengaduanController::class, 'show'])->name('show');
+        Route::put('/{pengaduan}', [\App\Http\Controllers\Admin\PengaduanController::class, 'update'])->name('update');
+        Route::delete('/{pengaduan}', [\App\Http\Controllers\Admin\PengaduanController::class, 'destroy'])->name('destroy');
     });
 
     // Settings

@@ -27,6 +27,9 @@
         </div>
     </div>
 
+    <!-- Tab Navigation -->
+    @include('infografis.partials.tabs')
+
     <!-- Content -->
     <section class="py-16">
         <div class="container mx-auto px-4">

@@ -8,7 +8,7 @@
         <div class="flex items-center justify-between">
             <div>
                 <h1 class="text-2xl font-bold text-gray-800">Detail Pengaduan</h1>
-                <p class="text-gray-600">Kode: <span class="font-mono text-primary-600">{{ $pengaduan->kode_tracking }}</span>
+                <p class="text-gray-600">Kode: <span class="font-mono text-primary-600">{{ $pengaduan->nomor_tiket }}</span>
                 </p>
             </div>
             <a href="{{ route('admin.pengaduan.index') }}"
@@ -34,13 +34,13 @@
                         @php
                             $statusColors = [
                                 'pending' => 'bg-yellow-100 text-yellow-700',
-                                'proses' => 'bg-blue-100 text-blue-700',
+                                'diproses' => 'bg-blue-100 text-blue-700',
                                 'selesai' => 'bg-green-100 text-green-700',
                                 'ditolak' => 'bg-red-100 text-red-700',
                             ];
                             $statusLabels = [
                                 'pending' => 'Menunggu',
-                                'proses' => 'Diproses',
+                                'diproses' => 'Diproses',
                                 'selesai' => 'Selesai',
                                 'ditolak' => 'Ditolak',
                             ];
@@ -52,7 +52,7 @@
                     </div>
 
                     <div class="prose max-w-none text-gray-700">
-                        {!! nl2br(e($pengaduan->isi)) !!}
+                        {!! nl2br(e($pengaduan->isi_pengaduan)) !!}
                     </div>
 
                     @if ($pengaduan->lampiran)
@@ -71,7 +71,7 @@
                 <div class="bg-white rounded-xl shadow-sm p-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Tanggapan</h3>
 
-                    <form action="{{ route('admin.pengaduan.respond', $pengaduan->id) }}" method="POST">
+                    <form action="{{ route('admin.pengaduan.update', $pengaduan) }}" method="POST">
                         @csrf
                         @method('PUT')
 
@@ -82,7 +82,8 @@
                                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                                     <option value="pending" {{ $pengaduan->status == 'pending' ? 'selected' : '' }}>Menunggu
                                     </option>
-                                    <option value="proses" {{ $pengaduan->status == 'proses' ? 'selected' : '' }}>Diproses
+                                    <option value="diproses" {{ $pengaduan->status == 'diproses' ? 'selected' : '' }}>
+                                        Diproses
                                     </option>
                                     <option value="selesai" {{ $pengaduan->status == 'selesai' ? 'selected' : '' }}>Selesai
                                     </option>

@@ -3,13 +3,28 @@
 @section('title', 'Data Stunting - Infografis')
 
 @section('content')
-    <!-- Header -->
-    <section class="bg-gradient-to-r from-green-600 to-green-700 py-8">
+    <!-- Hero Section -->
+    <section class="relative py-20 bg-gradient-to-r from-red-600 to-red-700">
         <div class="container mx-auto px-4">
-            <h1 class="text-3xl md:text-4xl font-bold text-white">INFOGRAFIS</h1>
-            <p class="text-green-100 text-lg">DESA TANALUM</p>
+            <div class="text-center text-white">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">Data Stunting</h1>
+                <p class="text-lg text-red-100">Infografis Stunting {{ $profil->nama_desa ?? 'Desa Tanalum' }}</p>
+            </div>
         </div>
     </section>
+
+    <!-- Breadcrumb -->
+    <div class="bg-white shadow-sm">
+        <div class="container mx-auto px-4">
+            <nav class="flex items-center space-x-2 py-4 text-sm">
+                <a href="{{ route('home') }}" class="text-gray-500 hover:text-primary-600">Beranda</a>
+                <span class="text-gray-400">/</span>
+                <a href="{{ route('infografis.index') }}" class="text-gray-500 hover:text-primary-600">Infografis</a>
+                <span class="text-gray-400">/</span>
+                <span class="text-primary-600 font-medium">Data Stunting</span>
+            </nav>
+        </div>
+    </div>
 
     <!-- Tab Navigation -->
     @include('infografis.partials.tabs')

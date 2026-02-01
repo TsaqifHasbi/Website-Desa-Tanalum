@@ -15,7 +15,7 @@
                     {{ $stats['pending'] ?? 0 }} Menunggu
                 </span>
                 <span class="px-3 py-1 bg-blue-100 text-blue-700 text-sm font-medium rounded-full">
-                    {{ $stats['proses'] ?? 0 }} Diproses
+                    {{ $stats['diproses'] ?? 0 }} Diproses
                 </span>
                 <span class="px-3 py-1 bg-green-100 text-green-700 text-sm font-medium rounded-full">
                     {{ $stats['selesai'] ?? 0 }} Selesai
@@ -38,7 +38,7 @@
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                         <option value="">Semua Status</option>
                         <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Menunggu</option>
-                        <option value="proses" {{ request('status') == 'proses' ? 'selected' : '' }}>Diproses</option>
+                        <option value="diproses" {{ request('status') == 'diproses' ? 'selected' : '' }}>Diproses</option>
                         <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
                         <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
                     </select>
@@ -88,15 +88,18 @@
                                 class="hover:bg-gray-50 transition {{ $pengaduan->status == 'pending' ? 'bg-yellow-50' : '' }}">
                                 <td class="px-6 py-4">
                                     <span
-                                        class="font-mono text-sm text-primary-600 font-medium">{{ $pengaduan->kode_tracking }}</span>
+                                        class="font-mono text-sm text-primary-600 font-medium">{{ $pengaduan->nomor_tiket }}</span>
                                 </td>
                                 <td class="px-6 py-4">
                                     <p class="font-medium text-gray-800">{{ $pengaduan->nama }}</p>
-                                    <p class="text-sm text-gray-500">{{ $pengaduan->email ?? ($pengaduan->telepon ?? '-') }}
+                                    <p class="text-sm text-gray-500">
+                                        {{ $pengaduan->email ?? ($pengaduan->telepon ?? '-') }}
                                     </p>
                                 </td>
                                 <td class="px-6 py-4 max-w-xs">
-                                    <p class="text-gray-800 line-clamp-2">{{ Str::limit($pengaduan->isi, 100) }}</p>
+                                    <p class="font-medium text-gray-800">{{ $pengaduan->judul }}</p>
+                                    <p class="text-sm text-gray-500 line-clamp-2">
+                                        {{ Str::limit($pengaduan->isi_pengaduan, 80) }}</p>
                                     @if ($pengaduan->lampiran)
                                         <span class="text-xs text-gray-500"><i class="fas fa-paperclip mr-1"></i>
                                             Lampiran</span>
@@ -106,13 +109,13 @@
                                     @php
                                         $statusColors = [
                                             'pending' => 'bg-yellow-100 text-yellow-700',
-                                            'proses' => 'bg-blue-100 text-blue-700',
+                                            'diproses' => 'bg-blue-100 text-blue-700',
                                             'selesai' => 'bg-green-100 text-green-700',
                                             'ditolak' => 'bg-red-100 text-red-700',
                                         ];
                                         $statusLabels = [
                                             'pending' => 'Menunggu',
-                                            'proses' => 'Diproses',
+                                            'diproses' => 'Diproses',
                                             'selesai' => 'Selesai',
                                             'ditolak' => 'Ditolak',
                                         ];

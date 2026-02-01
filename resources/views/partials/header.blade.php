@@ -1,6 +1,17 @@
-<header class="bg-white shadow-sm sticky top-0 z-50" x-data="{ mobileMenuOpen: false, profilOpen: false, infografisOpen: false }">
+<header x-data="{
+    mobileMenuOpen: false,
+    profilOpen: false,
+    infografisOpen: false,
+    scrolled: false,
+    isHomePage: {{ request()->routeIs('home') ? 'true' : 'false' }}
+}" x-init="window.addEventListener('scroll', () => { scrolled = window.scrollY > 50 })"
+    :class="{
+        'bg-white shadow-sm': scrolled || !isHomePage,
+        'bg-transparent': !scrolled && isHomePage
+    }"
+    class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
     <!-- Top Bar -->
-    <div class="bg-primary-700 text-white py-2">
+    {{-- <div class="bg-primary-700 text-white py-2">
         <div class="container mx-auto px-4">
             <div class="flex flex-wrap items-center justify-between text-sm">
                 <div class="flex items-center space-x-4">
@@ -35,39 +46,49 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     <!-- Main Navigation -->
     <nav class="container mx-auto px-4">
-        <div class="flex items-center justify-between h-20">
+        <div class="flex items-center justify-between px-16 h-24">
             <!-- Logo -->
             <a href="{{ route('home') }}" class="flex items-center space-x-3">
                 @php $logo = App\Models\Setting::getValue('site_logo', 'slider/logo-tanalum.png'); @endphp
                 @if ($logo && Storage::disk('public')->exists($logo))
-                    <img src="{{ Storage::url($logo) }}" alt="Logo" class="h-12 w-auto">
+                    <img src="{{ Storage::url($logo) }}" alt="Logo" class="h-16 w-auto">
                 @else
-                    <div class="w-12 h-12 bg-primary-600 rounded-full flex items-center justify-center">
+                    <div class="w-20 h-20 bg-primary-600 rounded-full flex items-center justify-center">
                         <i class="fas fa-landmark text-white text-lg"></i>
                     </div>
                 @endif
                 <div>
-                    <h1 class="font-bold text-lg text-gray-800 leading-tight">{{ $profil->nama_desa ?? 'Desa Tanalum' }}
+                    <h1 class="font-bold text-xl leading-tight transition-colors duration-300"
+                        :class="scrolled || !isHomePage ? 'text-gray-800' : 'text-white'">
+                        {{ $profil->nama_desa ?? 'Desa Tanalum' }}
                     </h1>
-                    <p class="text-xs text-gray-500">{{ $profil->kecamatan ?? 'Kec. Marang Kayu' }}</p>
+                    <p class="text-md transition-colors duration-300"
+                        :class="scrolled || !isHomePage ? 'text-gray-500' : 'text-gray-200'">
+                        Kecamatan {{ $profil->kecamatan ?? 'Kec. Rembang' }}</p>
                 </div>
             </a>
 
             <!-- Desktop Menu -->
             <div class="hidden lg:flex items-center space-x-1">
                 <a href="{{ route('home') }}"
-                    class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition {{ request()->routeIs('home') ? 'text-primary-600 bg-primary-50' : '' }}">
+                    class="relative px-4 py-2 text-sm font-medium transition-colors duration-300 {{ request()->routeIs('home') ? 'after:absolute after:bottom-0 after:left-4 after:right-4 after:h-0.5 after:bg-primary-600' : '' }}"
+                    :class="scrolled || !isHomePage ?
+                        'text-gray-700 hover:text-primary-600 {{ request()->routeIs('home') ? 'text-primary-600' : '' }}' :
+                        'text-white hover:text-gray-200 {{ request()->routeIs('home') ? 'after:bg-white' : '' }}'">
                     Beranda
                 </a>
 
                 <!-- Profil Dropdown -->
                 <div class="relative" @mouseenter="profilOpen = true" @mouseleave="profilOpen = false">
                     <button
-                        class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition flex items-center {{ request()->routeIs('profil.*') ? 'text-primary-600 bg-primary-50' : '' }}">
+                        class="relative px-4 py-2 text-sm font-medium transition-colors duration-300 flex items-center {{ request()->routeIs('profil.*') ? 'after:absolute after:bottom-0 after:left-4 after:right-4 after:h-0.5 after:bg-primary-600' : '' }}"
+                        :class="scrolled || !isHomePage ?
+                            'text-gray-700 hover:text-primary-600 {{ request()->routeIs('profil.*') ? 'text-primary-600' : '' }}' :
+                            'text-white hover:text-gray-200 {{ request()->routeIs('profil.*') ? 'after:bg-white' : '' }}'">
                         Profil Desa
                         <i class="fas fa-chevron-down ml-2 text-xs"></i>
                     </button>
@@ -98,7 +119,10 @@
                 <!-- Infografis Dropdown -->
                 <div class="relative" @mouseenter="infografisOpen = true" @mouseleave="infografisOpen = false">
                     <button
-                        class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition flex items-center {{ request()->routeIs('infografis.*') ? 'text-primary-600 bg-primary-50' : '' }}">
+                        class="relative px-4 py-2 text-sm font-medium transition-colors duration-300 flex items-center {{ request()->routeIs('infografis.*') ? 'after:absolute after:bottom-0 after:left-4 after:right-4 after:h-0.5 after:bg-primary-600' : '' }}"
+                        :class="scrolled || !isHomePage ?
+                            'text-gray-700 hover:text-primary-600 {{ request()->routeIs('infografis.*') ? 'text-primary-600' : '' }}' :
+                            'text-white hover:text-gray-200 {{ request()->routeIs('infografis.*') ? 'after:bg-white' : '' }}'">
                         Infografis
                         <i class="fas fa-chevron-down ml-2 text-xs"></i>
                     </button>
@@ -128,27 +152,42 @@
                 </div>
 
                 <a href="{{ route('berita.index') }}"
-                    class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition {{ request()->routeIs('berita.*') ? 'text-primary-600 bg-primary-50' : '' }}">
+                    class="relative px-4 py-2 text-sm font-medium transition-colors duration-300 {{ request()->routeIs('berita.*') ? 'after:absolute after:bottom-0 after:left-4 after:right-4 after:h-0.5 after:bg-primary-600' : '' }}"
+                    :class="scrolled || !isHomePage ?
+                        'text-gray-700 hover:text-primary-600 {{ request()->routeIs('berita.*') ? 'text-primary-600' : '' }}' :
+                        'text-white hover:text-gray-200 {{ request()->routeIs('berita.*') ? 'after:bg-white' : '' }}'">
                     Berita
                 </a>
 
                 <a href="{{ route('belanja.index') }}"
-                    class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition {{ request()->routeIs('belanja.*') ? 'text-primary-600 bg-primary-50' : '' }}">
+                    class="relative px-4 py-2 text-sm font-medium transition-colors duration-300 {{ request()->routeIs('belanja.*') ? 'after:absolute after:bottom-0 after:left-4 after:right-4 after:h-0.5 after:bg-primary-600' : '' }}"
+                    :class="scrolled || !isHomePage ?
+                        'text-gray-700 hover:text-primary-600 {{ request()->routeIs('belanja.*') ? 'text-primary-600' : '' }}' :
+                        'text-white hover:text-gray-200 {{ request()->routeIs('belanja.*') ? 'after:bg-white' : '' }}'">
                     Belanja
                 </a>
 
                 <a href="{{ route('wisata.index') }}"
-                    class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition {{ request()->routeIs('wisata.*') ? 'text-primary-600 bg-primary-50' : '' }}">
+                    class="relative px-4 py-2 text-sm font-medium transition-colors duration-300 {{ request()->routeIs('wisata.*') ? 'after:absolute after:bottom-0 after:left-4 after:right-4 after:h-0.5 after:bg-primary-600' : '' }}"
+                    :class="scrolled || !isHomePage ?
+                        'text-gray-700 hover:text-primary-600 {{ request()->routeIs('wisata.*') ? 'text-primary-600' : '' }}' :
+                        'text-white hover:text-gray-200 {{ request()->routeIs('wisata.*') ? 'after:bg-white' : '' }}'">
                     Wisata
                 </a>
 
                 <a href="{{ route('galeri.index') }}"
-                    class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition {{ request()->routeIs('galeri.*') ? 'text-primary-600 bg-primary-50' : '' }}">
+                    class="relative px-4 py-2 text-sm font-medium transition-colors duration-300 {{ request()->routeIs('galeri.*') ? 'after:absolute after:bottom-0 after:left-4 after:right-4 after:h-0.5 after:bg-primary-600' : '' }}"
+                    :class="scrolled || !isHomePage ?
+                        'text-gray-700 hover:text-primary-600 {{ request()->routeIs('galeri.*') ? 'text-primary-600' : '' }}' :
+                        'text-white hover:text-gray-200 {{ request()->routeIs('galeri.*') ? 'after:bg-white' : '' }}'">
                     Galeri
                 </a>
 
                 <a href="{{ route('ppid.index') }}"
-                    class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition {{ request()->routeIs('ppid.*') ? 'text-primary-600 bg-primary-50' : '' }}">
+                    class="relative px-4 py-2 text-sm font-medium transition-colors duration-300 {{ request()->routeIs('ppid.*') ? 'after:absolute after:bottom-0 after:left-4 after:right-4 after:h-0.5 after:bg-primary-600' : '' }}"
+                    :class="scrolled || !isHomePage ?
+                        'text-gray-700 hover:text-primary-600 {{ request()->routeIs('ppid.*') ? 'text-primary-600' : '' }}' :
+                        'text-white hover:text-gray-200 {{ request()->routeIs('ppid.*') ? 'after:bg-white' : '' }}'">
                     PPID
                 </a>
 
@@ -161,7 +200,8 @@
 
             <!-- Mobile Menu Button -->
             <button @click="mobileMenuOpen = !mobileMenuOpen"
-                class="lg:hidden p-2 text-gray-700 hover:bg-gray-100 rounded-lg">
+                class="lg:hidden p-2 rounded-lg transition-colors duration-300"
+                :class="scrolled || !isHomePage ? 'text-gray-700 hover:bg-gray-100' : 'text-white hover:bg-white/20'">
                 <i class="fas fa-bars text-xl"></i>
             </button>
         </div>

@@ -46,26 +46,32 @@
             <div>
                 <h4 class="font-semibold text-lg mb-4">Kontak Kami</h4>
                 <ul class="space-y-3 text-sm">
-                    <li class="flex items-start">
-                        <i class="fas fa-map-marker-alt mt-1 mr-3 text-primary-500"></i>
-                        <span
-                            class="text-gray-400">{{ App\Models\Setting::getValue('contact_address', $profil->alamat_kantor ?? 'Jl. Desa Tanalum, Kec. Marang Kayu, Kab. Kutai Kartanegara') }}</span>
-                    </li>
-                    <li class="flex items-center">
-                        <i class="fas fa-phone mr-3 text-primary-500"></i>
-                        <a href="tel:{{ App\Models\Setting::getValue('contact_phone', $profil->telepon ?? '0541-123456') }}"
-                            class="text-gray-400 hover:text-white transition">
-                            {{ App\Models\Setting::getValue('contact_phone', $profil->telepon ?? '0541-123456') }}
-                        </a>
-                    </li>
-                    <li class="flex items-center">
-                        <i class="fas fa-envelope mr-3 text-primary-500"></i>
-                        <a href="mailto:{{ App\Models\Setting::getValue('contact_email', $profil->email ?? 'desa@tanalum.desa.id') }}"
-                            class="text-gray-400 hover:text-white transition">
-                            {{ App\Models\Setting::getValue('contact_email', $profil->email ?? 'desa@tanalum.desa.id') }}
-                        </a>
-                    </li>
-                    @php $whatsapp = App\Models\Setting::getValue('contact_whatsapp'); @endphp
+                    @if ($profil?->alamat_kantor || App\Models\Setting::getValue('contact_address'))
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt mt-1 mr-3 text-primary-500"></i>
+                            <span
+                                class="text-gray-400">{{ $profil?->alamat_kantor ?? App\Models\Setting::getValue('contact_address', 'Alamat belum diatur') }}</span>
+                        </li>
+                    @endif
+                    @if ($profil?->telepon || App\Models\Setting::getValue('contact_phone'))
+                        <li class="flex items-center">
+                            <i class="fas fa-phone mr-3 text-primary-500"></i>
+                            @php $telepon = $profil?->telepon ?? App\Models\Setting::getValue('contact_phone'); @endphp
+                            <a href="tel:{{ $telepon }}" class="text-gray-400 hover:text-white transition">
+                                {{ $telepon }}
+                            </a>
+                        </li>
+                    @endif
+                    @if ($profil?->email || App\Models\Setting::getValue('contact_email'))
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-3 text-primary-500"></i>
+                            @php $email = $profil?->email ?? App\Models\Setting::getValue('contact_email'); @endphp
+                            <a href="mailto:{{ $email }}" class="text-gray-400 hover:text-white transition">
+                                {{ $email }}
+                            </a>
+                        </li>
+                    @endif
+                    @php $whatsapp = $profil?->sosial_media['whatsapp'] ?? App\Models\Setting::getValue('contact_whatsapp'); @endphp
                     @if ($whatsapp)
                         <li class="flex items-center">
                             <i class="fab fa-whatsapp mr-3 text-primary-500"></i>
@@ -83,11 +89,12 @@
                 <h4 class="font-semibold text-lg mb-4">Media Sosial</h4>
                 <div class="flex space-x-3 mb-6">
                     @php
-                        $facebook = App\Models\Setting::getValue('social_facebook');
-                        $instagram = App\Models\Setting::getValue('social_instagram');
-                        $youtube = App\Models\Setting::getValue('social_youtube');
-                        $twitter = App\Models\Setting::getValue('social_twitter');
-                        $tiktok = App\Models\Setting::getValue('social_tiktok');
+                        $sosmed = $profil?->sosial_media ?? [];
+                        $facebook = $sosmed['facebook'] ?? App\Models\Setting::getValue('social_facebook');
+                        $instagram = $sosmed['instagram'] ?? App\Models\Setting::getValue('social_instagram');
+                        $youtube = $sosmed['youtube'] ?? App\Models\Setting::getValue('social_youtube');
+                        $twitter = $sosmed['twitter'] ?? App\Models\Setting::getValue('social_twitter');
+                        $tiktok = $sosmed['tiktok'] ?? App\Models\Setting::getValue('social_tiktok');
                     @endphp
                     @if ($facebook)
                         <a href="{{ $facebook }}" target="_blank"
@@ -136,9 +143,10 @@
     <div class="border-t border-gray-800">
         <div class="container mx-auto px-6 md:px-12 lg:px-28 py-4">
             <div class="flex flex-col md:flex-row items-center justify-between text-sm text-gray-400">
-                <p>© {{ date('Y') }} Desa Tanalum. All rights reserved.</p>
+                <p>© {{ date('Y') }} {{ $profil?->nama_desa ?? 'Desa Tanalum' }}. All rights reserved.</p>
                 <p class="mt-2 md:mt-0">
-                    {{ App\Models\Setting::getValue('footer_text', 'Dibangun dengan ❤️ untuk Desa Tanalum') }}</p>
+                    {{ App\Models\Setting::getValue('footer_text', 'Dibangun oleh Mahasiswa KKN Unsoed untuk ' . ($profil?->nama_desa ?? 'Desa Tanalum')) }}
+                </p>
             </div>
         </div>
     </div>

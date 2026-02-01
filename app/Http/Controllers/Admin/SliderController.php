@@ -11,7 +11,7 @@ class SliderController extends Controller
 {
     public function index()
     {
-        $sliders = Slider::ordered()->paginate(10);
+        $sliders = Slider::ordered()->get();
 
         return view('admin.slider.index', compact('sliders'));
     }
@@ -95,7 +95,7 @@ class SliderController extends Controller
     {
         $validated = $request->validate([
             'ids' => 'required|array',
-            'ids.*' => 'exists:sliders,id',
+            'ids.*' => 'exists:slider,id',
         ]);
 
         foreach ($validated['ids'] as $index => $id) {

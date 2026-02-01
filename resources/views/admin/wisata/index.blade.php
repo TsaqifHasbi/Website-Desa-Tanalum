@@ -47,9 +47,9 @@
                                 <td class="px-6 py-4">
                                     <div class="flex items-center">
                                         <div class="w-16 h-16 rounded-lg overflow-hidden bg-gray-100 mr-4 flex-shrink-0">
-                                            @if ($wisata->gambar)
-                                                <img src="{{ Storage::url($wisata->gambar) }}" alt="{{ $wisata->nama }}"
-                                                    class="w-full h-full object-cover">
+                                            @if ($wisata->gambar_utama)
+                                                <img src="{{ Storage::url($wisata->gambar_utama) }}"
+                                                    alt="{{ $wisata->nama }}" class="w-full h-full object-cover">
                                             @else
                                                 <div class="w-full h-full flex items-center justify-center">
                                                     <i class="fas fa-mountain text-2xl text-gray-300"></i>

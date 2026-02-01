@@ -12,6 +12,7 @@ use App\Models\StatistikPenduduk;
 use App\Models\Apbdes;
 use App\Models\WisataDesa;
 use App\Models\PotensiDesa;
+use App\Models\Dusun;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -23,6 +24,9 @@ class HomeController extends Controller
 
         // Get profil desa
         $profil = ProfilDesa::first();
+
+        // Get jumlah dusun
+        $jumlahDusun = Dusun::active()->count();
 
         // Get kepala desa
         $kepalaDesa = AparaturDesa::where('jabatan', 'like', '%Kepala Desa%')
@@ -57,13 +61,12 @@ class HomeController extends Controller
         // Get produk UMKM
         $produks = ProdukUmkm::with('kategori')
             ->active()
-            ->featured()
+            ->latest()
             ->take(6)
             ->get();
 
         // Get galeri
         $galeris = Galeri::active()
-            ->featured()
             ->foto()
             ->ordered()
             ->take(8)
@@ -71,7 +74,6 @@ class HomeController extends Controller
 
         // Get aparatur desa
         $aparaturs = AparaturDesa::active()
-            ->pemerintahDesa()
             ->ordered()
             ->take(8)
             ->get();
@@ -79,6 +81,7 @@ class HomeController extends Controller
         return view('home', compact(
             'sliders',
             'profil',
+            'jumlahDusun',
             'kepalaDesa',
             'statistik',
             'apbdes',

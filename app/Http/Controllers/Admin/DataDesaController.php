@@ -24,7 +24,109 @@ class DataDesaController extends Controller
         $statistiks = StatistikPenduduk::orderBy('tahun', 'desc')->paginate(10);
         $dusuns = Dusun::active()->get();
 
-        return view('admin.data-desa.penduduk', compact('statistiks', 'dusuns'));
+        // Get latest statistics for summary cards
+        $latestStat = StatistikPenduduk::getLatest();
+        $statistik = [
+            'total' => $latestStat?->total_penduduk ?? 0,
+            'laki_laki' => $latestStat?->laki_laki ?? 0,
+            'perempuan' => $latestStat?->perempuan ?? 0,
+            'kk' => $latestStat?->total_kk ?? 0,
+        ];
+
+        // Data for form fields
+        // Convert nested age data to totals
+        $ageData = [];
+        if ($latestStat?->kelompok_umur) {
+            foreach ($latestStat->kelompok_umur as $group => $values) {
+                if (is_array($values)) {
+                    $ageData[$group] = ($values['laki_laki'] ?? 0) + ($values['perempuan'] ?? 0);
+                } else {
+                    $ageData[$group] = $values;
+                }
+            }
+        }
+
+        // Map database keys to form labels for education
+        $educationMap = [
+            'tidak_sekolah' => 'Tidak/Belum Sekolah',
+            'belum_tamat_sd' => 'Tidak/Belum Sekolah',
+            'tidak_tamat_sd' => 'Tidak Tamat SD',
+            'tamat_sd' => 'Tamat SD',
+            'sltp' => 'SLTP/SMP',
+            'slta' => 'SLTA/SMA',
+            'diploma' => 'D1/D2',
+            'd3' => 'D3',
+            's1' => 'S1',
+            's1_s2' => 'S1',
+            's2' => 'S2',
+            's3' => 'S3',
+        ];
+        $educationData = [];
+        if ($latestStat?->pendidikan) {
+            foreach ($latestStat->pendidikan as $key => $value) {
+                $label = $educationMap[$key] ?? ucwords(str_replace('_', ' ', $key));
+                $educationData[$label] = ($educationData[$label] ?? 0) + $value;
+            }
+        }
+
+        // Map database keys to form labels for occupation
+        $occupationMap = [
+            'petani' => 'Petani',
+            'nelayan' => 'Nelayan',
+            'buruh_tani' => 'Buruh',
+            'pns_tni_polri' => 'PNS',
+            'pedagang' => 'Pedagang',
+            'wiraswasta' => 'Wiraswasta',
+            'karyawan_swasta' => 'Karyawan Swasta',
+            'karyawan_pabrik' => 'Karyawan Swasta',
+            'guru_dosen' => 'Guru/Dosen',
+            'ibu_rumah_tangga' => 'Ibu Rumah Tangga',
+            'pelajar_mahasiswa' => 'Pelajar/Mahasiswa',
+            'tidak_bekerja' => 'Tidak/Belum Bekerja',
+            'pengrajin_kayu' => 'Lainnya',
+            'lainnya' => 'Lainnya',
+        ];
+        $occupationData = [];
+        if ($latestStat?->pekerjaan) {
+            foreach ($latestStat->pekerjaan as $key => $value) {
+                $label = $occupationMap[$key] ?? ucwords(str_replace('_', ' ', $key));
+                $occupationData[$label] = ($occupationData[$label] ?? 0) + $value;
+            }
+        }
+
+        // Map database keys to form labels for religion
+        $religionMap = [
+            'islam' => 'Islam',
+            'kristen' => 'Kristen',
+            'katolik' => 'Katolik',
+            'hindu' => 'Hindu',
+            'buddha' => 'Buddha',
+            'konghucu' => 'Konghucu',
+            'kepercayaan_lainnya' => 'Lainnya',
+        ];
+        $religionData = [];
+        if ($latestStat?->agama) {
+            foreach ($latestStat->agama as $key => $value) {
+                $label = $religionMap[$key] ?? ucwords(str_replace('_', ' ', $key));
+                $religionData[$label] = ($religionData[$label] ?? 0) + $value;
+            }
+        }
+
+        $data = [
+            'gender' => [
+                'laki_laki' => $latestStat?->laki_laki ?? 0,
+                'perempuan' => $latestStat?->perempuan ?? 0,
+                'kk' => $latestStat?->total_kk ?? 0,
+            ],
+            'age' => $ageData,
+            'education' => $educationData,
+            'occupation' => $occupationData,
+            'religion' => $religionData,
+        ];
+
+        $lastUpdated = $latestStat?->updated_at?->format('d M Y H:i') ?? '-';
+
+        return view('admin.data-desa.penduduk', compact('statistiks', 'statistik', 'dusuns', 'data', 'lastUpdated'));
     }
 
     public function pendudukStore(Request $request)
@@ -78,19 +180,108 @@ class DataDesaController extends Controller
             ->with('success', 'Data statistik penduduk berhasil ditambahkan.');
     }
 
-    public function pendudukUpdate(Request $request, StatistikPenduduk $statistik)
+    public function pendudukUpdate(Request $request)
     {
-        $validated = $request->validate([
-            'tahun' => 'required|integer|min:2000|max:' . (date('Y') + 1),
-            'bulan' => 'nullable|integer|min:1|max:12',
-            'jumlah_kk' => 'required|integer|min:0',
-            'jumlah_penduduk' => 'required|integer|min:0',
-            'jumlah_laki_laki' => 'required|integer|min:0',
-            'jumlah_perempuan' => 'required|integer|min:0',
-            // ... same validation rules
-        ]);
+        // Get latest record or create new one
+        $statistik = StatistikPenduduk::getLatest();
 
-        $statistik->update($validated);
+        if (!$statistik) {
+            $statistik = new StatistikPenduduk();
+            $statistik->tahun = date('Y');
+        }
+
+        // Update gender data
+        if ($request->has('gender')) {
+            $gender = $request->input('gender');
+            $statistik->laki_laki = $gender['laki_laki'] ?? 0;
+            $statistik->perempuan = $gender['perempuan'] ?? 0;
+            $statistik->total_kk = $gender['kk'] ?? 0;
+            $statistik->total_penduduk = ($gender['laki_laki'] ?? 0) + ($gender['perempuan'] ?? 0);
+        }
+
+        // Update age data
+        if ($request->has('age')) {
+            $ageData = [];
+            foreach ($request->input('age') as $group => $total) {
+                // Split evenly between male and female for simplicity
+                $half = intval($total) / 2;
+                $ageData[$group] = [
+                    'laki_laki' => ceil($half),
+                    'perempuan' => floor($half),
+                ];
+            }
+            $statistik->kelompok_umur = $ageData;
+        }
+
+        // Update education data - convert form labels back to db keys
+        if ($request->has('education')) {
+            $educationDbMap = [
+                'Tidak/Belum Sekolah' => 'tidak_sekolah',
+                'Tidak Tamat SD' => 'tidak_tamat_sd',
+                'Tamat SD' => 'tamat_sd',
+                'SLTP/SMP' => 'sltp',
+                'SLTA/SMA' => 'slta',
+                'D1/D2' => 'diploma',
+                'D3' => 'd3',
+                'S1' => 's1',
+                'S2' => 's2',
+                'S3' => 's3',
+            ];
+            $educationData = [];
+            foreach ($request->input('education') as $label => $value) {
+                $key = $educationDbMap[$label] ?? strtolower(str_replace(['/', ' '], '_', $label));
+                $educationData[$key] = intval($value);
+            }
+            $statistik->pendidikan = $educationData;
+        }
+
+        // Update occupation data - convert form labels back to db keys
+        if ($request->has('occupation')) {
+            $occupationDbMap = [
+                'Petani' => 'petani',
+                'Nelayan' => 'nelayan',
+                'Buruh' => 'buruh_tani',
+                'PNS' => 'pns_tni_polri',
+                'TNI/Polri' => 'tni_polri',
+                'Pedagang' => 'pedagang',
+                'Wiraswasta' => 'wiraswasta',
+                'Karyawan Swasta' => 'karyawan_swasta',
+                'Guru/Dosen' => 'guru_dosen',
+                'Ibu Rumah Tangga' => 'ibu_rumah_tangga',
+                'Pelajar/Mahasiswa' => 'pelajar_mahasiswa',
+                'Tidak/Belum Bekerja' => 'tidak_bekerja',
+                'Lainnya' => 'lainnya',
+            ];
+            $occupationData = [];
+            foreach ($request->input('occupation') as $label => $value) {
+                $key = $occupationDbMap[$label] ?? strtolower(str_replace(['/', ' '], '_', $label));
+                $occupationData[$key] = intval($value);
+            }
+            $statistik->pekerjaan = $occupationData;
+        }
+
+        // Update religion data - convert form labels back to db keys
+        if ($request->has('religion')) {
+            $religionDbMap = [
+                'Islam' => 'islam',
+                'Kristen' => 'kristen',
+                'Katolik' => 'katolik',
+                'Hindu' => 'hindu',
+                'Buddha' => 'buddha',
+                'Konghucu' => 'konghucu',
+                'Lainnya' => 'kepercayaan_lainnya',
+            ];
+            $religionData = [];
+            foreach ($request->input('religion') as $label => $value) {
+                $key = $religionDbMap[$label] ?? strtolower($label);
+                $religionData[$key] = intval($value);
+            }
+            $statistik->agama = $religionData;
+        }
+
+        // Force update timestamp
+        $statistik->updated_at = now();
+        $statistik->save();
 
         return redirect()->route('admin.data.penduduk')
             ->with('success', 'Data statistik penduduk berhasil diperbarui.');
