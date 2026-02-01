@@ -1,14 +1,14 @@
 @extends('layouts.admin')
 
-@section('title', isset($berita) ? 'Edit Berita' : 'Tambah Berita')
+@section('title', $berita ? 'Edit Berita' : 'Tambah Berita')
 
 @section('content')
     <div class="space-y-6">
         <!-- Header -->
         <div class="flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-bold text-gray-800">{{ isset($berita) ? 'Edit Berita' : 'Tambah Berita' }}</h1>
-                <p class="text-gray-600">{{ isset($berita) ? 'Perbarui konten berita' : 'Buat berita atau artikel baru' }}
+                <h1 class="text-2xl font-bold text-gray-800">{{ $berita ? 'Edit Berita' : 'Tambah Berita' }}</h1>
+                <p class="text-gray-600">{{ $berita ? 'Perbarui konten berita' : 'Buat berita atau artikel baru' }}
                 </p>
             </div>
             <a href="{{ route('admin.berita.index') }}"
@@ -19,10 +19,10 @@
         </div>
 
         <!-- Form -->
-        <form action="{{ isset($berita) ? route('admin.berita.update', $berita->id) : route('admin.berita.store') }}"
-            method="POST" enctype="multipart/form-data">
+        <form action="{{ $berita ? route('admin.berita.update', $berita->id) : route('admin.berita.store') }}" method="POST"
+            enctype="multipart/form-data">
             @csrf
-            @if (isset($berita))
+            @if ($berita)
                 @method('PUT')
             @endif
 
@@ -46,13 +46,24 @@
                         <!-- Konten -->
                         <div>
                             <label for="konten" class="block text-sm font-medium text-gray-700 mb-1">Konten *</label>
-                            <textarea name="konten" id="konten" rows="20"
+                            <textarea name="konten" id="konten" rows="15"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 @error('konten') border-red-500 @enderror"
                                 placeholder="Tulis konten berita di sini...">{{ old('konten', $berita->konten ?? '') }}</textarea>
                             @error('konten')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                             <p class="mt-1 text-sm text-gray-500">Anda dapat menggunakan format HTML untuk konten</p>
+                        </div>
+
+                        <!-- Ringkasan -->
+                        <div class="mt-6">
+                            <label for="ringkasan" class="block text-sm font-medium text-gray-700 mb-1">Ringkasan</label>
+                            <textarea name="ringkasan" id="ringkasan" rows="3"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 @error('ringkasan') border-red-500 @enderror"
+                                placeholder="Ringkasan singkat berita (maks. 500 karakter)">{{ old('ringkasan', $berita->ringkasan ?? '') }}</textarea>
+                            @error('ringkasan')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -65,11 +76,27 @@
 
                         <div class="space-y-4">
                             <div>
+                                <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                                <select name="status" id="status"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                                    <option value="draft"
+                                        {{ old('status', $berita->status ?? 'draft') == 'draft' ? 'selected' : '' }}>Draft
+                                    </option>
+                                    <option value="published"
+                                        {{ old('status', $berita->status ?? '') == 'published' ? 'selected' : '' }}>
+                                        Published</option>
+                                    <option value="archived"
+                                        {{ old('status', $berita->status ?? '') == 'archived' ? 'selected' : '' }}>Archived
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div>
                                 <label class="flex items-center">
-                                    <input type="checkbox" name="is_published" value="1"
-                                        {{ old('is_published', $berita->is_published ?? true) ? 'checked' : '' }}
+                                    <input type="checkbox" name="is_featured" value="1"
+                                        {{ old('is_featured', $berita->is_featured ?? false) ? 'checked' : '' }}
                                         class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
-                                    <span class="ml-2 text-gray-700">Publikasikan</span>
+                                    <span class="ml-2 text-gray-700">Tampilkan di Headline</span>
                                 </label>
                             </div>
 
@@ -86,7 +113,7 @@
                             <button type="submit"
                                 class="w-full px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition">
                                 <i class="fas fa-save mr-2"></i>
-                                {{ isset($berita) ? 'Update Berita' : 'Simpan Berita' }}
+                                {{ $berita ? 'Update Berita' : 'Simpan Berita' }}
                             </button>
                         </div>
                     </div>
@@ -94,43 +121,44 @@
                     <!-- Kategori -->
                     <div class="bg-white rounded-xl shadow-sm p-6">
                         <h3 class="font-semibold text-gray-800 mb-4">Kategori</h3>
-                        <input type="text" name="kategori" id="kategori"
-                            value="{{ old('kategori', $berita->kategori ?? '') }}"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                            placeholder="Contoh: Pengumuman, Kegiatan" list="kategori-list">
-                        <datalist id="kategori-list">
+                        <select name="kategori_id" id="kategori_id"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            <option value="">-- Pilih Kategori --</option>
                             @foreach ($kategoris ?? [] as $kat)
-                                <option value="{{ $kat }}">
+                                <option value="{{ $kat->id }}"
+                                    {{ old('kategori_id', $berita->kategori_id ?? '') == $kat->id ? 'selected' : '' }}>
+                                    {{ $kat->nama }}
+                                </option>
                             @endforeach
-                        </datalist>
+                        </select>
                     </div>
 
                     <!-- Featured Image -->
                     <div class="bg-white rounded-xl shadow-sm p-6">
                         <h3 class="font-semibold text-gray-800 mb-4">Gambar Utama</h3>
 
-                        <div x-data="{ preview: '{{ isset($berita) && $berita->gambar ? Storage::url($berita->gambar) : '' }}' }">
+                        <div x-data="{ preview: '{{ $berita && $berita->gambar_utama ? Storage::url($berita->gambar_utama) : '' }}' }">
                             <div class="aspect-video rounded-lg overflow-hidden bg-gray-100 mb-3" x-show="preview">
                                 <img :src="preview" class="w-full h-full object-cover">
                             </div>
 
                             <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary-500 transition cursor-pointer"
-                                onclick="document.getElementById('gambar').click()" x-show="!preview">
+                                onclick="document.getElementById('gambar_utama').click()" x-show="!preview">
                                 <i class="fas fa-image text-3xl text-gray-400 mb-2"></i>
                                 <p class="text-sm text-gray-600">Klik untuk upload gambar</p>
                                 <p class="text-xs text-gray-400 mt-1">JPG, PNG (Maks. 5MB)</p>
                             </div>
 
-                            <input type="file" name="gambar" id="gambar" accept="image/*" class="hidden"
+                            <input type="file" name="gambar_utama" id="gambar_utama" accept="image/*" class="hidden"
                                 @change="preview = URL.createObjectURL($event.target.files[0])">
 
                             <button type="button" x-show="preview"
-                                @click="preview = ''; document.getElementById('gambar').value = ''"
+                                @click="preview = ''; document.getElementById('gambar_utama').value = ''"
                                 class="mt-2 text-sm text-red-600 hover:text-red-700">
                                 <i class="fas fa-times mr-1"></i> Hapus gambar
                             </button>
 
-                            @error('gambar')
+                            @error('gambar_utama')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
@@ -144,14 +172,6 @@
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                             placeholder="Tag1, Tag2, Tag3">
                         <p class="mt-1 text-sm text-gray-500">Pisahkan dengan koma</p>
-                    </div>
-
-                    <!-- Author -->
-                    <div class="bg-white rounded-xl shadow-sm p-6">
-                        <h3 class="font-semibold text-gray-800 mb-4">Penulis</h3>
-                        <input type="text" name="penulis" id="penulis"
-                            value="{{ old('penulis', $berita->penulis ?? (auth()->user()->name ?? 'Admin')) }}"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                     </div>
                 </div>
             </div>

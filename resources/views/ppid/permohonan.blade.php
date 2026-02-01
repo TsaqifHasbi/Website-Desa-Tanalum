@@ -38,7 +38,7 @@
                 @endif
 
                 <div class="bg-white rounded-xl shadow-sm p-8">
-                    <form action="{{ route('ppid.permohonan.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('ppid.permohonan.submit') }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
                         <div class="space-y-6">

@@ -84,7 +84,7 @@
         </div>
 
         <!-- Form -->
-        <form action="{{ route('admin.data-desa.idm.update') }}" method="POST">
+        <form action="{{ route('admin.data.idm.update') }}" method="POST">
             @csrf
             @method('PUT')
             <input type="hidden" name="tahun" value="{{ request('tahun', date('Y')) }}">

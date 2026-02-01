@@ -43,9 +43,9 @@
                     <i class="fas fa-video mr-2"></i> Video
                 </a>
                 @foreach ($kategoris as $kategori)
-                    <a href="{{ route('galeri.index', ['kategori' => $kategori]) }}"
-                        class="px-6 py-2 rounded-lg font-medium transition {{ request('kategori') == $kategori ? 'bg-primary-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100' }}">
-                        {{ $kategori }}
+                    <a href="{{ route('galeri.index', ['kategori' => $kategori->slug]) }}"
+                        class="px-6 py-2 rounded-lg font-medium transition {{ request('kategori') == $kategori->slug ? 'bg-primary-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100' }}">
+                        {{ $kategori->nama }}
                     </a>
                 @endforeach
             </div>
@@ -118,7 +118,7 @@
                             @if ($galeri->kategori)
                                 <div class="absolute top-2 left-2">
                                     <span
-                                        class="px-2 py-1 bg-white/90 text-gray-700 text-xs font-medium rounded">{{ $galeri->kategori }}</span>
+                                        class="px-2 py-1 bg-white/90 text-gray-700 text-xs font-medium rounded">{{ $galeri->kategori->nama }}</span>
                                 </div>
                             @endif
                         </div>

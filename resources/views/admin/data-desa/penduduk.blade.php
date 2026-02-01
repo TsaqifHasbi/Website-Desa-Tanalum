@@ -66,7 +66,7 @@
         </div>
 
         <!-- Form Update -->
-        <form action="{{ route('admin.data-desa.penduduk.update') }}" method="POST">
+        <form action="{{ route('admin.data.penduduk.update') }}" method="POST">
             @csrf
             @method('PUT')
 
@@ -293,7 +293,7 @@
             <div class="bg-white rounded-xl shadow-xl max-w-md w-full">
                 <div class="p-6">
                     <h3 class="text-lg font-bold text-gray-800 mb-4">Import Data Penduduk</h3>
-                    <form action="{{ route('admin.data-desa.penduduk.import') }}" method="POST"
+                    <form action="{{ route('admin.data.penduduk.import') }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
                         <div class="mb-4">

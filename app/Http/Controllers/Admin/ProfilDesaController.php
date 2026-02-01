@@ -14,7 +14,7 @@ class ProfilDesaController extends Controller
     {
         $profil = ProfilDesa::first();
 
-        return view('admin.profil.index', compact('profil'));
+        return view('admin.profil-desa.index', compact('profil'));
     }
 
     public function edit()
@@ -78,7 +78,7 @@ class ProfilDesaController extends Controller
             ProfilDesa::create($validated);
         }
 
-        return redirect()->route('admin.profil.index')
+        return redirect()->route('admin.profil')
             ->with('success', 'Profil desa berhasil diperbarui.');
     }
 

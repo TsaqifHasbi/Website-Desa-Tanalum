@@ -135,11 +135,12 @@
                             </div>
 
                             <div class="mt-6">
-                                <label for="isi" class="block text-sm font-medium text-gray-700 mb-2">Isi Pengaduan
+                                <label for="isi_pengaduan" class="block text-sm font-medium text-gray-700 mb-2">Isi
+                                    Pengaduan
                                     <span class="text-red-500">*</span></label>
-                                <textarea name="isi" id="isi" rows="5" required
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 @error('isi') border-red-500 @enderror"
-                                    placeholder="Jelaskan pengaduan Anda secara detail...">{{ old('isi') }}</textarea>
+                                <textarea name="isi_pengaduan" id="isi_pengaduan" rows="5" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 @error('isi_pengaduan') border-red-500 @enderror"
+                                    placeholder="Jelaskan pengaduan Anda secara detail...">{{ old('isi_pengaduan') }}</textarea>
                             </div>
 
                             <div class="mt-6">
@@ -173,20 +174,28 @@
                     <!-- Track Pengaduan -->
                     <div class="bg-white rounded-2xl shadow-sm p-6" data-aos="fade-left">
                         <h3 class="font-bold text-gray-800 mb-4">Lacak Pengaduan</h3>
-                        <form action="{{ route('pengaduan.track') }}" method="GET">
+                        <form action="{{ route('pengaduan.index') }}" method="GET" id="trackForm">
                             <div class="mb-4">
-                                <label for="kode" class="block text-sm font-medium text-gray-700 mb-2">Kode
+                                <label for="nomor_tiket" class="block text-sm font-medium text-gray-700 mb-2">Kode
                                     Pengaduan</label>
-                                <input type="text" name="kode" id="kode" required
+                                <input type="text" name="nomor_tiket" id="nomor_tiket" required
                                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                                     placeholder="Masukkan kode...">
                             </div>
-                            <button type="submit"
+                            <button type="button" onclick="trackPengaduan()"
                                 class="w-full py-2 bg-gray-800 hover:bg-gray-900 text-white font-medium rounded-lg transition">
                                 <i class="fas fa-search mr-2"></i>
                                 Lacak
                             </button>
                         </form>
+                        <script>
+                            function trackPengaduan() {
+                                var kode = document.getElementById('nomor_tiket').value;
+                                if (kode) {
+                                    window.location.href = '{{ url('pengaduan/cek') }}/' + kode;
+                                }
+                            }
+                        </script>
                     </div>
 
                     <!-- Info -->

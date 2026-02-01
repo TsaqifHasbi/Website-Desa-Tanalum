@@ -17,12 +17,12 @@ class PotensiController extends Controller
     {
         $wisatas = WisataDesa::latest()->paginate(10);
 
-        return view('admin.potensi.wisata', compact('wisatas'));
+        return view('admin.wisata.index', compact('wisatas'));
     }
 
     public function wisataCreate()
     {
-        return view('admin.potensi.wisata-create');
+        return view('admin.wisata.form');
     }
 
     public function wisataStore(Request $request)
@@ -81,7 +81,7 @@ class PotensiController extends Controller
 
     public function wisataEdit(WisataDesa $wisata)
     {
-        return view('admin.potensi.wisata-edit', compact('wisata'));
+        return view('admin.wisata.form', compact('wisata'));
     }
 
     public function wisataUpdate(Request $request, WisataDesa $wisata)

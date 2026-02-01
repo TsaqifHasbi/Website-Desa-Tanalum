@@ -41,8 +41,9 @@
         <div class="bg-white rounded-2xl shadow-xl p-8">
             <!-- Logo & Title -->
             <div class="text-center mb-8">
-                <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-user-shield text-2xl text-primary-600"></i>
+                <div class="w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                    <img src="{{ asset('storage/slider/logo-tanalum.png') }}" alt="Logo Tanalum"
+                        class="w-full h-full object-contain">
                 </div>
                 <h1 class="text-2xl font-bold text-gray-800">Admin Panel</h1>
                 <p class="text-gray-500 mt-1">Website Desa Tanalum</p>
@@ -59,7 +60,7 @@
             @endif
 
             <!-- Form -->
-            <form action="{{ route('login.post') }}" method="POST">
+            <form action="{{ route('admin.login.submit') }}" method="POST">
                 @csrf
 
                 <div class="mb-4">

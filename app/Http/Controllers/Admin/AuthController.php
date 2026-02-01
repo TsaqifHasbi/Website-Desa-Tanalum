@@ -47,7 +47,15 @@ class AuthController extends Controller
 
             $request->session()->regenerate();
 
-            return redirect()->intended(route('admin.dashboard'));
+            // Clear any unintended URLs (like image requests)
+            $intendedUrl = session()->pull('url.intended', route('admin.dashboard'));
+
+            // If intended URL is not a valid admin page, redirect to dashboard
+            if (str_contains($intendedUrl, '.png') || str_contains($intendedUrl, '.jpg') || str_contains($intendedUrl, '.gif') || str_contains($intendedUrl, '.css') || str_contains($intendedUrl, '.js')) {
+                $intendedUrl = route('admin.dashboard');
+            }
+
+            return redirect($intendedUrl);
         }
 
         return back()->withErrors([

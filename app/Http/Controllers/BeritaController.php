@@ -55,6 +55,17 @@ class BeritaController extends Controller
         // Increment views
         $berita->incrementViews();
 
+        // Get previous and next berita
+        $prevBerita = Berita::published()
+            ->where('published_at', '<', $berita->published_at)
+            ->orderBy('published_at', 'desc')
+            ->first();
+
+        $nextBerita = Berita::published()
+            ->where('published_at', '>', $berita->published_at)
+            ->orderBy('published_at', 'asc')
+            ->first();
+
         // Get related beritas
         $relatedBeritas = Berita::with('kategori')
             ->published()
@@ -66,6 +77,13 @@ class BeritaController extends Controller
             ->take(4)
             ->get();
 
-        return view('berita.show', compact('profil', 'berita', 'relatedBeritas'));
+        // Get popular beritas
+        $beritaPopuler = Berita::published()
+            ->where('id', '!=', $berita->id)
+            ->orderBy('views', 'desc')
+            ->take(5)
+            ->get();
+
+        return view('berita.show', compact('profil', 'berita', 'relatedBeritas', 'prevBerita', 'nextBerita', 'beritaPopuler'));
     }
 }

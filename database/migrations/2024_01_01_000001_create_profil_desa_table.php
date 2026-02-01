@@ -27,9 +27,12 @@ return new class extends Migration
             $table->text('visi')->nullable();
             $table->text('misi')->nullable();
             $table->text('sejarah')->nullable();
-            $table->decimal('luas_wilayah', 15, 2)->nullable()->comment('dalam m2');
+            $table->decimal('luas_wilayah', 15, 2)->nullable()->comment('dalam ha');
             $table->integer('jumlah_penduduk')->nullable();
+            $table->integer('jumlah_laki_laki')->nullable();
+            $table->integer('jumlah_perempuan')->nullable();
             $table->integer('jumlah_kk')->nullable();
+            $table->integer('jumlah_kk_miskin')->nullable();
             $table->string('batas_utara')->nullable();
             $table->string('batas_selatan')->nullable();
             $table->string('batas_timur')->nullable();

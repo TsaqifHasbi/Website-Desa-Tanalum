@@ -91,9 +91,9 @@
                                 <td class="px-6 py-4">
                                     <div class="flex items-center">
                                         <div class="w-16 h-12 rounded-lg overflow-hidden bg-gray-100 mr-4 flex-shrink-0">
-                                            @if ($berita->gambar)
-                                                <img src="{{ Storage::url($berita->gambar) }}" alt="{{ $berita->judul }}"
-                                                    class="w-full h-full object-cover">
+                                            @if ($berita->gambar_utama)
+                                                <img src="{{ Storage::url($berita->gambar_utama) }}"
+                                                    alt="{{ $berita->judul }}" class="w-full h-full object-cover">
                                             @else
                                                 <div class="w-full h-full flex items-center justify-center">
                                                     <i class="fas fa-newspaper text-gray-300"></i>
@@ -102,22 +102,25 @@
                                         </div>
                                         <div>
                                             <p class="font-medium text-gray-800 line-clamp-1">{{ $berita->judul }}</p>
-                                            <p class="text-sm text-gray-500">{{ $berita->penulis ?? 'Admin' }}</p>
+                                            <p class="text-sm text-gray-500">{{ $berita->author->name ?? 'Admin' }}</p>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
                                     @if ($berita->kategori)
                                         <span
-                                            class="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full">{{ $berita->kategori }}</span>
+                                            class="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full">{{ $berita->kategori->nama }}</span>
                                     @else
                                         <span class="text-gray-400">-</span>
                                     @endif
                                 </td>
                                 <td class="px-6 py-4">
-                                    @if ($berita->is_published)
+                                    @if ($berita->status == 'published')
                                         <span
                                             class="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">Dipublikasi</span>
+                                    @elseif ($berita->status == 'archived')
+                                        <span
+                                            class="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">Diarsipkan</span>
                                     @else
                                         <span
                                             class="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded-full">Draft</span>

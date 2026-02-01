@@ -40,8 +40,9 @@ class BeritaController extends Controller
     public function create()
     {
         $kategoris = KategoriBerita::active()->get();
+        $berita = null;
 
-        return view('admin.berita.create', compact('kategoris'));
+        return view('admin.berita.form', compact('kategoris', 'berita'));
     }
 
     public function store(Request $request)
@@ -96,7 +97,7 @@ class BeritaController extends Controller
     {
         $kategoris = KategoriBerita::active()->get();
 
-        return view('admin.berita.edit', compact('berita', 'kategoris'));
+        return view('admin.berita.form', compact('berita', 'kategoris'));
     }
 
     public function update(Request $request, Berita $berita)

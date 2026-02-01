@@ -91,12 +91,12 @@
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div class="text-center p-4" data-aos="fade-up" data-aos-delay="0">
                     <div class="text-3xl md:text-4xl font-bold text-primary-600">
-                        {{ number_format($statistik->jumlah_penduduk ?? 0) }}</div>
+                        {{ number_format($profil->jumlah_penduduk ?? 0) }}</div>
                     <div class="text-sm text-gray-600 mt-1">Jumlah Penduduk</div>
                 </div>
                 <div class="text-center p-4" data-aos="fade-up" data-aos-delay="100">
                     <div class="text-3xl md:text-4xl font-bold text-primary-600">
-                        {{ number_format($statistik->jumlah_kk ?? 0) }}</div>
+                        {{ number_format($profil->jumlah_kk ?? 0) }}</div>
                     <div class="text-sm text-gray-600 mt-1">Kepala Keluarga</div>
                 </div>
                 <div class="text-center p-4" data-aos="fade-up" data-aos-delay="200">
@@ -105,8 +105,8 @@
                 </div>
                 <div class="text-center p-4" data-aos="fade-up" data-aos-delay="300">
                     <div class="text-3xl md:text-4xl font-bold text-primary-600">
-                        {{ number_format($profil->luas_wilayah ?? 0, 2) }}</div>
-                    <div class="text-sm text-gray-600 mt-1">Luas Wilayah (Km²)</div>
+                        {{ number_format($profil->luas_wilayah ?? 0) }}</div>
+                    <div class="text-sm text-gray-600 mt-1">Luas Wilayah (Ha)</div>
                 </div>
             </div>
         </div>
@@ -167,9 +167,9 @@
     <!-- Kepala Desa Section -->
     @if ($kepalaDesa)
         <section class="py-16 bg-gradient-to-br from-primary-600 to-primary-700 text-white">
-            <div class="container mx-auto px-6 md:px-12 lg:px-20">
-                <div class="grid lg:grid-cols-2 gap-12 items-center">
-                    <div class="text-center lg:text-left order-2 lg:order-1 lg:pl-8" data-aos="fade-right">
+            <div class="container mx-auto px-6 md:px-12 lg:px-64">
+                <div class="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+                    <div class="text-center lg:text-left order-2 lg:order-1" data-aos="fade-right">
                         <span class="text-primary-200 font-semibold">Sambutan Kepala Desa</span>
                         <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-6">{{ $kepalaDesa->nama }}</h2>
                         <p class="text-primary-100 leading-relaxed mb-6">
@@ -187,10 +187,10 @@
                     <div class="text-center order-1 lg:order-2" data-aos="fade-left">
                         @if ($kepalaDesa->foto)
                             <img src="{{ Storage::url($kepalaDesa->foto) }}" alt="{{ $kepalaDesa->nama }}"
-                                class="w-64 h-64 mx-auto rounded-full object-cover border-4 border-white shadow-xl">
+                                class="w-64 h-64 mx-auto lg:mr-0 lg:ml-auto rounded-full object-cover border-4 border-white shadow-xl">
                         @else
                             <div
-                                class="w-64 h-64 mx-auto rounded-full bg-primary-500 flex items-center justify-center border-4 border-white shadow-xl">
+                                class="w-64 h-64 mx-auto lg:mr-0 lg:ml-auto rounded-full bg-primary-500 flex items-center justify-center border-4 border-white shadow-xl">
                                 <i class="fas fa-user text-6xl text-white"></i>
                             </div>
                         @endif

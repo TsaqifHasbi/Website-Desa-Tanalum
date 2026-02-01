@@ -71,8 +71,8 @@
                     @foreach ($galeris as $galeri)
                         <div class="group relative bg-gray-100 rounded-xl overflow-hidden aspect-square">
                             @if ($galeri->tipe == 'foto')
-                                <img src="{{ Storage::url($galeri->file) }}" alt="{{ $galeri->judul }}"
-                                    class="w-full h-full object-cover">
+                                <img src="{{ $galeri->file_path ? Storage::url($galeri->file_path) : asset('img/placeholder.jpg') }}"
+                                    alt="{{ $galeri->judul }}" class="w-full h-full object-cover">
                             @else
                                 <div class="w-full h-full flex items-center justify-center bg-gray-800">
                                     <i class="fas fa-play-circle text-5xl text-white/80"></i>

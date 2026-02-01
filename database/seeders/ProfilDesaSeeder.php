@@ -30,13 +30,16 @@ class ProfilDesaSeeder extends Seeder
                         4. Mengembangkan teknologi informasi
                         5. Pembangunan infrastruktur, sarana dan prasarana',
             'sejarah' => 'Desa Tanalum merupakan salah satu desa yang terletak di Kecamatan Rembang, Kabupaten Purbalingga, Provinsi Jawa Tengah. Desa ini memiliki sejarah panjang yang dimulai dari pemukiman masyarakat pesisir yang mengandalkan hasil perkebunan dan pertanian sebagai mata pencaharian utama. Seiring berjalannya waktu, Desa Tanalum berkembang menjadi desa yang memiliki potensi wisata curug yang menarik.',
-            'luas_wilayah' => 4.53, // dalam km2
-            'jumlah_penduduk' => 3889,
-            'jumlah_kk' => 310,
-            'batas_utara' => 'Kabupaten Pekalongan dan Kabupaten Banjarnegara',
-            'batas_selatan' => 'Desa Losari dan Desa Sumampir',
-            'batas_timur' => 'Desa Losari dan Desa Gunungwuled',
-            'batas_barat' => 'Desa Sumampir dan Desa Panusupan',
+            'luas_wilayah' => 894, // dalam ha
+            'jumlah_penduduk' => 4489,
+            'jumlah_laki_laki' => 2259,
+            'jumlah_perempuan' => 2230,
+            'jumlah_kk' => 1102,
+            'jumlah_kk_miskin' => 773,
+            'batas_utara' => 'Tanah Kehutanan',
+            'batas_selatan' => 'Desa Sumampir dan Desa Losari',
+            'batas_timur' => 'Desa Gunungwuled',
+            'batas_barat' => 'Desa Panusupan',
             'latitude' => -0.3750,
             'longitude' => 117.2500,
             'kode_wilayah' => '64.02.17.2005',

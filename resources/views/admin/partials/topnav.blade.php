@@ -111,13 +111,13 @@
                         <i class="fas fa-user mr-2 w-4"></i>
                         Profil Saya
                     </a>
-                    <a href="{{ route('admin.password') }}"
+                    <a href="{{ route('admin.profile.password') }}"
                         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                         <i class="fas fa-key mr-2 w-4"></i>
                         Ganti Password
                     </a>
                     <div class="border-t border-gray-100 my-1"></div>
-                    <form action="{{ route('logout') }}" method="POST">
+                    <form action="{{ route('admin.logout') }}" method="POST">
                         @csrf
                         <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
                             <i class="fas fa-sign-out-alt mr-2 w-4"></i>

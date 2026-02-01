@@ -1,14 +1,14 @@
 @extends('layouts.admin')
 
-@section('title', isset($galeri) ? 'Edit Galeri' : 'Tambah Galeri')
+@section('title', $galeri ? 'Edit Galeri' : 'Tambah Galeri')
 
 @section('content')
     <div class="space-y-6">
         <!-- Header -->
         <div class="flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-bold text-gray-800">{{ isset($galeri) ? 'Edit Galeri' : 'Tambah Galeri' }}</h1>
-                <p class="text-gray-600">{{ isset($galeri) ? 'Perbarui data galeri' : 'Upload foto atau video baru' }}</p>
+                <h1 class="text-2xl font-bold text-gray-800">{{ $galeri ? 'Edit Galeri' : 'Tambah Galeri' }}</h1>
+                <p class="text-gray-600">{{ $galeri ? 'Perbarui data galeri' : 'Upload foto atau video baru' }}</p>
             </div>
             <a href="{{ route('admin.galeri.index') }}"
                 class="inline-flex items-center px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium rounded-lg transition">
@@ -19,10 +19,10 @@
 
         <!-- Form -->
         <div class="bg-white rounded-xl shadow-sm">
-            <form action="{{ isset($galeri) ? route('admin.galeri.update', $galeri->id) : route('admin.galeri.store') }}"
+            <form action="{{ $galeri ? route('admin.galeri.update', $galeri->id) : route('admin.galeri.store') }}"
                 method="POST" enctype="multipart/form-data">
                 @csrf
-                @if (isset($galeri))
+                @if ($galeri)
                     @method('PUT')
                 @endif
 
@@ -62,16 +62,17 @@
 
                         <!-- Kategori -->
                         <div>
-                            <label for="kategori" class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
-                            <input type="text" name="kategori" id="kategori"
-                                value="{{ old('kategori', $galeri->kategori ?? '') }}"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                                placeholder="Contoh: Kegiatan, Wisata, dll" list="kategori-list">
-                            <datalist id="kategori-list">
+                            <label for="kategori_id" class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
+                            <select name="kategori_id" id="kategori_id"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                                <option value="">-- Pilih Kategori --</option>
                                 @foreach ($kategoris ?? [] as $kat)
-                                    <option value="{{ $kat }}">
+                                    <option value="{{ $kat->id }}"
+                                        {{ old('kategori_id', $galeri->kategori_id ?? '') == $kat->id ? 'selected' : '' }}>
+                                        {{ $kat->nama }}
+                                    </option>
                                 @endforeach
-                            </datalist>
+                            </select>
                         </div>
                     </div>
 
@@ -85,11 +86,11 @@
 
                     <!-- File Upload -->
                     <div x-data="{
-                        preview: '{{ isset($galeri) && $galeri->file ? Storage::url($galeri->file) : '' }}',
+                        preview: '{{ $galeri && $galeri->file_path ? Storage::url($galeri->file_path) : '' }}',
                         tipe: '{{ old('tipe', $galeri->tipe ?? 'foto') }}'
                     }">
                         <label class="block text-sm font-medium text-gray-700 mb-1">File Media
-                            {{ isset($galeri) ? '' : '*' }}</label>
+                            {{ $galeri ? '' : '*' }}</label>
 
                         <div class="mt-2">
                             <!-- Preview for Photo -->
@@ -155,7 +156,7 @@
                     <button type="submit"
                         class="px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition">
                         <i class="fas fa-save mr-2"></i>
-                        {{ isset($galeri) ? 'Update' : 'Simpan' }}
+                        {{ $galeri ? 'Update' : 'Simpan' }}
                     </button>
                 </div>
             </form>

@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\AparaturController as AdminAparaturController;
 use App\Http\Controllers\Admin\GaleriController as AdminGaleriController;
 use App\Http\Controllers\Admin\PpidController as AdminPpidController;
 use App\Http\Controllers\Admin\DataDesaController;
+use App\Http\Controllers\Admin\ProfilDesaController;
 use App\Http\Controllers\Admin\SettingController;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +29,11 @@ use Illuminate\Support\Facades\Route;
 
 // Home
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Login redirect
+Route::get('/login', function () {
+    return redirect()->route('admin.login');
+})->name('login');
 
 // Profil Desa
 Route::prefix('profil')->name('profil.')->group(function () {
@@ -142,29 +148,55 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     // Dashboard
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
-    
+
+    // Profile
+    Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
+    Route::put('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
+    Route::get('/profile/password', [AuthController::class, 'passwordForm'])->name('profile.password');
+    Route::put('/profile/password', [AuthController::class, 'updatePassword'])->name('profile.password.update');
+
     // Profil Desa
-    Route::get('/profil-desa', [DataDesaController::class, 'profil'])->name('profil');
-    Route::put('/profil-desa', [DataDesaController::class, 'updateProfil'])->name('profil.update');
-    
+    Route::get('/profil-desa', [ProfilDesaController::class, 'index'])->name('profil');
+    Route::put('/profil-desa', [ProfilDesaController::class, 'update'])->name('profil.update');
+
     // Aparatur Desa
     Route::resource('aparatur', AdminAparaturController::class);
-    
+
     // Berita
-    Route::resource('berita', AdminBeritaController::class);
-    
+    Route::resource('berita', AdminBeritaController::class)->parameters(['berita' => 'berita']);
+
     // Produk UMKM
     Route::resource('produk', AdminProdukController::class);
-    
+
     // Galeri
     Route::resource('galeri', AdminGaleriController::class);
-    
+
     // Wisata
     Route::resource('wisata', \App\Http\Controllers\Admin\WisataController::class);
-    
+
+    // Potensi & Wisata Desa
+    Route::prefix('potensi')->name('potensi.')->group(function () {
+        Route::get('/wisata', [\App\Http\Controllers\Admin\PotensiController::class, 'wisataIndex'])->name('wisata');
+        Route::get('/wisata/create', [\App\Http\Controllers\Admin\PotensiController::class, 'wisataCreate'])->name('wisata.create');
+        Route::post('/wisata', [\App\Http\Controllers\Admin\PotensiController::class, 'wisataStore'])->name('wisata.store');
+        Route::get('/wisata/{wisata}/edit', [\App\Http\Controllers\Admin\PotensiController::class, 'wisataEdit'])->name('wisata.edit');
+        Route::put('/wisata/{wisata}', [\App\Http\Controllers\Admin\PotensiController::class, 'wisataUpdate'])->name('wisata.update');
+        Route::delete('/wisata/{wisata}', [\App\Http\Controllers\Admin\PotensiController::class, 'wisataDestroy'])->name('wisata.destroy');
+        Route::get('/', [\App\Http\Controllers\Admin\PotensiController::class, 'potensiIndex'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\Admin\PotensiController::class, 'potensiCreate'])->name('create');
+        Route::post('/', [\App\Http\Controllers\Admin\PotensiController::class, 'potensiStore'])->name('store');
+        Route::get('/{potensi}/edit', [\App\Http\Controllers\Admin\PotensiController::class, 'potensiEdit'])->name('edit');
+        Route::put('/{potensi}', [\App\Http\Controllers\Admin\PotensiController::class, 'potensiUpdate'])->name('update');
+        Route::delete('/{potensi}', [\App\Http\Controllers\Admin\PotensiController::class, 'potensiDestroy'])->name('destroy');
+        Route::get('/kategori', [\App\Http\Controllers\Admin\PotensiController::class, 'kategori'])->name('kategori');
+        Route::post('/kategori', [\App\Http\Controllers\Admin\PotensiController::class, 'kategoriStore'])->name('kategori.store');
+        Route::put('/kategori/{kategori}', [\App\Http\Controllers\Admin\PotensiController::class, 'kategoriUpdate'])->name('kategori.update');
+        Route::delete('/kategori/{kategori}', [\App\Http\Controllers\Admin\PotensiController::class, 'kategoriDestroy'])->name('kategori.destroy');
+    });
+
     // Dokumen PPID
     Route::resource('dokumen', \App\Http\Controllers\Admin\DokumenController::class);
-    
+
     // PPID
     Route::prefix('ppid')->name('ppid.')->group(function () {
         Route::get('/', [AdminPpidController::class, 'index'])->name('index');
@@ -177,36 +209,59 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         Route::get('/permohonan', [AdminPpidController::class, 'permohonan'])->name('permohonan');
         Route::get('/permohonan/{id}', [AdminPpidController::class, 'showPermohonan'])->name('permohonan.show');
         Route::put('/permohonan/{id}', [AdminPpidController::class, 'updatePermohonan'])->name('permohonan.update');
+        Route::get('/kategori', [AdminPpidController::class, 'kategori'])->name('kategori');
+        Route::post('/kategori', [AdminPpidController::class, 'kategoriStore'])->name('kategori.store');
+        Route::put('/kategori/{id}', [AdminPpidController::class, 'kategoriUpdate'])->name('kategori.update');
+        Route::delete('/kategori/{id}', [AdminPpidController::class, 'kategoriDestroy'])->name('kategori.destroy');
     });
-    
+
     // Data Desa (Statistik)
     Route::prefix('data')->name('data.')->group(function () {
         Route::get('/penduduk', [DataDesaController::class, 'penduduk'])->name('penduduk');
-        Route::post('/penduduk', [DataDesaController::class, 'storePenduduk'])->name('penduduk.store');
+        Route::post('/penduduk', [DataDesaController::class, 'pendudukStore'])->name('penduduk.store');
+        Route::put('/penduduk', [DataDesaController::class, 'pendudukUpdate'])->name('penduduk.update');
+        Route::post('/penduduk/import', [DataDesaController::class, 'pendudukImport'])->name('penduduk.import');
+        Route::get('/dusun', [DataDesaController::class, 'dusun'])->name('dusun');
+        Route::post('/dusun', [DataDesaController::class, 'dusunStore'])->name('dusun.store');
+        Route::put('/dusun/{dusun}', [DataDesaController::class, 'dusunUpdate'])->name('dusun.update');
+        Route::delete('/dusun/{dusun}', [DataDesaController::class, 'dusunDestroy'])->name('dusun.destroy');
         Route::get('/apbdes', [DataDesaController::class, 'apbdes'])->name('apbdes');
-        Route::post('/apbdes', [DataDesaController::class, 'storeApbdes'])->name('apbdes.store');
+        Route::post('/apbdes', [DataDesaController::class, 'apbdesStore'])->name('apbdes.store');
+        Route::put('/apbdes', [DataDesaController::class, 'apbdesUpdate'])->name('apbdes.update');
+        Route::delete('/apbdes/{apbdes}', [DataDesaController::class, 'apbdesDestroy'])->name('apbdes.destroy');
         Route::get('/bansos', [DataDesaController::class, 'bansos'])->name('bansos');
-        Route::post('/bansos', [DataDesaController::class, 'storeBansos'])->name('bansos.store');
+        Route::post('/bansos', [DataDesaController::class, 'bansosJenisStore'])->name('bansos.store');
+        Route::post('/bansos/import', [DataDesaController::class, 'bansosImport'])->name('bansos.import');
+        Route::get('/bansos/penerima', [DataDesaController::class, 'bansosPenerima'])->name('bansos.penerima');
+        Route::post('/bansos/penerima', [DataDesaController::class, 'bansosPenerimaStore'])->name('bansos.penerima.store');
         Route::get('/idm', [DataDesaController::class, 'idm'])->name('idm');
-        Route::post('/idm', [DataDesaController::class, 'storeIdm'])->name('idm.store');
+        Route::post('/idm', [DataDesaController::class, 'idmStore'])->name('idm.store');
+        Route::put('/idm', [DataDesaController::class, 'idmUpdate'])->name('idm.update');
+        Route::delete('/idm/{idm}', [DataDesaController::class, 'idmDestroy'])->name('idm.destroy');
         Route::get('/sdgs', [DataDesaController::class, 'sdgs'])->name('sdgs');
-        Route::post('/sdgs', [DataDesaController::class, 'storeSdgs'])->name('sdgs.store');
+        Route::post('/sdgs', [DataDesaController::class, 'sdgsStore'])->name('sdgs.store');
+        Route::put('/sdgs', [DataDesaController::class, 'sdgsUpdate'])->name('sdgs.update');
+        Route::delete('/sdgs/{sdgs}', [DataDesaController::class, 'sdgsDestroy'])->name('sdgs.destroy');
+        Route::get('/stunting', [DataDesaController::class, 'stunting'])->name('stunting');
+        Route::post('/stunting', [DataDesaController::class, 'stuntingStore'])->name('stunting.store');
+        Route::put('/stunting/{stunting}', [DataDesaController::class, 'stuntingUpdate'])->name('stunting.update');
+        Route::delete('/stunting/{stunting}', [DataDesaController::class, 'stuntingDestroy'])->name('stunting.destroy');
     });
-    
+
     // Slider
     Route::resource('slider', \App\Http\Controllers\Admin\SliderController::class);
-    
+
     // Pengaduan
     Route::prefix('pengaduan')->name('pengaduan.')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\PengaduanController::class, 'index'])->name('index');
         Route::get('/{id}', [\App\Http\Controllers\Admin\PengaduanController::class, 'show'])->name('show');
         Route::put('/{id}', [\App\Http\Controllers\Admin\PengaduanController::class, 'update'])->name('update');
     });
-    
+
     // Settings
-    Route::get('/settings', [SettingController::class, 'index'])->name('setting.index');
-    Route::put('/settings', [SettingController::class, 'update'])->name('setting.update');
-    
+    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+    Route::put('/settings', [SettingController::class, 'update'])->name('settings.update');
+
     // Kontak/Pesan Masuk
     Route::prefix('kontak')->name('kontak.')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\KontakController::class, 'index'])->name('index');
@@ -215,7 +270,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         Route::put('/{kontak}/status', [\App\Http\Controllers\Admin\KontakController::class, 'updateStatus'])->name('updateStatus');
         Route::delete('/{kontak}', [\App\Http\Controllers\Admin\KontakController::class, 'destroy'])->name('destroy');
     });
-    
+
     // Users (Super Admin only)
     Route::resource('users', \App\Http\Controllers\Admin\UserController::class)->middleware('superadmin');
 });

@@ -13,7 +13,7 @@
             @if ($logo)
                 <img src="{{ Storage::url($logo) }}" alt="Logo" class="h-8 w-auto">
             @endif
-            <span class="font-bold text-lg text-gray-800">Admin Panel</span>
+            <span class="font-bold text-lg text-gray-800">Admin Tanalum</span>
         </a>
         <button @click="sidebarOpen = false" class="lg:hidden p-1 text-gray-500 hover:text-gray-700">
             <i class="fas fa-times"></i>
@@ -57,8 +57,8 @@
             <p class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Desa</p>
         </div>
 
-        <a href="{{ route('admin.profil.index') }}"
-            class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg {{ request()->routeIs('admin.profil.*') ? 'bg-primary-50 text-primary-700' : 'text-gray-700 hover:bg-gray-50' }}">
+        <a href="{{ route('admin.profil') }}"
+            class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg {{ request()->routeIs('admin.profil*') ? 'bg-primary-50 text-primary-700' : 'text-gray-700 hover:bg-gray-50' }}">
             <i class="fas fa-landmark w-5 mr-3"></i>
             Profil Desa
         </a>

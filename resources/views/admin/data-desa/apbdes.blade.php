@@ -62,7 +62,7 @@
         </div>
 
         <!-- Form -->
-        <form action="{{ route('admin.data-desa.apbdes.update') }}" method="POST">
+        <form action="{{ route('admin.data.apbdes.update') }}" method="POST">
             @csrf
             @method('PUT')
             <input type="hidden" name="tahun" value="{{ request('tahun', date('Y')) }}">

@@ -34,8 +34,9 @@ class GaleriController extends Controller
     public function create()
     {
         $kategoris = KategoriGaleri::active()->get();
+        $galeri = null;
 
-        return view('admin.galeri.create', compact('kategoris'));
+        return view('admin.galeri.form', compact('kategoris', 'galeri'));
     }
 
     public function store(Request $request)
@@ -46,7 +47,7 @@ class GaleriController extends Controller
             'kategori_id' => 'nullable|exists:kategori_galeri,id',
             'tipe' => 'required|in:foto,video',
             'file' => 'required_if:tipe,foto|nullable|image|mimes:jpg,jpeg,png,webp|max:10240',
-            'url_video' => 'required_if:tipe,video|nullable|url',
+            'video_url' => 'required_if:tipe,video|nullable|url',
             'urutan' => 'nullable|integer',
             'is_featured' => 'nullable|boolean',
             'is_active' => 'nullable|boolean',
@@ -80,7 +81,7 @@ class GaleriController extends Controller
     {
         $kategoris = KategoriGaleri::active()->get();
 
-        return view('admin.galeri.edit', compact('galeri', 'kategoris'));
+        return view('admin.galeri.form', compact('galeri', 'kategoris'));
     }
 
     public function update(Request $request, Galeri $galeri)
@@ -91,7 +92,7 @@ class GaleriController extends Controller
             'kategori_id' => 'nullable|exists:kategori_galeri,id',
             'tipe' => 'required|in:foto,video',
             'file' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:10240',
-            'url_video' => 'nullable|url',
+            'video_url' => 'nullable|url',
             'urutan' => 'nullable|integer',
             'is_featured' => 'nullable|boolean',
             'is_active' => 'nullable|boolean',

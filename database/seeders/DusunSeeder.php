@@ -13,38 +13,38 @@ class DusunSeeder extends Seeder
     public function run(): void
     {
         Dusun::create([
-            'nama' => 'Tanalum',
+            'nama' => 'Kadus I (Tanalum)',
             'kepala_dusun' => 'Alfatah',
-            'jumlah_rt' => 9,
-            'jumlah_rw' => 5,
-            'keterangan' => 'Dusun 1 terletak di bagian selatan desa, merupakan pusat kegiatan pemerintahan desa',
+            'jumlah_rt' => 5,
+            'jumlah_rw' => 1,
+            'keterangan' => 'Dusun I terletak di bagian selatan desa, merupakan pusat kegiatan pemerintahan desa',
             'is_active' => true,
         ]);
 
         Dusun::create([
-            'nama' => 'Datar',
-            'kepala_dusun' => 'Mujil Amin M',
+            'nama' => 'Kadus II (Datar)',
+            'kepala_dusun' => '',
             'jumlah_rt' => 4,
-            'jumlah_rw' => 2,
-            'keterangan' => 'Dusun Empang terletak di bagian selatan desa, dekat dengan pantai',
+            'jumlah_rw' => 1,
+            'keterangan' => 'Dusun II terletak di bagian tengah desa',
             'is_active' => true,
         ]);
 
         Dusun::create([
-            'nama' => 'Pucung Rumbak',
-            'kepala_dusun' => 'Mujil Amin M',
-            'jumlah_rt' => 4,
-            'jumlah_rw' => 2,
-            'keterangan' => 'Dusun Empang terletak di bagian selatan desa, dekat dengan pantai',
+            'nama' => 'Kadus III (Buret)',
+            'kepala_dusun' => '',
+            'jumlah_rt' => 6,
+            'jumlah_rw' => 1,
+            'keterangan' => 'Dusun III terletak di bagian utara desa',
             'is_active' => true,
         ]);
 
         Dusun::create([
-            'nama' => 'Buret',
+            'nama' => 'Kadus IV (Pucung Rumbak)',
             'kepala_dusun' => 'Mujil Amin M',
-            'jumlah_rt' => 4,
-            'jumlah_rw' => 2,
-            'keterangan' => 'Dusun Empang terletak di bagian selatan desa, dekat dengan pantai',
+            'jumlah_rt' => 5,
+            'jumlah_rw' => 1,
+            'keterangan' => 'Dusun IV terletak di bagian timur desa',
             'is_active' => true,
         ]);
     }

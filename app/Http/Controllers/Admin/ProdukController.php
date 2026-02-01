@@ -39,8 +39,9 @@ class ProdukController extends Controller
     public function create()
     {
         $kategoris = KategoriProduk::active()->get();
+        $produk = null;
 
-        return view('admin.produk.create', compact('kategoris'));
+        return view('admin.produk.form', compact('kategoris', 'produk'));
     }
 
     public function store(Request $request)
@@ -52,11 +53,11 @@ class ProdukController extends Controller
             'harga' => 'required|numeric|min:0',
             'satuan' => 'nullable|string|max:50',
             'stok' => 'nullable|integer|min:0',
-            'nama_penjual' => 'nullable|string|max:255',
-            'kontak_penjual' => 'nullable|string|max:255',
-            'alamat_penjual' => 'nullable|string',
-            'gambar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
-            'gambar_tambahan.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'pemilik' => 'nullable|string|max:255',
+            'kontak_pemilik' => 'nullable|string|max:255',
+            'alamat_pemilik' => 'nullable|string',
+            'gambar_utama' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'galeri.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'is_featured' => 'nullable|boolean',
             'is_active' => 'nullable|boolean',
         ]);
@@ -73,18 +74,18 @@ class ProdukController extends Controller
         $validated['is_active'] = $request->boolean('is_active', true);
 
         // Handle main image
-        if ($request->hasFile('gambar')) {
-            $validated['gambar'] = $request->file('gambar')->store('produk', 'public');
+        if ($request->hasFile('gambar_utama')) {
+            $validated['gambar_utama'] = $request->file('gambar_utama')->store('produk', 'public');
         }
 
-        // Handle additional images
-        $gambarTambahan = [];
-        if ($request->hasFile('gambar_tambahan')) {
-            foreach ($request->file('gambar_tambahan') as $file) {
-                $gambarTambahan[] = $file->store('produk', 'public');
+        // Handle gallery images
+        $galeri = [];
+        if ($request->hasFile('galeri')) {
+            foreach ($request->file('galeri') as $file) {
+                $galeri[] = $file->store('produk', 'public');
             }
         }
-        $validated['gambar_tambahan'] = $gambarTambahan;
+        $validated['galeri'] = $galeri;
 
         ProdukUmkm::create($validated);
 
@@ -96,7 +97,7 @@ class ProdukController extends Controller
     {
         $kategoris = KategoriProduk::active()->get();
 
-        return view('admin.produk.edit', compact('produk', 'kategoris'));
+        return view('admin.produk.form', compact('produk', 'kategoris'));
     }
 
     public function update(Request $request, ProdukUmkm $produk)
@@ -108,11 +109,11 @@ class ProdukController extends Controller
             'harga' => 'required|numeric|min:0',
             'satuan' => 'nullable|string|max:50',
             'stok' => 'nullable|integer|min:0',
-            'nama_penjual' => 'nullable|string|max:255',
-            'kontak_penjual' => 'nullable|string|max:255',
-            'alamat_penjual' => 'nullable|string',
-            'gambar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
-            'gambar_tambahan.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'pemilik' => 'nullable|string|max:255',
+            'kontak_pemilik' => 'nullable|string|max:255',
+            'alamat_pemilik' => 'nullable|string',
+            'gambar_utama' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'galeri.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'is_featured' => 'nullable|boolean',
             'is_active' => 'nullable|boolean',
         ]);
@@ -133,27 +134,27 @@ class ProdukController extends Controller
         $validated['is_active'] = $request->boolean('is_active');
 
         // Handle main image
-        if ($request->hasFile('gambar')) {
-            if ($produk->gambar) {
-                Storage::disk('public')->delete($produk->gambar);
+        if ($request->hasFile('gambar_utama')) {
+            if ($produk->gambar_utama) {
+                Storage::disk('public')->delete($produk->gambar_utama);
             }
-            $validated['gambar'] = $request->file('gambar')->store('produk', 'public');
+            $validated['gambar_utama'] = $request->file('gambar_utama')->store('produk', 'public');
         }
 
-        // Handle additional images
-        if ($request->hasFile('gambar_tambahan')) {
+        // Handle gallery images
+        if ($request->hasFile('galeri')) {
             // Delete old images
-            if ($produk->gambar_tambahan) {
-                foreach ($produk->gambar_tambahan as $img) {
+            if ($produk->galeri) {
+                foreach ($produk->galeri as $img) {
                     Storage::disk('public')->delete($img);
                 }
             }
 
-            $gambarTambahan = [];
-            foreach ($request->file('gambar_tambahan') as $file) {
-                $gambarTambahan[] = $file->store('produk', 'public');
+            $galeri = [];
+            foreach ($request->file('galeri') as $file) {
+                $galeri[] = $file->store('produk', 'public');
             }
-            $validated['gambar_tambahan'] = $gambarTambahan;
+            $validated['galeri'] = $galeri;
         }
 
         $produk->update($validated);
@@ -164,12 +165,12 @@ class ProdukController extends Controller
 
     public function destroy(ProdukUmkm $produk)
     {
-        if ($produk->gambar) {
-            Storage::disk('public')->delete($produk->gambar);
+        if ($produk->gambar_utama) {
+            Storage::disk('public')->delete($produk->gambar_utama);
         }
 
-        if ($produk->gambar_tambahan) {
-            foreach ($produk->gambar_tambahan as $img) {
+        if ($produk->galeri) {
+            foreach ($produk->galeri as $img) {
                 Storage::disk('public')->delete($img);
             }
         }

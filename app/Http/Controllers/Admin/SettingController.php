@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Models\ProfilDesa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
@@ -13,39 +14,33 @@ class SettingController extends Controller
     public function index()
     {
         $settings = Setting::all()->pluck('value', 'key')->toArray();
+        $profilDesa = ProfilDesa::first();
 
-        return view('admin.settings.index', compact('settings'));
+        return view('admin.setting.index', compact('settings', 'profilDesa'));
     }
 
     public function update(Request $request)
     {
+        $section = $request->input('section', 'umum');
+
+        // Handle different sections
+        if ($section === 'profil') {
+            return $this->updateProfil($request);
+        } elseif ($section === 'kontak') {
+            return $this->updateKontak($request);
+        }
+
+        // Default: update general settings
         $validated = $request->validate([
-            'site_name' => 'nullable|string|max:255',
-            'site_tagline' => 'nullable|string|max:255',
-            'site_description' => 'nullable|string',
-            'site_keywords' => 'nullable|string',
-            'site_logo' => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
-            'site_favicon' => 'nullable|image|mimes:ico,png|max:512',
-            'footer_text' => 'nullable|string',
-            'footer_copyright' => 'nullable|string',
-            'contact_address' => 'nullable|string',
-            'contact_phone' => 'nullable|string|max:50',
-            'contact_email' => 'nullable|email|max:255',
-            'contact_whatsapp' => 'nullable|string|max:50',
-            'social_facebook' => 'nullable|url',
-            'social_instagram' => 'nullable|url',
-            'social_twitter' => 'nullable|url',
-            'social_youtube' => 'nullable|url',
-            'social_tiktok' => 'nullable|url',
-            'maps_embed' => 'nullable|string',
-            'maps_lat' => 'nullable|string|max:50',
-            'maps_lng' => 'nullable|string|max:50',
-            'analytics_google' => 'nullable|string',
-            'meta_author' => 'nullable|string|max:255',
+            'nama_website' => 'nullable|string|max:255',
+            'tagline' => 'nullable|string|max:255',
+            'deskripsi' => 'nullable|string',
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png,svg,webp|max:2048',
+            'favicon' => 'nullable|image|mimes:ico,png|max:512',
         ]);
 
         // Handle file uploads
-        foreach (['site_logo', 'site_favicon'] as $field) {
+        foreach (['logo', 'favicon'] as $field) {
             if ($request->hasFile($field)) {
                 // Delete old file
                 $oldSetting = Setting::where('key', $field)->first();
@@ -73,11 +68,77 @@ class SettingController extends Controller
             ->with('success', 'Pengaturan berhasil diperbarui.');
     }
 
+    protected function updateProfil(Request $request)
+    {
+        $validated = $request->validate([
+            'nama_desa' => 'nullable|string|max:255',
+            'kode_desa' => 'nullable|string|max:50',
+            'kecamatan' => 'nullable|string|max:255',
+            'kabupaten' => 'nullable|string|max:255',
+            'provinsi' => 'nullable|string|max:255',
+            'kode_pos' => 'nullable|string|max:10',
+            'alamat' => 'nullable|string',
+            'latitude' => 'nullable|string|max:50',
+            'longitude' => 'nullable|string|max:50',
+        ]);
+
+        $profil = ProfilDesa::first();
+        if ($profil) {
+            $profil->update([
+                'nama_desa' => $validated['nama_desa'] ?? $profil->nama_desa,
+                'kode_desa' => $validated['kode_desa'] ?? $profil->kode_desa,
+                'kecamatan' => $validated['kecamatan'] ?? $profil->kecamatan,
+                'kabupaten' => $validated['kabupaten'] ?? $profil->kabupaten,
+                'provinsi' => $validated['provinsi'] ?? $profil->provinsi,
+                'kode_pos' => $validated['kode_pos'] ?? $profil->kode_pos,
+                'alamat_kantor' => $validated['alamat'] ?? $profil->alamat_kantor,
+                'latitude' => $validated['latitude'] ?? $profil->latitude,
+                'longitude' => $validated['longitude'] ?? $profil->longitude,
+            ]);
+        } else {
+            ProfilDesa::create([
+                'nama_desa' => $validated['nama_desa'] ?? 'Tanalum',
+                'kode_desa' => $validated['kode_desa'] ?? null,
+                'kecamatan' => $validated['kecamatan'] ?? null,
+                'kabupaten' => $validated['kabupaten'] ?? null,
+                'provinsi' => $validated['provinsi'] ?? null,
+                'kode_pos' => $validated['kode_pos'] ?? null,
+                'alamat_kantor' => $validated['alamat'] ?? null,
+                'latitude' => $validated['latitude'] ?? null,
+                'longitude' => $validated['longitude'] ?? null,
+            ]);
+        }
+
+        return redirect()->route('admin.settings.index')
+            ->with('success', 'Profil desa berhasil diperbarui.');
+    }
+
+    protected function updateKontak(Request $request)
+    {
+        $validated = $request->validate([
+            'telepon' => 'nullable|string|max:50',
+            'whatsapp' => 'nullable|string|max:50',
+            'email' => 'nullable|email|max:255',
+            'facebook' => 'nullable|string|max:255',
+            'instagram' => 'nullable|string|max:255',
+            'youtube' => 'nullable|string|max:255',
+            'twitter' => 'nullable|string|max:255',
+        ]);
+
+        $profil = ProfilDesa::first();
+        if ($profil) {
+            $profil->update($validated);
+        }
+
+        return redirect()->route('admin.settings.index')
+            ->with('success', 'Kontak berhasil diperbarui.');
+    }
+
     public function maintenance()
     {
         $settings = Setting::all()->pluck('value', 'key')->toArray();
 
-        return view('admin.settings.maintenance', compact('settings'));
+        return view('admin.setting.maintenance', compact('settings'));
     }
 
     public function updateMaintenance(Request $request)

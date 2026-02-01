@@ -64,7 +64,7 @@
                         Pengaturan Umum
                     </h2>
                 </div>
-                <form action="{{ route('admin.setting.update') }}" method="POST" enctype="multipart/form-data"
+                <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data"
                     class="p-6">
                     @csrf
                     @method('PUT')
@@ -135,7 +135,7 @@
                         Profil Desa
                     </h2>
                 </div>
-                <form action="{{ route('admin.setting.update') }}" method="POST" class="p-6">
+                <form action="{{ route('admin.settings.update') }}" method="POST" class="p-6">
                     @csrf
                     @method('PUT')
                     <input type="hidden" name="section" value="profil">
@@ -143,7 +143,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Nama Desa</label>
-                            <input type="text" name="nama_desa" value="{{ $profilDesa->nama ?? 'Tanalum' }}"
+                            <input type="text" name="nama_desa" value="{{ $profilDesa->nama_desa ?? 'Tanalum' }}"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">
                         </div>
 
@@ -183,7 +183,7 @@
                     <div class="mt-6">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Alamat Lengkap</label>
                         <textarea name="alamat" rows="2"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">{{ $profilDesa->alamat ?? '' }}</textarea>
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">{{ $profilDesa->alamat_kantor ?? '' }}</textarea>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
@@ -217,7 +217,7 @@
                         Kontak & Media Sosial
                     </h2>
                 </div>
-                <form action="{{ route('admin.setting.update') }}" method="POST" class="p-6">
+                <form action="{{ route('admin.settings.update') }}" method="POST" class="p-6">
                     @csrf
                     @method('PUT')
                     <input type="hidden" name="section" value="kontak">

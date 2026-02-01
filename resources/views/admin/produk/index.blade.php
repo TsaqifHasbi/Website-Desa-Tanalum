@@ -77,7 +77,7 @@
                             <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                 Harga</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Penjual</th>
+                                Pemilik</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                 Status</th>
                             <th class="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -90,9 +90,9 @@
                                 <td class="px-6 py-4">
                                     <div class="flex items-center">
                                         <div class="w-16 h-16 rounded-lg overflow-hidden bg-gray-100 mr-4 flex-shrink-0">
-                                            @if ($produk->gambar)
-                                                <img src="{{ Storage::url($produk->gambar) }}" alt="{{ $produk->nama }}"
-                                                    class="w-full h-full object-cover">
+                                            @if ($produk->gambar_utama)
+                                                <img src="{{ Storage::url($produk->gambar_utama) }}"
+                                                    alt="{{ $produk->nama }}" class="w-full h-full object-cover">
                                             @else
                                                 <div class="w-full h-full flex items-center justify-center">
                                                     <i class="fas fa-box text-2xl text-gray-300"></i>
@@ -108,16 +108,16 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     <span
-                                        class="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full">{{ $produk->kategori ?? '-' }}</span>
+                                        class="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full">{{ $produk->kategori->nama ?? '-' }}</span>
                                 </td>
                                 <td class="px-6 py-4">
                                     <p class="font-semibold text-primary-600">Rp
                                         {{ number_format($produk->harga, 0, ',', '.') }}</p>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <p class="text-gray-800">{{ $produk->nama_penjual ?? '-' }}</p>
-                                    @if ($produk->whatsapp)
-                                        <p class="text-sm text-gray-500">{{ $produk->whatsapp }}</p>
+                                    <p class="text-gray-800">{{ $produk->pemilik ?? '-' }}</p>
+                                    @if ($produk->kontak_pemilik)
+                                        <p class="text-sm text-gray-500">{{ $produk->kontak_pemilik }}</p>
                                     @endif
                                 </td>
                                 <td class="px-6 py-4">

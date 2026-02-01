@@ -26,7 +26,7 @@ class MaintenanceMiddleware
             }
 
             // Allow access to login page
-            if ($request->routeIs('login') || $request->routeIs('login.post')) {
+            if ($request->routeIs('login') || $request->routeIs('admin.login') || $request->routeIs('admin.login.submit')) {
                 return $next($request);
             }
 

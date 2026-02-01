@@ -24,7 +24,7 @@ class DataDesaController extends Controller
         $statistiks = StatistikPenduduk::orderBy('tahun', 'desc')->paginate(10);
         $dusuns = Dusun::active()->get();
 
-        return view('admin.data.penduduk', compact('statistiks', 'dusuns'));
+        return view('admin.data-desa.penduduk', compact('statistiks', 'dusuns'));
     }
 
     public function pendudukStore(Request $request)
@@ -104,12 +104,23 @@ class DataDesaController extends Controller
             ->with('success', 'Data statistik penduduk berhasil dihapus.');
     }
 
+    public function pendudukImport(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv|max:2048',
+        ]);
+
+        // TODO: Implement Excel import logic
+        return redirect()->route('admin.data.penduduk')
+            ->with('success', 'Data penduduk berhasil diimport.');
+    }
+
     // Dusun
     public function dusun()
     {
         $dusuns = Dusun::paginate(10);
 
-        return view('admin.data.dusun', compact('dusuns'));
+        return view('admin.data-desa.dusun', compact('dusuns'));
     }
 
     public function dusunStore(Request $request)
@@ -165,9 +176,25 @@ class DataDesaController extends Controller
     // APBDes
     public function apbdes()
     {
+        $tahun = request('tahun', date('Y'));
+        $apbdes = Apbdes::where('tahun', $tahun)->first();
         $apbdess = Apbdes::with('bidang')->orderBy('tahun', 'desc')->paginate(10);
 
-        return view('admin.data.apbdes', compact('apbdess'));
+        // Prepare summary data
+        $summary = [
+            'pendapatan' => $apbdes->total_pendapatan ?? 0,
+            'belanja' => $apbdes->total_belanja ?? 0,
+            'pembiayaan' => $apbdes->total_pembiayaan ?? 0,
+        ];
+
+        // Prepare form data from stored JSON or empty arrays
+        $data = [
+            'pendapatan' => $apbdes && $apbdes->detail_pendapatan ? json_decode($apbdes->detail_pendapatan, true) : [],
+            'belanja' => $apbdes && $apbdes->detail_belanja ? json_decode($apbdes->detail_belanja, true) : [],
+            'pembiayaan' => $apbdes && $apbdes->detail_pembiayaan ? json_decode($apbdes->detail_pembiayaan, true) : [],
+        ];
+
+        return view('admin.data-desa.apbdes', compact('apbdess', 'apbdes', 'summary', 'data'));
     }
 
     public function apbdesStore(Request $request)
@@ -204,10 +231,10 @@ class DataDesaController extends Controller
             ->with('success', 'Data APBDes berhasil ditambahkan.');
     }
 
-    public function apbdesUpdate(Request $request, Apbdes $apbdes)
+    public function apbdesUpdate(Request $request)
     {
         $validated = $request->validate([
-            'tahun' => 'required|integer|min:2000|max:' . (date('Y') + 1) . '|unique:apbdes,tahun,' . $apbdes->id,
+            'tahun' => 'required|integer|min:2000|max:' . (date('Y') + 1),
             'pendapatan_asli_desa' => 'nullable|numeric|min:0',
             'pendapatan_transfer' => 'nullable|numeric|min:0',
             'pendapatan_lain' => 'nullable|numeric|min:0',
@@ -216,6 +243,9 @@ class DataDesaController extends Controller
             'belanja_modal' => 'nullable|numeric|min:0',
             'pembiayaan_penerimaan' => 'nullable|numeric|min:0',
             'pembiayaan_pengeluaran' => 'nullable|numeric|min:0',
+            'pendapatan' => 'nullable|array',
+            'belanja' => 'nullable|array',
+            'pembiayaan' => 'nullable|array',
         ]);
 
         // Calculate totals
@@ -232,9 +262,25 @@ class DataDesaController extends Controller
         $validated['total_pembiayaan'] = ($validated['pembiayaan_penerimaan'] ?? 0) -
             ($validated['pembiayaan_pengeluaran'] ?? 0);
 
-        $apbdes->update($validated);
+        // Store detail data as JSON if provided
+        if (isset($validated['pendapatan'])) {
+            $validated['detail_pendapatan'] = json_encode($validated['pendapatan']);
+        }
+        if (isset($validated['belanja'])) {
+            $validated['detail_belanja'] = json_encode($validated['belanja']);
+        }
+        if (isset($validated['pembiayaan'])) {
+            $validated['detail_pembiayaan'] = json_encode($validated['pembiayaan']);
+        }
 
-        return redirect()->route('admin.data.apbdes')
+        unset($validated['pendapatan'], $validated['belanja'], $validated['pembiayaan']);
+
+        Apbdes::updateOrCreate(
+            ['tahun' => $validated['tahun']],
+            $validated
+        );
+
+        return redirect()->route('admin.data.apbdes', ['tahun' => $validated['tahun']])
             ->with('success', 'Data APBDes berhasil diperbarui.');
     }
 
@@ -254,7 +300,7 @@ class DataDesaController extends Controller
             ->where('tahun', date('Y'))
             ->get();
 
-        return view('admin.data.bansos', compact('jenisBansos', 'statistiks'));
+        return view('admin.data-desa.bansos', compact('jenisBansos', 'statistiks'));
     }
 
     public function bansosJenisStore(Request $request)
@@ -274,6 +320,17 @@ class DataDesaController extends Controller
 
         return redirect()->route('admin.data.bansos')
             ->with('success', 'Jenis bansos berhasil ditambahkan.');
+    }
+
+    public function bansosImport(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv|max:2048',
+        ]);
+
+        // TODO: Implement Excel import logic for bansos data
+        return redirect()->route('admin.data.bansos')
+            ->with('success', 'Data bansos berhasil diimport.');
     }
 
     public function bansosPenerima(Request $request)
@@ -296,7 +353,7 @@ class DataDesaController extends Controller
         $penerimas = $query->latest()->paginate(20);
         $jenisBansos = JenisBansos::active()->get();
 
-        return view('admin.data.bansos-penerima', compact('penerimas', 'jenisBansos'));
+        return view('admin.data-desa.bansos-penerima', compact('penerimas', 'jenisBansos'));
     }
 
     public function bansosPenerimaStore(Request $request)
@@ -346,9 +403,20 @@ class DataDesaController extends Controller
     // IDM
     public function idm()
     {
+        $tahun = request('tahun', date('Y'));
+        $idmData = DataIdm::where('tahun', $tahun)->first();
         $idms = DataIdm::orderBy('tahun', 'desc')->paginate(10);
 
-        return view('admin.data.idm', compact('idms'));
+        // Prepare data for the view
+        $idm = [
+            'skor' => $idmData->skor_idm ?? 0,
+            'status' => $idmData ? ucwords(str_replace('_', ' ', $idmData->status_idm)) : 'Belum Diisi',
+            'iks' => $idmData->iks ?? 0,
+            'ike' => $idmData->ike ?? 0,
+            'ikl' => $idmData->ikl ?? 0,
+        ];
+
+        return view('admin.data-desa.idm', compact('idms', 'idm', 'idmData'));
     }
 
     public function idmStore(Request $request)
@@ -371,23 +439,33 @@ class DataDesaController extends Controller
             ->with('success', 'Data IDM berhasil ditambahkan.');
     }
 
-    public function idmUpdate(Request $request, DataIdm $idm)
+    public function idmUpdate(Request $request)
     {
         $validated = $request->validate([
-            'tahun' => 'required|integer|min:2000|max:' . (date('Y') + 1) . '|unique:data_idm,tahun,' . $idm->id,
-            'skor_idm' => 'required|numeric|min:0|max:1',
-            'status_idm' => 'required|in:sangat_tertinggal,tertinggal,berkembang,maju,mandiri',
+            'tahun' => 'required|integer|min:2000|max:' . (date('Y') + 1),
+            'skor_idm' => 'nullable|numeric|min:0|max:1',
+            'status_idm' => 'nullable|in:sangat_tertinggal,tertinggal,berkembang,maju,mandiri',
             'iks' => 'nullable|numeric|min:0|max:1',
             'ike' => 'nullable|numeric|min:0|max:1',
             'ikl' => 'nullable|numeric|min:0|max:1',
             'target_status' => 'nullable|string|max:50',
             'skor_minimal' => 'nullable|numeric|min:0|max:1',
             'penambahan_skor' => 'nullable|numeric',
+            'indikator' => 'nullable|array',
         ]);
 
-        $idm->update($validated);
+        // Store indikator data as JSON if provided
+        if (isset($validated['indikator'])) {
+            $validated['detail_indikator'] = json_encode($validated['indikator']);
+            unset($validated['indikator']);
+        }
 
-        return redirect()->route('admin.data.idm')
+        DataIdm::updateOrCreate(
+            ['tahun' => $validated['tahun']],
+            $validated
+        );
+
+        return redirect()->route('admin.data.idm', ['tahun' => $validated['tahun']])
             ->with('success', 'Data IDM berhasil diperbarui.');
     }
 
@@ -402,10 +480,12 @@ class DataDesaController extends Controller
     // SDGs
     public function sdgs()
     {
+        $tahun = request('tahun', date('Y'));
+        $sdgsData = DataSdgs::where('tahun', $tahun)->first();
         $sdgss = DataSdgs::orderBy('tahun', 'desc')->paginate(10);
         $sdgsLabels = DataSdgs::getSdgsLabels();
 
-        return view('admin.data.sdgs', compact('sdgss', 'sdgsLabels'));
+        return view('admin.data-desa.sdgs', compact('sdgss', 'sdgsLabels', 'sdgsData'));
     }
 
     public function sdgsStore(Request $request)
@@ -428,10 +508,10 @@ class DataDesaController extends Controller
             ->with('success', 'Data SDGs berhasil ditambahkan.');
     }
 
-    public function sdgsUpdate(Request $request, DataSdgs $sdgs)
+    public function sdgsUpdate(Request $request)
     {
         $rules = [
-            'tahun' => 'required|integer|min:2000|max:' . (date('Y') + 1) . '|unique:data_sdgs,tahun,' . $sdgs->id,
+            'tahun' => 'required|integer|min:2000|max:' . (date('Y') + 1),
             'skor_total' => 'nullable|numeric|min:0|max:100',
         ];
 
@@ -441,9 +521,12 @@ class DataDesaController extends Controller
 
         $validated = $request->validate($rules);
 
-        $sdgs->update($validated);
+        DataSdgs::updateOrCreate(
+            ['tahun' => $validated['tahun']],
+            $validated
+        );
 
-        return redirect()->route('admin.data.sdgs')
+        return redirect()->route('admin.data.sdgs', ['tahun' => $validated['tahun']])
             ->with('success', 'Data SDGs berhasil diperbarui.');
     }
 
@@ -460,7 +543,7 @@ class DataDesaController extends Controller
     {
         $stuntings = DataStunting::orderBy('tahun', 'desc')->paginate(10);
 
-        return view('admin.data.stunting', compact('stuntings'));
+        return view('admin.data-desa.stunting', compact('stuntings'));
     }
 
     public function stuntingStore(Request $request)

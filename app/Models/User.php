@@ -90,4 +90,17 @@ class User extends Authenticatable
     {
         return in_array($this->role, ['super_admin', 'admin_desa']);
     }
+
+    /**
+     * Get the role label for display.
+     */
+    public function getRoleLabel(): string
+    {
+        return match ($this->role) {
+            'super_admin' => 'Super Admin',
+            'admin_desa' => 'Admin Desa',
+            'operator' => 'Operator',
+            default => ucfirst($this->role ?? 'User'),
+        };
+    }
 }
