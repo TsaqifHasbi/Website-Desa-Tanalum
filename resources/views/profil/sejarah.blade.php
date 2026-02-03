@@ -26,38 +26,210 @@
         </div>
     </div>
 
-    <!-- Content -->
-    <section class="py-16">
+    <!-- Tab Navigation -->
+    <div class="sticky top-0 z-40 bg-white border-b border-gray-200 shadow-sm" x-data="{ activeSection: 'cerita-rakyat' }">
+        <div class="container mx-auto px-4">
+            <nav class="flex gap-4 overflow-x-auto">
+                <a href="#cerita-rakyat" 
+                    @click.prevent="activeSection = 'cerita-rakyat'; document.getElementById('cerita-rakyat').scrollIntoView({behavior: 'smooth', block: 'start'})"
+                    :class="activeSection === 'cerita-rakyat' ? 'border-primary-600 text-primary-600' : 'border-transparent text-gray-600 hover:text-primary-600'"
+                    class="py-4 px-2 text-sm font-medium border-b-2 whitespace-nowrap transition">
+                    <i class="fas fa-book-reader mr-2"></i>
+                    Cerita Rakyat
+                </a>
+                <a href="#riwayat-kepemerintahan"
+                    @click.prevent="activeSection = 'riwayat-kepemerintahan'; document.getElementById('riwayat-kepemerintahan').scrollIntoView({behavior: 'smooth', block: 'start'})"
+                    :class="activeSection === 'riwayat-kepemerintahan' ? 'border-primary-600 text-primary-600' : 'border-transparent text-gray-600 hover:text-primary-600'"
+                    class="py-4 px-2 text-sm font-medium border-b-2 whitespace-nowrap transition">
+                    <i class="fas fa-landmark mr-2"></i>
+                    Riwayat Kepemerintahan
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Section 1: Cerita Rakyat -->
+    <section id="cerita-rakyat" class="py-16 bg-gray-50">
         <div class="container mx-auto px-4">
             <div class="max-w-4xl mx-auto">
-                <div class="bg-white rounded-2xl shadow-sm p-8 md:p-12" data-aos="fade-up">
-                    @if ($profil->foto_kantor)
-                        <img src="{{ Storage::url($profil->foto_kantor) }}" alt="Kantor Desa"
-                            class="w-full rounded-xl mb-8">
-                    @endif
-
-                    <div class="prose prose-lg max-w-none text-gray-600">
-                        @if ($profil->sejarah)
-                            {!! $profil->sejarah !!}
-                        @else
-                            <p>Desa Tanalum merupakan salah satu desa yang terletak di Kecamatan Marang Kayu, Kabupaten
-                                Kutai Kartanegara, Provinsi Kalimantan Timur.</p>
-
-                            <p>Nama "Tanalum" berasal dari bahasa lokal yang memiliki makna mendalam bagi masyarakat
-                                setempat. Desa ini memiliki sejarah panjang yang tak terpisahkan dari perkembangan wilayah
-                                Kutai Kartanegara.</p>
-
-                            <p>Sejak zaman dahulu, masyarakat desa hidup dari hasil pertanian, perkebunan, dan memanfaatkan
-                                sumber daya alam yang melimpah di wilayah ini. Gotong royong dan kekeluargaan menjadi
-                                nilai-nilai utama yang terus dijaga oleh warga desa hingga saat ini.</p>
-                        @endif
-                    </div>
+                <!-- Section Header -->
+                <div class="text-center mb-12" data-aos="fade-up">
+                    <span class="inline-block px-4 py-1 bg-primary-100 text-primary-600 text-sm font-medium rounded-full mb-4">
+                        Bagian 1
+                    </span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Cerita Rakyat</h2>
+                    <p class="text-lg text-gray-600">Cikal Bakal Desa Tanalum</p>
                 </div>
 
-                <!-- Navigation -->
-                <div class="flex flex-col sm:flex-row justify-between gap-4 mt-8">
+                <!-- Cerita Rakyat Content -->
+                @forelse($ceritaRakyat ?? [] as $index => $cerita)
+                    <div class="bg-white rounded-2xl shadow-sm overflow-hidden mb-8" data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
+                        @if($cerita->gambar_utama)
+                            <div class="relative h-64 md:h-80 overflow-hidden">
+                                <img src="{{ Storage::url($cerita->gambar_utama) }}" alt="{{ $cerita->judul }}"
+                                    class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
+                                    <h3 class="text-2xl md:text-3xl font-bold">{{ $cerita->judul }}</h3>
+                                </div>
+                            </div>
+                        @else
+                            <div class="p-6 md:p-8 bg-gradient-to-r from-primary-600 to-primary-700 text-white">
+                                <h3 class="text-2xl md:text-3xl font-bold">{{ $cerita->judul }}</h3>
+                            </div>
+                        @endif
+
+                        <div class="p-6 md:p-8">
+                            <div class="prose prose-lg max-w-none text-gray-600">
+                                {!! $cerita->konten !!}
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="bg-white rounded-2xl shadow-sm p-8 md:p-12" data-aos="fade-up">
+                        @if ($profil->foto_kantor)
+                            <img src="{{ Storage::url($profil->foto_kantor) }}" alt="Kantor Desa"
+                                class="w-full rounded-xl mb-8">
+                        @endif
+
+                        <div class="prose prose-lg max-w-none text-gray-600">
+                            @if ($profil->sejarah)
+                                {!! $profil->sejarah !!}
+                            @else
+                                <h3 class="text-2xl font-bold text-gray-900 mb-6">Cikal Bakal Desa Tanalum</h3>
+                                
+                                <p>Desa Tanalum merupakan salah satu desa yang terletak di Kecamatan Marang Kayu, Kabupaten
+                                    Kutai Kartanegara, Provinsi Kalimantan Timur.</p>
+
+                                <p>Nama "Tanalum" berasal dari bahasa lokal yang memiliki makna mendalam bagi masyarakat
+                                    setempat. Desa ini memiliki sejarah panjang yang tak terpisahkan dari perkembangan wilayah
+                                    Kutai Kartanegara.</p>
+
+                                <p>Sejak zaman dahulu, masyarakat desa hidup dari hasil pertanian, perkebunan, dan memanfaatkan
+                                    sumber daya alam yang melimpah di wilayah ini. Gotong royong dan kekeluargaan menjadi
+                                    nilai-nilai utama yang terus dijaga oleh warga desa hingga saat ini.</p>
+                            @endif
+                        </div>
+                    </div>
+                @endforelse
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Riwayat Kepemerintahan -->
+    <section id="riwayat-kepemerintahan" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-6xl mx-auto">
+                <!-- Section Header -->
+                <div class="text-center mb-12" data-aos="fade-up">
+                    <span class="inline-block px-4 py-1 bg-primary-100 text-primary-600 text-sm font-medium rounded-full mb-4">
+                        Bagian 2
+                    </span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Tanalum dalam Riwayat Kepemerintahan</h2>
+                    <p class="text-lg text-gray-600">Daftar para pemimpin desa dari masa ke masa</p>
+                </div>
+
+                <!-- Kepala Desa Timeline -->
+                @if(count($kepalaDesa ?? []) > 0)
+                    <div class="relative">
+                        <!-- Timeline Line -->
+                        <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-1 bg-gradient-to-b from-primary-500 to-primary-300 h-full rounded-full"></div>
+
+                        <!-- Kepala Desa Items -->
+                        @foreach($kepalaDesa as $index => $kepala)
+                            <div class="relative flex flex-col md:flex-row items-center mb-12 last:mb-0" 
+                                data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
+                                
+                                <!-- Left Side (Even: Content, Odd: Image on Desktop) -->
+                                <div class="w-full md:w-5/12 {{ $index % 2 == 0 ? 'md:text-right md:pr-8' : 'md:order-2 md:text-left md:pl-8' }}">
+                                    @if($index % 2 == 0)
+                                        <!-- Content on Left -->
+                                        <div class="bg-gray-50 rounded-2xl p-6 hover:shadow-lg transition-shadow duration-300">
+                                            <h3 class="text-xl font-bold text-gray-900 mb-2">{{ $kepala->nama }}</h3>
+                                            <div class="inline-flex items-center px-3 py-1 bg-primary-100 text-primary-700 text-sm font-semibold rounded-full mb-3">
+                                                <i class="fas fa-calendar-alt mr-2"></i>
+                                                {{ $kepala->periode }}
+                                            </div>
+                                            @if($kepala->keterangan)
+                                                <p class="text-gray-600 text-sm">{{ $kepala->keterangan }}</p>
+                                            @endif
+                                        </div>
+                                    @else
+                                        <!-- Image on Left (for Mobile and Desktop) -->
+                                        <div class="flex {{ $index % 2 == 0 ? 'justify-end' : 'justify-start' }}">
+                                            @if($kepala->foto)
+                                                <div class="w-48 h-56 rounded-2xl overflow-hidden shadow-lg ring-4 ring-white">
+                                                    <img src="{{ Storage::url($kepala->foto) }}" alt="{{ $kepala->nama }}"
+                                                        class="w-full h-full object-cover">
+                                                </div>
+                                            @else
+                                                <div class="w-48 h-56 rounded-2xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-lg ring-4 ring-white">
+                                                    <i class="fas fa-user text-5xl text-white/80"></i>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    @endif
+                                </div>
+
+                                <!-- Center Timeline Dot -->
+                                <div class="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-primary-600 rounded-full border-4 border-white shadow-lg z-10 items-center justify-center">
+                                    <div class="w-2 h-2 bg-white rounded-full"></div>
+                                </div>
+
+                                <!-- Right Side (Even: Image, Odd: Content on Desktop) -->
+                                <div class="w-full md:w-5/12 {{ $index % 2 == 0 ? 'md:order-2 md:text-left md:pl-8' : 'md:text-right md:pr-8' }} mt-4 md:mt-0">
+                                    @if($index % 2 == 0)
+                                        <!-- Image on Right -->
+                                        <div class="flex {{ $index % 2 == 0 ? 'justify-start' : 'justify-end' }}">
+                                            @if($kepala->foto)
+                                                <div class="w-48 h-56 rounded-2xl overflow-hidden shadow-lg ring-4 ring-white">
+                                                    <img src="{{ Storage::url($kepala->foto) }}" alt="{{ $kepala->nama }}"
+                                                        class="w-full h-full object-cover">
+                                                </div>
+                                            @else
+                                                <div class="w-48 h-56 rounded-2xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-lg ring-4 ring-white">
+                                                    <i class="fas fa-user text-5xl text-white/80"></i>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    @else
+                                        <!-- Content on Right -->
+                                        <div class="bg-gray-50 rounded-2xl p-6 hover:shadow-lg transition-shadow duration-300">
+                                            <h3 class="text-xl font-bold text-gray-900 mb-2">{{ $kepala->nama }}</h3>
+                                            <div class="inline-flex items-center px-3 py-1 bg-primary-100 text-primary-700 text-sm font-semibold rounded-full mb-3">
+                                                <i class="fas fa-calendar-alt mr-2"></i>
+                                                {{ $kepala->periode }}
+                                            </div>
+                                            @if($kepala->keterangan)
+                                                <p class="text-gray-600 text-sm">{{ $kepala->keterangan }}</p>
+                                            @endif
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <!-- Empty State / Placeholder -->
+                    <div class="text-center py-12" data-aos="fade-up">
+                        <div class="w-24 h-24 mx-auto bg-gray-100 rounded-full flex items-center justify-center mb-6">
+                            <i class="fas fa-landmark text-4xl text-gray-400"></i>
+                        </div>
+                        <p class="text-gray-500 text-lg">Data riwayat kepemerintahan belum tersedia.</p>
+                        <p class="text-gray-400 mt-2">Informasi akan ditambahkan segera.</p>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </section>
+
+    <!-- Navigation -->
+    <section class="py-8 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto">
+                <div class="flex flex-col sm:flex-row justify-between gap-4">
                     <a href="{{ route('profil.index') }}"
-                        class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg transition">
+                        class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-gray-700 hover:bg-gray-100 rounded-lg transition">
                         <i class="fas fa-arrow-left mr-2"></i>
                         Kembali ke Profil
                     </a>
@@ -71,3 +243,62 @@
         </div>
     </section>
 @endsection
+
+@push('styles')
+<style>
+    /* Prose styles for article content */
+    .prose img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 12px;
+        margin: 1.5rem 0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    .prose p {
+        margin-bottom: 1.25rem;
+    }
+
+    .prose h2, .prose h3, .prose h4 {
+        color: #1f2937;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Fix for list styling - override Tailwind reset */
+    .prose ul {
+        list-style-type: disc !important;
+        padding-left: 2rem !important;
+        margin: 1rem 0 !important;
+    }
+
+    .prose ol {
+        list-style-type: decimal !important;
+        padding-left: 2rem !important;
+        margin: 1rem 0 !important;
+    }
+
+    .prose ul li,
+    .prose ol li {
+        display: list-item !important;
+        margin: 0.5rem 0 !important;
+    }
+
+    .prose ul ul {
+        list-style-type: circle !important;
+        margin: 0.5rem 0 !important;
+    }
+
+    .prose ol ol {
+        list-style-type: lower-alpha !important;
+        margin: 0.5rem 0 !important;
+    }
+
+    /* Mobile Timeline adjust */
+    @media (max-width: 768px) {
+        #riwayat-kepemerintahan .relative > div {
+            flex-direction: column;
+        }
+    }
+</style>
+@endpush

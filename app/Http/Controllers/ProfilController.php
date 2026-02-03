@@ -6,6 +6,8 @@ use App\Models\ProfilDesa;
 use App\Models\AparaturDesa;
 use App\Models\StatistikPenduduk;
 use App\Models\Dusun;
+use App\Models\CeritaRakyat;
+use App\Models\KepalaDesa;
 use Illuminate\Http\Request;
 
 class ProfilController extends Controller
@@ -32,8 +34,10 @@ class ProfilController extends Controller
     public function sejarah()
     {
         $profil = ProfilDesa::first();
+        $ceritaRakyat = CeritaRakyat::active()->ordered()->get();
+        $kepalaDesa = KepalaDesa::active()->ordered()->get();
 
-        return view('profil.sejarah', compact('profil'));
+        return view('profil.sejarah', compact('profil', 'ceritaRakyat', 'kepalaDesa'));
     }
 
     public function strukturOrganisasi()

@@ -69,6 +69,12 @@
             Aparatur Desa
         </a>
 
+        <a href="<?php echo e(route('admin.sejarah.index')); ?>"
+            class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg <?php echo e(request()->routeIs('admin.sejarah.*') ? 'bg-primary-50 text-primary-700' : 'text-gray-700 hover:bg-gray-50'); ?>">
+            <i class="fas fa-book-reader w-5 mr-3"></i>
+            Sejarah Desa
+        </a>
+
         <!-- Data Desa -->
         <div x-data="{ open: <?php echo e(request()->routeIs('admin.data.*') ? 'true' : 'false'); ?> }">
             <button @click="open = !open"

@@ -182,7 +182,7 @@
                         @endif
                     </div>
                     <div class="text-center lg:text-left order-2" data-aos="fade-left">
-                        <span class="text-primary-200 font-semibold">Sambutan Kepala Desa</span>
+                        <span class="text-primary-200 font-semibold">Sambutan Kepala Desa Tanalum</span>
                         <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-6">{{ $kepalaDesa->nama }}</h2>
                         <p class="text-primary-100 leading-relaxed mb-6">
                             "Selamat datang di website resmi {{ $profil->nama_desa ?? 'Desa Tanalum' }}. Website ini hadir

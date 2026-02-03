@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\GaleriController as AdminGaleriController;
 use App\Http\Controllers\Admin\PpidController as AdminPpidController;
 use App\Http\Controllers\Admin\DataDesaController;
 use App\Http\Controllers\Admin\ProfilDesaController;
+use App\Http\Controllers\Admin\SejarahDesaController;
 use App\Http\Controllers\Admin\SettingController;
 use Illuminate\Support\Facades\Route;
 
@@ -158,6 +159,26 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     // Profil Desa
     Route::get('/profil-desa', [ProfilDesaController::class, 'index'])->name('profil');
     Route::put('/profil-desa', [ProfilDesaController::class, 'update'])->name('profil.update');
+
+    // Sejarah Desa
+    Route::prefix('sejarah')->name('sejarah.')->group(function () {
+        Route::get('/', [SejarahDesaController::class, 'index'])->name('index');
+        Route::post('/upload-image', [SejarahDesaController::class, 'uploadImage'])->name('upload-image');
+        
+        // Cerita Rakyat
+        Route::get('/cerita/create', [SejarahDesaController::class, 'ceritaCreate'])->name('cerita.create');
+        Route::post('/cerita', [SejarahDesaController::class, 'ceritaStore'])->name('cerita.store');
+        Route::get('/cerita/{cerita}/edit', [SejarahDesaController::class, 'ceritaEdit'])->name('cerita.edit');
+        Route::put('/cerita/{cerita}', [SejarahDesaController::class, 'ceritaUpdate'])->name('cerita.update');
+        Route::delete('/cerita/{cerita}', [SejarahDesaController::class, 'ceritaDestroy'])->name('cerita.destroy');
+        
+        // Kepala Desa
+        Route::get('/kepala/create', [SejarahDesaController::class, 'kepalaCreate'])->name('kepala.create');
+        Route::post('/kepala', [SejarahDesaController::class, 'kepalaStore'])->name('kepala.store');
+        Route::get('/kepala/{kepala}/edit', [SejarahDesaController::class, 'kepalaEdit'])->name('kepala.edit');
+        Route::put('/kepala/{kepala}', [SejarahDesaController::class, 'kepalaUpdate'])->name('kepala.update');
+        Route::delete('/kepala/{kepala}', [SejarahDesaController::class, 'kepalaDestroy'])->name('kepala.destroy');
+    });
 
     // Aparatur Desa
     Route::resource('aparatur', AdminAparaturController::class);
