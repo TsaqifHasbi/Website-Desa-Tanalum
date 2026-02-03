@@ -75,15 +75,25 @@
                                     alt="{{ $galeri->judul }}" class="w-full h-full object-cover">
                             @else
                                 <div class="w-full h-full flex items-center justify-center bg-gray-800">
-                                    <i class="fas fa-play-circle text-5xl text-white/80"></i>
-                                </div>
-                                @if ($galeri->thumbnail)
-                                    <img src="{{ Storage::url($galeri->thumbnail) }}" alt="{{ $galeri->judul }}"
-                                        class="absolute inset-0 w-full h-full object-cover">
+                                    @if($galeri->is_youtube)
+                                        <img src="https://img.youtube.com/vi/{{ $galeri->youtube_video_id }}/hqdefault.jpg" 
+                                             alt="{{ $galeri->judul }}" class="w-full h-full object-cover opacity-60">
+                                    @elseif($galeri->thumbnail)
+                                        <img src="{{ Storage::url($galeri->thumbnail) }}" 
+                                             alt="{{ $galeri->judul }}" class="w-full h-full object-cover">
+                                    @elseif($galeri->file_path)
+                                        <video class="w-full h-full object-cover opacity-60" preload="metadata">
+                                            <source src="{{ Storage::url($galeri->file_path) }}#t=0.1" type="video/mp4">
+                                        </video>
+                                    @endif
+                                    
+                                    <!-- Play Icon Overlay -->
                                     <div class="absolute inset-0 flex items-center justify-center">
-                                        <i class="fas fa-play-circle text-5xl text-white drop-shadow-lg"></i>
+                                        <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                                            <i class="fas fa-play text-xl text-white ml-1"></i>
+                                        </div>
                                     </div>
-                                @endif
+                                </div>
                             @endif
 
                             <!-- Overlay -->

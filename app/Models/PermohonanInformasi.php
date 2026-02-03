@@ -26,6 +26,8 @@ class PermohonanInformasi extends Model
         'cara_mendapat_salinan',
         'status',
         'catatan_admin',
+        'tanggapan',
+        'dokumen_pendukung',
         'file_balasan',
         'tanggal_selesai',
     ];

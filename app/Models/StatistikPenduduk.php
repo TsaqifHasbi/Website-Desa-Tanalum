@@ -146,10 +146,19 @@ class StatistikPenduduk extends Model
             return [];
         }
 
+        // Define the correct chronological order for age groups based on database keys
+        $orderedKeys = [
+            '0-4', '5-9', '10-14', '15-19', '20-24', '25-29', '30-34', 
+            '35-39', '40-44', '45-49', '50-54', '55-59', '60-64', '65+'
+        ];
+
         $result = [];
-        foreach ($this->kelompok_umur as $key => $value) {
-            $total = ($value['laki_laki'] ?? 0) + ($value['perempuan'] ?? 0);
-            $result[$key . ' Tahun'] = $total;
+        foreach ($orderedKeys as $key) {
+            if (isset($this->kelompok_umur[$key])) {
+                $value = $this->kelompok_umur[$key];
+                $total = ($value['laki_laki'] ?? 0) + ($value['perempuan'] ?? 0);
+                $result[$key . ' Tahun'] = $total;
+            }
         }
 
         return $result;
@@ -425,5 +434,55 @@ class StatistikPenduduk extends Model
     public function getKonghucuAttribute()
     {
         return $this->agama['konghucu'] ?? 0;
+    }
+    /**
+     * Helper to sum age groups.
+     */
+    private function sumAgeGroups(array $keys): int
+    {
+        if (!$this->kelompok_umur) return 0;
+        
+        $total = 0;
+        foreach ($keys as $key) {
+            if (isset($this->kelompok_umur[$key])) {
+                $total += ($this->kelompok_umur[$key]['laki_laki'] ?? 0) + ($this->kelompok_umur[$key]['perempuan'] ?? 0);
+            }
+        }
+        return $total;
+    }
+
+    public function getUsia05Attribute()
+    {
+        return $this->sumAgeGroups(['0-4']);
+    }
+
+    public function getUsia612Attribute()
+    {
+        return $this->sumAgeGroups(['5-9']);
+    }
+
+    public function getUsia1317Attribute()
+    {
+        return $this->sumAgeGroups(['10-14']);
+    }
+
+    public function getUsia1825Attribute()
+    {
+        return $this->sumAgeGroups(['15-19', '20-24']);
+    }
+
+    public function getUsia2640Attribute()
+    {
+        return $this->sumAgeGroups(['25-29', '30-34', '35-39']);
+    }
+
+    public function getUsia4160Attribute()
+    {
+        return $this->sumAgeGroups(['40-44', '45-49', '50-54', '55-59']);
+    }
+
+    public function getUsia60PlusAttribute()
+    {
+        return $this->sumAgeGroups(['60-64', '65-69', '70-74', '75+']);
     }
 }

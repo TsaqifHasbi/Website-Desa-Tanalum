@@ -82,13 +82,29 @@
                             
                             <!-- Thumbnail with Fallback -->
                             <div class="w-full h-full bg-gray-200 flex items-center justify-center overflow-hidden">
-                                <img src="{{ $galeri->thumbnail_url }}" alt="{{ $galeri->judul }}"
-                                    class="w-full h-full object-cover group-hover:scale-110 transition duration-300"
-                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <div class="hidden flex-col items-center justify-center text-gray-400 p-4">
-                                    <i class="fas {{ $galeri->tipe === 'foto' ? 'fa-image' : 'fa-play-circle' }} text-4xl mb-2"></i>
-                                    <span class="text-[10px] text-center uppercase font-bold">{{ $galeri->tipe === 'foto' ? 'Foto' : 'Video' }}</span>
-                                </div>
+                                @if($galeri->tipe === 'video' && !$galeri->thumbnail && !$galeri->is_youtube)
+                                    <video class="w-full h-full object-cover group-hover:scale-110 transition duration-300" 
+                                           preload="metadata" 
+                                           muted 
+                                           playsinline
+                                           onmouseover="this.play()" 
+                                           onmouseout="this.pause(); this.currentTime=0.1;">
+                                        <source src="{{ $galeri->file_url }}#t=0.1" type="video/mp4">
+                                    </video>
+                                @else
+                                    <img src="{{ $galeri->thumbnail_url }}" alt="{{ $galeri->judul }}"
+                                        class="w-full h-full object-cover group-hover:scale-110 transition duration-300"
+                                        @if($galeri->is_youtube)
+                                            onerror="if(!this.src.includes('0.jpg')){ this.src='https://img.youtube.com/vi/{{ $galeri->youtube_video_id }}/0.jpg' } else { this.style.display='none'; this.nextElementSibling.style.display='flex'; }"
+                                        @else
+                                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                                        @endif
+                                    >
+                                    <div class="hidden flex-col items-center justify-center text-gray-400 p-4">
+                                        <i class="fas {{ $galeri->tipe === 'foto' ? 'fa-image' : 'fa-play-circle' }} text-4xl mb-2"></i>
+                                        <span class="text-[10px] text-center uppercase font-bold">{{ $galeri->tipe === 'foto' ? 'Foto' : 'Video' }}</span>
+                                    </div>
+                                @endif
                             </div>
                             
                             <!-- Overlay -->

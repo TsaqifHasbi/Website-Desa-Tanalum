@@ -426,12 +426,32 @@
 
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     @foreach ($galeris as $index => $galeri)
-                        <div class="group relative aspect-square overflow-hidden rounded-xl" data-aos="fade-up"
+                        <div class="group relative aspect-square overflow-hidden rounded-xl bg-gray-100" data-aos="fade-up"
                             data-aos-delay="{{ $index * 50 }}">
-                            @if ($galeri->file_path)
-                                <img src="{{ Storage::url($galeri->file_path) }}" alt="{{ $galeri->judul }}"
-                                    class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
+                            
+                            @if($galeri->tipe === 'video' && !$galeri->thumbnail && !$galeri->is_youtube)
+                                <video class="w-full h-full object-cover group-hover:scale-110 transition duration-300" 
+                                       preload="metadata" muted playsinline>
+                                    <source src="{{ Storage::url($galeri->file_path) }}#t=0.1" type="video/mp4">
+                                </video>
+                            @else
+                                <img src="{{ $galeri->thumbnail_url }}" alt="{{ $galeri->judul }}"
+                                    class="w-full h-full object-cover group-hover:scale-110 transition duration-300"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div class="hidden flex-col items-center justify-center text-gray-400 p-4 w-full h-full">
+                                    <i class="fas {{ $galeri->tipe === 'foto' ? 'fa-image' : 'fa-play-circle' }} text-4xl mb-2"></i>
+                                </div>
                             @endif
+
+                            <!-- Play Icon for Videos -->
+                            @if($galeri->tipe === 'video')
+                                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                    <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                                        <i class="fas fa-play text-white text-xl ml-1"></i>
+                                    </div>
+                                </div>
+                            @endif
+
                             <div
                                 class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
                                 <span class="text-white font-medium text-center px-4">{{ $galeri->judul }}</span>

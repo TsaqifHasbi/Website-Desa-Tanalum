@@ -1,0 +1,273 @@
+
+
+<?php $__env->startSection('title', 'Data SDGs Desa'); ?>
+
+<?php $__env->startSection('content'); ?>
+    <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-800">Data SDGs Desa</h1>
+            <p class="text-gray-600">Kelola data Sustainable Development Goals (SDGs) Desa</p>
+        </div>
+        <div>
+            <button type="button" onclick="openModal()"
+                class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                <i class="fas fa-plus mr-2"></i>Input Data SDGs
+            </button>
+        </div>
+    </div>
+
+    <!-- Current SDGs Score -->
+    <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl shadow-sm p-8 text-white mb-8">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div>
+                <h2 class="text-2xl font-bold mb-2">Skor SDGs Desa <?php echo e($latestYear ?? date('Y')); ?></h2>
+                <p class="text-green-100">Indeks capaian Tujuan Pembangunan Berkelanjutan Desa</p>
+            </div>
+            <div class="text-center">
+                <div class="text-5xl font-bold"><?php echo e(number_format($currentScore ?? 0, 2)); ?></div>
+                <div class="text-green-100 mt-1">Skor Total</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SDGs Goals Grid -->
+    <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
+        <h3 class="text-lg font-semibold text-gray-800 mb-6">18 Tujuan SDGs Desa</h3>
+
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <?php
+                $sdgsGoals = [
+                    1 => ['name' => 'Desa Tanpa Kemiskinan', 'color' => 'red'],
+                    2 => ['name' => 'Desa Tanpa Kelaparan', 'color' => 'yellow'],
+                    3 => ['name' => 'Desa Sehat dan Sejahtera', 'color' => 'green'],
+                    4 => ['name' => 'Pendidikan Desa Berkualitas', 'color' => 'red'],
+                    5 => ['name' => 'Keterlibatan Perempuan Desa', 'color' => 'orange'],
+                    6 => ['name' => 'Desa Layak Air Bersih', 'color' => 'blue'],
+                    7 => ['name' => 'Desa Berenergi Bersih', 'color' => 'yellow'],
+                    8 => ['name' => 'Pertumbuhan Ekonomi Desa', 'color' => 'red'],
+                    9 => ['name' => 'Infrastruktur dan Inovasi', 'color' => 'orange'],
+                    10 => ['name' => 'Desa Tanpa Kesenjangan', 'color' => 'pink'],
+                    11 => ['name' => 'Kawasan Pemukiman Desa', 'color' => 'yellow'],
+                    12 => ['name' => 'Konsumsi dan Produksi', 'color' => 'yellow'],
+                    13 => ['name' => 'Desa Tanggap Perubahan Iklim', 'color' => 'green'],
+                    14 => ['name' => 'Desa Peduli Lingkungan Laut', 'color' => 'blue'],
+                    15 => ['name' => 'Desa Peduli Lingkungan Darat', 'color' => 'green'],
+                    16 => ['name' => 'Desa Damai Berkeadilan', 'color' => 'blue'],
+                    17 => ['name' => 'Kemitraan Untuk Pembangunan', 'color' => 'blue'],
+                    18 => ['name' => 'Kelembagaan Desa Dinamis', 'color' => 'blue'],
+                ];
+            ?>
+
+            <?php $__currentLoopData = $sdgsGoals; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $num => $goal): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <div class="bg-gray-50 rounded-lg p-4 text-center border-l-4 border-<?php echo e($goal['color']); ?>-500">
+                    <div
+                        class="w-10 h-10 bg-<?php echo e($goal['color']); ?>-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <span class="font-bold text-<?php echo e($goal['color']); ?>-600"><?php echo e($num); ?></span>
+                    </div>
+                    <div class="text-2xl font-bold text-gray-800 mb-1">
+                        <?php echo e(number_format($scores[$num] ?? 0, 2)); ?>
+
+                    </div>
+                    <div class="text-xs text-gray-500 line-clamp-2"><?php echo e($goal['name']); ?></div>
+                </div>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+        </div>
+    </div>
+
+    <!-- History Table -->
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div class="p-6 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-800">Riwayat Data SDGs</h3>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tahun
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Skor
+                            Total</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal
+                            Input</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <?php $__empty_1 = true; $__currentLoopData = $sdgsHistory ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $sdgs): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
+                                <?php echo e($sdgs->tahun); ?>
+
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+                                <span class="text-lg font-bold"><?php echo e(number_format($sdgs->skor_total, 2)); ?></span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <?php
+                                    $statusColor = match (true) {
+                                        $sdgs->skor_total >= 75 => 'green',
+                                        $sdgs->skor_total >= 50 => 'yellow',
+                                        $sdgs->skor_total >= 25 => 'orange',
+                                        default => 'red',
+                                    };
+                                    $statusLabel = match (true) {
+                                        $sdgs->skor_total >= 75 => 'Sangat Baik',
+                                        $sdgs->skor_total >= 50 => 'Baik',
+                                        $sdgs->skor_total >= 25 => 'Cukup',
+                                        default => 'Kurang',
+                                    };
+                                ?>
+                                <span
+                                    class="px-2 py-1 text-xs font-medium rounded-full bg-<?php echo e($statusColor); ?>-100 text-<?php echo e($statusColor); ?>-800">
+                                    <?php echo e($statusLabel); ?>
+
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                <?php echo e($sdgs->created_at->format('d M Y')); ?>
+
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <div class="flex items-center gap-2">
+                                    <button onclick="viewDetail(<?php echo e($sdgs->id); ?>)"
+                                        class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button onclick="editSdgs(<?php echo e($sdgs->id); ?>)"
+                                        class="text-green-600 hover:text-green-800">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <form action="<?php echo e(route('admin.data.sdgs.destroy', $sdgs)); ?>" method="POST"
+                                        class="inline" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                                        <?php echo csrf_field(); ?>
+                                        <?php echo method_field('DELETE'); ?>
+                                        <button type="submit" class="text-red-600 hover:text-red-800">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                        <tr>
+                            <td colspan="5" class="px-6 py-12 text-center text-gray-500">
+                                <div class="flex flex-col items-center">
+                                    <i class="fas fa-chart-pie text-4xl text-gray-300 mb-4"></i>
+                                    <p>Belum ada data SDGs</p>
+                                    <button onclick="openModal()" class="mt-4 text-green-600 hover:text-green-700">
+                                        + Tambah Data Pertama
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal Input SDGs -->
+    <div id="modal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center">
+        <div class="bg-white rounded-xl shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b border-gray-200 sticky top-0 bg-white">
+                <h3 class="text-xl font-semibold text-gray-800" id="modalTitle">Input Data SDGs</h3>
+            </div>
+            <form id="sdgsForm" action="<?php echo e(route('admin.data.sdgs.store')); ?>" method="POST" class="p-6">
+                <?php echo csrf_field(); ?>
+                <div id="methodField"></div>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Tahun <span
+                            class="text-red-500">*</span></label>
+                    <select name="tahun" id="tahun" required
+                        class="w-full md:w-48 px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">
+                        <?php for($y = date('Y'); $y >= 2019; $y--): ?>
+                            <option value="<?php echo e($y); ?>"><?php echo e($y); ?></option>
+                        <?php endfor; ?>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <?php $__currentLoopData = $sdgsGoals; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $num => $goal): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <div class="p-4 bg-gray-50 rounded-lg">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <span
+                                    class="inline-flex items-center justify-center w-6 h-6 bg-<?php echo e($goal['color']); ?>-500 text-white rounded-full text-xs mr-2"><?php echo e($num); ?></span>
+                                <?php echo e($goal['name']); ?>
+
+                            </label>
+                            <input type="number" name="skor_<?php echo e($num); ?>" id="skor_<?php echo e($num); ?>"
+                                step="0.01" min="0" max="100" placeholder="0.00"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">
+                        </div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </div>
+
+                <div class="flex justify-end gap-4 mt-6 pt-6 border-t border-gray-200">
+                    <button type="button" onclick="closeModal()"
+                        class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                        Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startPush('scripts'); ?>
+    <script>
+        function openModal() {
+            document.getElementById('modal').classList.remove('hidden');
+            document.getElementById('modal').classList.add('flex');
+            document.getElementById('modalTitle').textContent = 'Input Data SDGs';
+            document.getElementById('sdgsForm').action = '<?php echo e(route('admin.data.sdgs.store')); ?>';
+            document.getElementById('methodField').innerHTML = '';
+            document.getElementById('sdgsForm').reset();
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
+            document.getElementById('modal').classList.remove('flex');
+        }
+
+        function editSdgs(id) {
+            fetch('/admin/data/sdgs/' + id + '/edit')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('modal').classList.remove('hidden');
+                    document.getElementById('modal').classList.add('flex');
+                    document.getElementById('modalTitle').textContent = 'Edit Data SDGs';
+                    document.getElementById('sdgsForm').action = '/admin/data/sdgs/' + id;
+                    document.getElementById('methodField').innerHTML = '<?php echo method_field('PUT'); ?>';
+
+                    document.getElementById('tahun').value = data.tahun;
+                    // Map database columns (sdg_1) to form fields (skor_1)
+                    for (let i = 1; i <= 18; i++) {
+                        const field = document.getElementById('skor_' + i);
+                        if (field && data['sdg_' + i] !== undefined && data['sdg_' + i] !== null) {
+                            field.value = data['sdg_' + i];
+                        }
+                    }
+                });
+        }
+
+        function viewDetail(id) {
+            // Open detail modal or redirect
+            window.location.href = '/admin/data/sdgs/' + id;
+        }
+
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\website-desa-tanalum\resources\views/admin/data-desa/sdgs.blade.php ENDPATH**/ ?>

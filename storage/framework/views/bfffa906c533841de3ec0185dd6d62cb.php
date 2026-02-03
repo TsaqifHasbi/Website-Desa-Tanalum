@@ -83,13 +83,29 @@
                             
                             <!-- Thumbnail with Fallback -->
                             <div class="w-full h-full bg-gray-200 flex items-center justify-center overflow-hidden">
-                                <img src="<?php echo e($galeri->thumbnail_url); ?>" alt="<?php echo e($galeri->judul); ?>"
-                                    class="w-full h-full object-cover group-hover:scale-110 transition duration-300"
-                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <div class="hidden flex-col items-center justify-center text-gray-400 p-4">
-                                    <i class="fas <?php echo e($galeri->tipe === 'foto' ? 'fa-image' : 'fa-play-circle'); ?> text-4xl mb-2"></i>
-                                    <span class="text-[10px] text-center uppercase font-bold"><?php echo e($galeri->tipe === 'foto' ? 'Foto' : 'Video'); ?></span>
-                                </div>
+                                <?php if($galeri->tipe === 'video' && !$galeri->thumbnail && !$galeri->is_youtube): ?>
+                                    <video class="w-full h-full object-cover group-hover:scale-110 transition duration-300" 
+                                           preload="metadata" 
+                                           muted 
+                                           playsinline
+                                           onmouseover="this.play()" 
+                                           onmouseout="this.pause(); this.currentTime=0.1;">
+                                        <source src="<?php echo e($galeri->file_url); ?>#t=0.1" type="video/mp4">
+                                    </video>
+                                <?php else: ?>
+                                    <img src="<?php echo e($galeri->thumbnail_url); ?>" alt="<?php echo e($galeri->judul); ?>"
+                                        class="w-full h-full object-cover group-hover:scale-110 transition duration-300"
+                                        <?php if($galeri->is_youtube): ?>
+                                            onerror="if(!this.src.includes('0.jpg')){ this.src='https://img.youtube.com/vi/<?php echo e($galeri->youtube_video_id); ?>/0.jpg' } else { this.style.display='none'; this.nextElementSibling.style.display='flex'; }"
+                                        <?php else: ?>
+                                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                                        <?php endif; ?>
+                                    >
+                                    <div class="hidden flex-col items-center justify-center text-gray-400 p-4">
+                                        <i class="fas <?php echo e($galeri->tipe === 'foto' ? 'fa-image' : 'fa-play-circle'); ?> text-4xl mb-2"></i>
+                                        <span class="text-[10px] text-center uppercase font-bold"><?php echo e($galeri->tipe === 'foto' ? 'Foto' : 'Video'); ?></span>
+                                    </div>
+                                <?php endif; ?>
                             </div>
                             
                             <!-- Overlay -->

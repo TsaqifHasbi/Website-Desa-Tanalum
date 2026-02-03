@@ -51,12 +51,12 @@
 
                                 <div class="grid md:grid-cols-2 gap-4">
                                     <div>
-                                        <label for="nama" class="block text-sm font-medium text-gray-700 mb-1">Nama
+                                        <label for="nama_pemohon" class="block text-sm font-medium text-gray-700 mb-1">Nama
                                             Lengkap *</label>
-                                        <input type="text" name="nama" id="nama" value="{{ old('nama') }}"
+                                        <input type="text" name="nama_pemohon" id="nama_pemohon" value="{{ old('nama_pemohon') }}"
                                             required
-                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 @error('nama') border-red-500 @enderror">
-                                        @error('nama')
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 @error('nama_pemohon') border-red-500 @enderror">
+                                        @error('nama_pemohon')
                                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                         @enderror
                                     </div>
@@ -123,50 +123,27 @@
                                 </h3>
 
                                 <div class="space-y-4">
-                                    <div>
-                                        <label for="kategori" class="block text-sm font-medium text-gray-700 mb-1">Kategori
-                                            Informasi *</label>
-                                        <select name="kategori" id="kategori" required
-                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
-                                            <option value="">Pilih Kategori</option>
-                                            <option value="profil_desa"
-                                                {{ old('kategori') == 'profil_desa' ? 'selected' : '' }}>Profil Desa
-                                            </option>
-                                            <option value="apbdes" {{ old('kategori') == 'apbdes' ? 'selected' : '' }}>
-                                                APBDes</option>
-                                            <option value="peraturan"
-                                                {{ old('kategori') == 'peraturan' ? 'selected' : '' }}>Peraturan Desa
-                                            </option>
-                                            <option value="pelayanan"
-                                                {{ old('kategori') == 'pelayanan' ? 'selected' : '' }}>Pelayanan Publik
-                                            </option>
-                                            <option value="pembangunan"
-                                                {{ old('kategori') == 'pembangunan' ? 'selected' : '' }}>Pembangunan
-                                            </option>
-                                            <option value="lainnya" {{ old('kategori') == 'lainnya' ? 'selected' : '' }}>
-                                                Lainnya</option>
-                                        </select>
-                                    </div>
+
 
                                     <div>
-                                        <label for="rincian_informasi"
+                                        <label for="informasi_diminta"
                                             class="block text-sm font-medium text-gray-700 mb-1">Rincian Informasi yang
                                             Dibutuhkan *</label>
-                                        <textarea name="rincian_informasi" id="rincian_informasi" rows="4" required
-                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 @error('rincian_informasi') border-red-500 @enderror"
-                                            placeholder="Jelaskan secara detail informasi yang Anda butuhkan...">{{ old('rincian_informasi') }}</textarea>
-                                        @error('rincian_informasi')
+                                        <textarea name="informasi_diminta" id="informasi_diminta" rows="4" required
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 @error('informasi_diminta') border-red-500 @enderror"
+                                            placeholder="Jelaskan secara detail informasi yang Anda butuhkan...">{{ old('informasi_diminta') }}</textarea>
+                                        @error('informasi_diminta')
                                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                         @enderror
                                     </div>
 
                                     <div>
-                                        <label for="tujuan" class="block text-sm font-medium text-gray-700 mb-1">Tujuan
+                                        <label for="alasan_permohonan" class="block text-sm font-medium text-gray-700 mb-1">Tujuan
                                             Penggunaan Informasi *</label>
-                                        <textarea name="tujuan" id="tujuan" rows="3" required
-                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 @error('tujuan') border-red-500 @enderror"
-                                            placeholder="Jelaskan tujuan penggunaan informasi...">{{ old('tujuan') }}</textarea>
-                                        @error('tujuan')
+                                        <textarea name="alasan_permohonan" id="alasan_permohonan" rows="3" required
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 @error('alasan_permohonan') border-red-500 @enderror"
+                                            placeholder="Jelaskan tujuan penggunaan informasi...">{{ old('alasan_permohonan') }}</textarea>
+                                        @error('alasan_permohonan')
                                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                         @enderror
                                     </div>
@@ -183,15 +160,15 @@
                                 <div class="space-y-3">
                                     <label
                                         class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
-                                        <input type="radio" name="cara_memperoleh" value="email"
-                                            {{ old('cara_memperoleh', 'email') == 'email' ? 'checked' : '' }}
+                                        <input type="radio" name="cara_memperoleh" value="melihat"
+                                            {{ old('cara_memperoleh', 'melihat') == 'melihat' ? 'checked' : '' }}
                                             class="w-4 h-4 text-green-600 border-gray-300 focus:ring-green-500">
-                                        <span class="ml-3 text-gray-700">Melihat/membaca/mendengarkan/mencatat</span>
+                                        <span class="ml-3 text-gray-700">Melihat/Membaca/Mendengarkan/Mencatat</span>
                                     </label>
                                     <label
                                         class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
-                                        <input type="radio" name="cara_memperoleh" value="cetak"
-                                            {{ old('cara_memperoleh') == 'cetak' ? 'checked' : '' }}
+                                        <input type="radio" name="cara_memperoleh" value="mendapat_salinan"
+                                            {{ old('cara_memperoleh') == 'mendapat_salinan' ? 'checked' : '' }}
                                             class="w-4 h-4 text-green-600 border-gray-300 focus:ring-green-500">
                                         <span class="ml-3 text-gray-700">Mendapatkan salinan informasi
                                             (softcopy/hardcopy)</span>
@@ -209,22 +186,22 @@
                                 <div class="space-y-3">
                                     <label
                                         class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
-                                        <input type="radio" name="cara_mendapat" value="ambil_langsung"
-                                            {{ old('cara_mendapat', 'ambil_langsung') == 'ambil_langsung' ? 'checked' : '' }}
+                                        <input type="radio" name="cara_mendapat_salinan" value="ambil_langsung"
+                                            {{ old('cara_mendapat_salinan', 'ambil_langsung') == 'ambil_langsung' ? 'checked' : '' }}
                                             class="w-4 h-4 text-green-600 border-gray-300 focus:ring-green-500">
-                                        <span class="ml-3 text-gray-700">Mengambil langsung</span>
+                                        <span class="ml-3 text-gray-700">Mengambil langsung di kantor desa</span>
                                     </label>
                                     <label
                                         class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
-                                        <input type="radio" name="cara_mendapat" value="email"
-                                            {{ old('cara_mendapat') == 'email' ? 'checked' : '' }}
+                                        <input type="radio" name="cara_mendapat_salinan" value="email"
+                                            {{ old('cara_mendapat_salinan') == 'email' ? 'checked' : '' }}
                                             class="w-4 h-4 text-green-600 border-gray-300 focus:ring-green-500">
                                         <span class="ml-3 text-gray-700">Dikirim via email</span>
                                     </label>
                                     <label
                                         class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
-                                        <input type="radio" name="cara_mendapat" value="pos"
-                                            {{ old('cara_mendapat') == 'pos' ? 'checked' : '' }}
+                                        <input type="radio" name="cara_mendapat_salinan" value="pos"
+                                            {{ old('cara_mendapat_salinan') == 'pos' ? 'checked' : '' }}
                                             class="w-4 h-4 text-green-600 border-gray-300 focus:ring-green-500">
                                         <span class="ml-3 text-gray-700">Dikirim via pos/kurir</span>
                                     </label>

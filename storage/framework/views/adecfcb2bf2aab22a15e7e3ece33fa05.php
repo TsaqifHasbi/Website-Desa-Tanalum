@@ -428,12 +428,32 @@
 
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <?php $__currentLoopData = $galeris; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $galeri): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                        <div class="group relative aspect-square overflow-hidden rounded-xl" data-aos="fade-up"
+                        <div class="group relative aspect-square overflow-hidden rounded-xl bg-gray-100" data-aos="fade-up"
                             data-aos-delay="<?php echo e($index * 50); ?>">
-                            <?php if($galeri->file_path): ?>
-                                <img src="<?php echo e(Storage::url($galeri->file_path)); ?>" alt="<?php echo e($galeri->judul); ?>"
-                                    class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
+                            
+                            <?php if($galeri->tipe === 'video' && !$galeri->thumbnail && !$galeri->is_youtube): ?>
+                                <video class="w-full h-full object-cover group-hover:scale-110 transition duration-300" 
+                                       preload="metadata" muted playsinline>
+                                    <source src="<?php echo e(Storage::url($galeri->file_path)); ?>#t=0.1" type="video/mp4">
+                                </video>
+                            <?php else: ?>
+                                <img src="<?php echo e($galeri->thumbnail_url); ?>" alt="<?php echo e($galeri->judul); ?>"
+                                    class="w-full h-full object-cover group-hover:scale-110 transition duration-300"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div class="hidden flex-col items-center justify-center text-gray-400 p-4 w-full h-full">
+                                    <i class="fas <?php echo e($galeri->tipe === 'foto' ? 'fa-image' : 'fa-play-circle'); ?> text-4xl mb-2"></i>
+                                </div>
                             <?php endif; ?>
+
+                            <!-- Play Icon for Videos -->
+                            <?php if($galeri->tipe === 'video'): ?>
+                                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                    <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                                        <i class="fas fa-play text-white text-xl ml-1"></i>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+
                             <div
                                 class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
                                 <span class="text-white font-medium text-center px-4"><?php echo e($galeri->judul); ?></span>

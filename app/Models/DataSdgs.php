@@ -101,6 +101,18 @@ class DataSdgs extends Model
     }
 
     /**
+     * Get scores indexed by goal number (1-18).
+     */
+    public function getSkorPerTujuanAttribute(): array
+    {
+        $scores = [];
+        for ($i = 1; $i <= 18; $i++) {
+            $scores[$i] = (float) $this->{'sdg_' . $i};
+        }
+        return $scores;
+    }
+
+    /**
      * Get all SDGs scores as array.
      */
     public function getAllScoresAttribute(): array

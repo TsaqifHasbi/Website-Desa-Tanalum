@@ -161,8 +161,7 @@ class Galeri extends Model
         }
 
         if ($this->is_youtube && $this->youtube_video_id) {
-            // 0.jpg is the most reliable default thumbnail for any YouTube video
-            return "https://img.youtube.com/vi/{$this->youtube_video_id}/0.jpg";
+            return "https://img.youtube.com/vi/{$this->youtube_video_id}/hqdefault.jpg";
         }
 
         // Return a generic video placeholder if no thumbnail found

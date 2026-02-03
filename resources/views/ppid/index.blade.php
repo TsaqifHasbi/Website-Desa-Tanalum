@@ -50,10 +50,33 @@
         </div>
     </section>
 
-    <!-- Latest Documents Section -->
+    <!-- Content Section -->
     <section class="py-12 bg-gray-50">
         <div class="container mx-auto px-6 md:px-8 lg:px-12">
             <div class="max-w-7xl mx-auto">
+                @if (session('success'))
+                    <div class="mb-8 p-6 bg-green-100 border-l-4 border-green-600 shadow-sm rounded-r-xl" data-aos="fade-down">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 mt-0.5">
+                                <i class="fas fa-check-circle text-2xl text-green-600"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-lg font-bold text-green-800">Permohonan Berhasil Dikirim!</h3>
+                                <p class="text-green-700 mt-1">{{ session('success') }}</p>
+                                @if (session('nomor_tiket'))
+                                    <div class="mt-4 p-4 bg-white/50 rounded-lg border border-green-200">
+                                        <p class="text-sm text-green-600 font-medium">NOMOR TIKET PERMOHONAN:</p>
+                                        <p class="text-3xl font-mono font-bold text-green-800 tracking-wider">
+                                            {{ session('nomor_tiket') }}
+                                        </p>
+                                        <p class="text-xs text-green-600 mt-2 italic">*Simpan nomor tiket ini untuk melacak status permohonan Anda.</p>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
                 <div class="mb-8">
                     <h2 class="text-3xl font-bold text-green-600 mb-2">INFORMASI PUBLIK TERBARU</h2>
                     @if($dokumenTerbaru->isNotEmpty())

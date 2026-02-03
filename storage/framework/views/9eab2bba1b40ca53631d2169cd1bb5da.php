@@ -1,15 +1,15 @@
-@extends('layouts.app')
 
-@section('title', 'IDM - Indeks Desa Membangun')
 
-@section('content')
+<?php $__env->startSection('title', 'IDM - Indeks Desa Membangun'); ?>
+
+<?php $__env->startSection('content'); ?>
     <!-- Hero Section -->
     <section class="relative py-20 bg-gradient-to-r from-purple-600 to-purple-700">
         <div class="container mx-auto px-4">
             <div class="text-center text-white">
                 <h1 class="text-4xl md:text-5xl font-bold mb-4">Indeks Desa Membangun</h1>
-                <p class="text-lg text-purple-100">Tahun {{ $idm->tahun ?? date('Y') }} -
-                    {{ $profil->nama_desa ?? 'Desa Tanalum' }}</p>
+                <p class="text-lg text-purple-100">Tahun <?php echo e($idm->tahun ?? date('Y')); ?> -
+                    <?php echo e($profil->nama_desa ?? 'Desa Tanalum'); ?></p>
             </div>
         </div>
     </section>
@@ -18,9 +18,9 @@
     <div class="bg-white shadow-sm">
         <div class="container mx-auto px-4">
             <nav class="flex items-center space-x-2 py-4 text-sm">
-                <a href="{{ route('home') }}" class="text-gray-500 hover:text-primary-600">Beranda</a>
+                <a href="<?php echo e(route('home')); ?>" class="text-gray-500 hover:text-primary-600">Beranda</a>
                 <span class="text-gray-400">/</span>
-                <a href="{{ route('infografis.index') }}" class="text-gray-500 hover:text-primary-600">Infografis</a>
+                <a href="<?php echo e(route('infografis.index')); ?>" class="text-gray-500 hover:text-primary-600">Infografis</a>
                 <span class="text-gray-400">/</span>
                 <span class="text-primary-600 font-medium">IDM</span>
             </nav>
@@ -28,31 +28,32 @@
     </div>
 
     <!-- Tab Navigation -->
-    @include('infografis.partials.tabs')
+    <?php echo $__env->make('infografis.partials.tabs', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
     <!-- Content -->
     <section class="py-16">
         <div class="container mx-auto px-4">
-            @if ($idm)
+            <?php if($idm): ?>
                 <!-- Year Selector -->
-                @if ($years->count() > 1)
+                <?php if($years->count() > 1): ?>
                     <div class="mb-8 flex justify-center" data-aos="fade-up">
                         <div class="inline-flex bg-white rounded-lg shadow-sm p-1">
-                            @foreach ($years as $year)
-                                <a href="{{ route('infografis.idm', ['tahun' => $year->tahun]) }}"
-                                    class="px-6 py-2 rounded-md transition {{ $idm->tahun == $year->tahun ? 'bg-purple-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
-                                    {{ $year->tahun }}
+                            <?php $__currentLoopData = $years; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $year): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <a href="<?php echo e(route('infografis.idm', ['tahun' => $year->tahun])); ?>"
+                                    class="px-6 py-2 rounded-md transition <?php echo e($idm->tahun == $year->tahun ? 'bg-purple-600 text-white' : 'text-gray-600 hover:bg-gray-100'); ?>">
+                                    <?php echo e($year->tahun); ?>
+
                                 </a>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
                     </div>
-                @endif
+                <?php endif; ?>
 
                 <!-- Main IDM Score -->
                 <div class="bg-white rounded-2xl shadow-sm p-8 mb-8 text-center" data-aos="fade-up">
                     <p class="text-gray-500 mb-2">Skor IDM</p>
-                    <p class="text-6xl font-bold text-purple-600 mb-4">{{ number_format($idm->skor_idm, 4) }}</p>
-                    @php
+                    <p class="text-6xl font-bold text-purple-600 mb-4"><?php echo e(number_format($idm->skor_idm, 4)); ?></p>
+                    <?php
                         $statusColors = [
                             'mandiri' => 'bg-green-100 text-green-700',
                             'maju' => 'bg-blue-100 text-blue-700',
@@ -60,10 +61,11 @@
                             'tertinggal' => 'bg-orange-100 text-orange-700',
                             'sangat_tertinggal' => 'bg-red-100 text-red-700',
                         ];
-                    @endphp
+                    ?>
                     <span
-                        class="inline-block px-6 py-2 rounded-full text-lg font-semibold {{ $statusColors[$idm->status] ?? 'bg-gray-100 text-gray-700' }}">
-                        DESA {{ strtoupper(str_replace('_', ' ', $idm->status)) }}
+                        class="inline-block px-6 py-2 rounded-full text-lg font-semibold <?php echo e($statusColors[$idm->status] ?? 'bg-gray-100 text-gray-700'); ?>">
+                        DESA <?php echo e(strtoupper(str_replace('_', ' ', $idm->status))); ?>
+
                     </span>
                 </div>
 
@@ -76,7 +78,8 @@
                             </div>
                             <h3 class="font-semibold text-gray-700 mb-2">IKS</h3>
                             <p class="text-sm text-gray-500 mb-4">Indeks Ketahanan Sosial</p>
-                            <p class="text-4xl font-bold text-blue-600">{{ $idm->skor_iks ? number_format($idm->skor_iks, 4) : '-' }}
+                            <p class="text-4xl font-bold text-blue-600"><?php echo e($idm->skor_iks ? number_format($idm->skor_iks, 4) : '-'); ?>
+
                             </p>
                         </div>
                     </div>
@@ -88,7 +91,7 @@
                             <h3 class="font-semibold text-gray-700 mb-2">IKE</h3>
                             <p class="text-sm text-gray-500 mb-4">Indeks Ketahanan Ekonomi</p>
                             <p class="text-4xl font-bold text-green-600">
-                                {{ $idm->skor_ike ? number_format($idm->skor_ike, 4) : '-' }}</p>
+                                <?php echo e($idm->skor_ike ? number_format($idm->skor_ike, 4) : '-'); ?></p>
                         </div>
                     </div>
                     <div class="bg-white rounded-2xl shadow-sm p-6" data-aos="fade-up" data-aos-delay="200">
@@ -99,7 +102,7 @@
                             <h3 class="font-semibold text-gray-700 mb-2">IKL</h3>
                             <p class="text-sm text-gray-500 mb-4">Indeks Ketahanan Lingkungan</p>
                             <p class="text-4xl font-bold text-orange-600">
-                                {{ $idm->skor_ikl ? number_format($idm->skor_ikl, 4) : '-' }}</p>
+                                <?php echo e($idm->skor_ikl ? number_format($idm->skor_ikl, 4) : '-'); ?></p>
                         </div>
                     </div>
                 </div>
@@ -111,7 +114,7 @@
                         <canvas id="idmHistoryChart" height="250"></canvas>
                     </div>
                     <div class="bg-white rounded-2xl shadow-sm p-6" data-aos="fade-up" data-aos-delay="100">
-                        <h3 class="text-xl font-bold text-gray-800 mb-6">Komponen IDM {{ $idm->tahun }}</h3>
+                        <h3 class="text-xl font-bold text-gray-800 mb-6">Komponen IDM <?php echo e($idm->tahun); ?></h3>
                         <canvas id="idmChart" height="250"></canvas>
                     </div>
                 </div>
@@ -173,22 +176,23 @@
 
                 <p class="text-sm text-gray-500 mt-6 text-center">
                     <i class="fas fa-info-circle mr-1"></i>
-                    Data terakhir diperbarui: {{ $idm->updated_at->format('d M Y') }}
+                    Data terakhir diperbarui: <?php echo e($idm->updated_at->format('d M Y')); ?>
+
                 </p>
-            @else
+            <?php else: ?>
                 <div class="text-center py-16 bg-white rounded-2xl shadow-sm">
                     <i class="fas fa-chart-line text-6xl text-gray-300 mb-4"></i>
                     <h3 class="text-xl font-semibold text-gray-600 mb-2">Data Belum Tersedia</h3>
                     <p class="text-gray-500">Data IDM belum diinput ke dalam sistem.</p>
                 </div>
-            @endif
+            <?php endif; ?>
         </div>
     </section>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    @if ($idm)
+    <?php if($idm): ?>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 // IDM History Chart
@@ -196,10 +200,10 @@
                 new Chart(historyCtx, {
                     type: 'line',
                     data: {
-                        labels: {!! json_encode($idmHistory->pluck('tahun')) !!},
+                        labels: <?php echo json_encode($idmHistory->pluck('tahun')); ?>,
                         datasets: [{
                             label: 'Skor IDM',
-                            data: {!! json_encode($idmHistory->pluck('skor_idm')) !!},
+                            data: <?php echo json_encode($idmHistory->pluck('skor_idm')); ?>,
                             borderColor: '#8B5CF6',
                             backgroundColor: '#C4B5FD',
                             tension: 0.3,
@@ -226,10 +230,11 @@
                         datasets: [{
                             label: 'Nilai',
                             data: [
-                                {{ $idm->skor_iks ?? 0 }},
-                                {{ $idm->skor_ike ?? 0 }},
-                                {{ $idm->skor_ikl ?? 0 }},
-                                {{ $idm->skor_idm ?? 0 }}
+                                <?php echo e($idm->skor_iks ?? 0); ?>,
+                                <?php echo e($idm->skor_ike ?? 0); ?>,
+                                <?php echo e($idm->skor_ikl ?? 0); ?>,
+                                <?php echo e($idm->skor_idm ?? 0); ?>
+
                             ],
                             backgroundColor: ['#3B82F6', '#22C55E', '#F59E0B', '#8B5CF6']
                         }]
@@ -246,5 +251,7 @@
                 });
             });
         </script>
-    @endif
-@endpush
+    <?php endif; ?>
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\website-desa-tanalum\resources\views/infografis/idm.blade.php ENDPATH**/ ?>

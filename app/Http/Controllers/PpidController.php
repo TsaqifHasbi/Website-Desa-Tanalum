@@ -132,12 +132,18 @@ class PpidController extends Controller
             'alasan_permohonan' => 'nullable|string',
             'cara_memperoleh' => 'required|in:melihat,membaca,mendengar,mencatat,mendapat_salinan',
             'cara_mendapat_salinan' => 'required|in:email,fax,pos,ambil_langsung',
+            'dokumen_pendukung' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ]);
+
+        if ($request->hasFile('dokumen_pendukung')) {
+            $validated['dokumen_pendukung'] = $request->file('dokumen_pendukung')->store('ppid/permohonan', 'public');
+        }
 
         $permohonan = PermohonanInformasi::create($validated);
 
         return redirect()->route('ppid.index')
-            ->with('success', 'Permohonan informasi berhasil diajukan. Nomor tiket Anda: ' . $permohonan->nomor_tiket);
+            ->with('success', 'Permohonan informasi berhasil diajukan.')
+            ->with('nomor_tiket', $permohonan->nomor_tiket);
     }
 
     public function download($slug)

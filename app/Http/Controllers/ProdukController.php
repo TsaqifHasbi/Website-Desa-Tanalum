@@ -12,16 +12,18 @@ class ProdukController extends Controller
     public function index(Request $request)
     {
         $profil = ProfilDesa::first();
-        $kategoris = KategoriProduk::withCount('produk')->active()->get();
+        $kategoris = KategoriProduk::withCount(['produk' => function ($query) {
+            $query->active();
+        }])->active()->get();
         $totalProduk = ProdukUmkm::active()->count();
 
         $query = ProdukUmkm::with('kategori')->active();
 
         // Search
-        if ($request->filled('q')) {
+        if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
-                $q->where('nama', 'like', '%' . $request->q . '%')
-                    ->orWhere('deskripsi', 'like', '%' . $request->q . '%');
+                $q->where('nama', 'like', '%' . $request->search . '%')
+                    ->orWhere('deskripsi', 'like', '%' . $request->search . '%');
             });
         }
 

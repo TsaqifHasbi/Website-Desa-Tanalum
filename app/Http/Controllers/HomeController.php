@@ -65,9 +65,8 @@ class HomeController extends Controller
             ->take(6)
             ->get();
 
-        // Get galeri
+        // Get galeri (mixed photos and videos)
         $galeris = Galeri::active()
-            ->foto()
             ->ordered()
             ->take(8)
             ->get();

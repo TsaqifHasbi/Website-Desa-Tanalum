@@ -1,14 +1,15 @@
-@extends('layouts.app')
 
-@section('title', 'SDGs Desa')
 
-@section('content')
+<?php $__env->startSection('title', 'SDGs Desa'); ?>
+
+<?php $__env->startSection('content'); ?>
     <!-- Hero Section -->
     <section class="relative py-20 bg-gradient-to-r from-orange-600 to-orange-700">
         <div class="container mx-auto px-4">
             <div class="text-center text-white">
                 <h1 class="text-4xl md:text-5xl font-bold mb-4">SDGs Desa</h1>
-                <p class="text-lg text-orange-100">Sustainable Development Goals {{ $profil->nama_desa ?? 'Desa Tanalum' }}
+                <p class="text-lg text-orange-100">Sustainable Development Goals <?php echo e($profil->nama_desa ?? 'Desa Tanalum'); ?>
+
                 </p>
             </div>
         </div>
@@ -18,9 +19,9 @@
     <div class="bg-white shadow-sm">
         <div class="container mx-auto px-4">
             <nav class="flex items-center space-x-2 py-4 text-sm">
-                <a href="{{ route('home') }}" class="text-gray-500 hover:text-primary-600">Beranda</a>
+                <a href="<?php echo e(route('home')); ?>" class="text-gray-500 hover:text-primary-600">Beranda</a>
                 <span class="text-gray-400">/</span>
-                <a href="{{ route('infografis.index') }}" class="text-gray-500 hover:text-primary-600">Infografis</a>
+                <a href="<?php echo e(route('infografis.index')); ?>" class="text-gray-500 hover:text-primary-600">Infografis</a>
                 <span class="text-gray-400">/</span>
                 <span class="text-primary-600 font-medium">SDGs Desa</span>
             </nav>
@@ -28,39 +29,40 @@
     </div>
 
     <!-- Tab Navigation -->
-    @include('infografis.partials.tabs')
+    <?php echo $__env->make('infografis.partials.tabs', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
     <!-- Content -->
     <section class="py-16">
         <div class="container mx-auto px-4">
-            @if ($sdgs)
+            <?php if($sdgs): ?>
                 <!-- Year Selector -->
-                @if ($years->count() > 1)
+                <?php if($years->count() > 1): ?>
                     <div class="mb-8 flex justify-center" data-aos="fade-up">
                         <div class="inline-flex bg-white rounded-lg shadow-sm p-1">
-                            @foreach ($years as $y)
-                                <a href="{{ route('infografis.sdgs', ['tahun' => $y->tahun]) }}"
-                                    class="px-6 py-2 rounded-md transition {{ $sdgs->tahun == $y->tahun ? 'bg-orange-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
-                                    {{ $y->tahun }}
+                            <?php $__currentLoopData = $years; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $y): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <a href="<?php echo e(route('infografis.sdgs', ['tahun' => $y->tahun])); ?>"
+                                    class="px-6 py-2 rounded-md transition <?php echo e($sdgs->tahun == $y->tahun ? 'bg-orange-600 text-white' : 'text-gray-600 hover:bg-gray-100'); ?>">
+                                    <?php echo e($y->tahun); ?>
+
                                 </a>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
                     </div>
-                @endif
+                <?php endif; ?>
 
                 <!-- Overall Score -->
                 <div class="bg-white rounded-2xl shadow-sm p-8 mb-8 text-center" data-aos="fade-up">
-                    <p class="text-gray-500 mb-2">Skor SDGs Desa {{ $sdgs->tahun }}</p>
-                    <p class="text-6xl font-bold text-orange-600 mb-4">{{ number_format($sdgs->skor_total, 2) }}</p>
+                    <p class="text-gray-500 mb-2">Skor SDGs Desa <?php echo e($sdgs->tahun); ?></p>
+                    <p class="text-6xl font-bold text-orange-600 mb-4"><?php echo e(number_format($sdgs->skor_total, 2)); ?></p>
                     <div class="w-full bg-gray-200 rounded-full h-4 max-w-md mx-auto">
                         <div class="bg-gradient-to-r from-orange-500 to-orange-600 h-4 rounded-full transition-all duration-500"
-                            style="width: {{ min($sdgs->skor_total, 100) }}%"></div>
+                            style="width: <?php echo e(min($sdgs->skor_total, 100)); ?>%"></div>
                     </div>
                     <p class="text-sm text-gray-500 mt-2">Dari skala 0-100</p>
                 </div>
 
                 <!-- SDGs Goals Grid -->
-                @php
+                <?php
                     $goals = [
                         1 => ['title' => 'Tanpa Kemiskinan', 'color' => '#E5243B', 'icon' => 'fa-hand-holding-usd'],
                         2 => ['title' => 'Tanpa Kelaparan', 'color' => '#DDA63A', 'icon' => 'fa-utensils'],
@@ -90,32 +92,32 @@
                         18 => ['title' => 'Kelembagaan Desa', 'color' => '#8F1838', 'icon' => 'fa-landmark'],
                     ];
                     $skorGoals = $sdgs->skor_per_tujuan ?? [];
-                @endphp
+                ?>
 
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-12">
-                    @foreach ($goals as $num => $goal)
+                    <?php $__currentLoopData = $goals; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $num => $goal): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <div class="rounded-xl p-4 text-white text-center hover:scale-105 transition-transform cursor-pointer"
-                            style="background-color: {{ $goal['color'] }}" data-aos="fade-up"
-                            data-aos-delay="{{ ($num - 1) * 30 }}">
-                            <div class="text-2xl font-bold mb-2">{{ $num }}</div>
-                            <i class="fas {{ $goal['icon'] }} text-xl mb-2 opacity-80"></i>
-                            <p class="text-xs leading-tight opacity-90">{{ $goal['title'] }}</p>
-                            @if (isset($skorGoals[$num]))
+                            style="background-color: <?php echo e($goal['color']); ?>" data-aos="fade-up"
+                            data-aos-delay="<?php echo e(($num - 1) * 30); ?>">
+                            <div class="text-2xl font-bold mb-2"><?php echo e($num); ?></div>
+                            <i class="fas <?php echo e($goal['icon']); ?> text-xl mb-2 opacity-80"></i>
+                            <p class="text-xs leading-tight opacity-90"><?php echo e($goal['title']); ?></p>
+                            <?php if(isset($skorGoals[$num])): ?>
                                 <div class="mt-2 pt-2 border-t border-white/30">
-                                    <span class="font-bold">{{ number_format($skorGoals[$num], 1) }}</span>
+                                    <span class="font-bold"><?php echo e(number_format($skorGoals[$num], 1)); ?></span>
                                 </div>
-                            @endif
+                            <?php endif; ?>
                         </div>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </div>
 
                 <!-- Detail Scores Chart -->
-                @if ($skorGoals && count($skorGoals) > 0)
+                <?php if($skorGoals && count($skorGoals) > 0): ?>
                     <div class="bg-white rounded-2xl shadow-sm p-6 mb-8" data-aos="fade-up">
                         <h3 class="text-xl font-bold text-gray-800 mb-6">Capaian per Tujuan SDGs</h3>
                         <canvas id="sdgsChart" height="400"></canvas>
                     </div>
-                @endif
+                <?php endif; ?>
 
                 <!-- About SDGs -->
                 <div class="bg-white rounded-2xl shadow-sm p-6" data-aos="fade-up">
@@ -136,22 +138,23 @@
 
                 <p class="text-sm text-gray-500 mt-6 text-center">
                     <i class="fas fa-info-circle mr-1"></i>
-                    Data terakhir diperbarui: {{ $sdgs->updated_at->format('d M Y') }}
+                    Data terakhir diperbarui: <?php echo e($sdgs->updated_at->format('d M Y')); ?>
+
                 </p>
-            @else
+            <?php else: ?>
                 <div class="text-center py-16 bg-white rounded-2xl shadow-sm">
                     <i class="fas fa-globe text-6xl text-gray-300 mb-4"></i>
                     <h3 class="text-xl font-semibold text-gray-600 mb-2">Data Belum Tersedia</h3>
                     <p class="text-gray-500">Data SDGs Desa belum diinput ke dalam sistem.</p>
                 </div>
-            @endif
+            <?php endif; ?>
         </div>
     </section>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    @if ($sdgs && isset($skorGoals) && count($skorGoals) > 0)
+    <?php if($sdgs && isset($skorGoals) && count($skorGoals) > 0): ?>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const labels = [];
@@ -161,10 +164,10 @@
                     '#19486A', '#8F1838'
                 ];
 
-                @foreach ($skorGoals as $num => $skor)
-                    labels.push('Tujuan {{ $num }}');
-                    data.push({{ $skor }});
-                @endforeach
+                <?php $__currentLoopData = $skorGoals; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $num => $skor): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    labels.push('Tujuan <?php echo e($num); ?>');
+                    data.push(<?php echo e($skor); ?>);
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
                 new Chart(document.getElementById('sdgsChart'), {
                     type: 'bar',
@@ -198,5 +201,7 @@
                 });
             });
         </script>
-    @endif
-@endpush
+    <?php endif; ?>
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\website-desa-tanalum\resources\views/infografis/sdgs.blade.php ENDPATH**/ ?>

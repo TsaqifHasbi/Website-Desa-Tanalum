@@ -226,12 +226,27 @@ class PpidController extends Controller
     public function permohonanUpdate(Request $request, PermohonanInformasi $permohonan)
     {
         $validated = $request->validate([
-            'status' => 'required|in:baru,diproses,selesai,ditolak',
-            'catatan_proses' => 'nullable|string',
+            'status' => 'required|in:menunggu,diproses,selesai,ditolak',
+            'tanggapan' => 'nullable|string',
+            'dokumen_balasan' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
         ]);
+
+        // Map 'menunggu' to 'pending' if your DB uses 'pending' (check migration)
+        // Migration says: pending, diproses, selesai, ditolak
+        if ($validated['status'] === 'menunggu') {
+            $validated['status'] = 'pending';
+        }
 
         if ($validated['status'] === 'selesai') {
             $validated['tanggal_selesai'] = now();
+        }
+
+        // Handle response file
+        if ($request->hasFile('dokumen_balasan')) {
+            if ($permohonan->file_balasan) {
+                Storage::disk('public')->delete($permohonan->file_balasan);
+            }
+            $validated['file_balasan'] = $request->file('dokumen_balasan')->store('ppid/jawaban', 'public');
         }
 
         $permohonan->update($validated);
