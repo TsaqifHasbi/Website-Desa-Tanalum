@@ -271,7 +271,7 @@
             document.getElementById('modal').classList.remove('hidden');
             document.getElementById('modal').classList.add('flex');
             document.getElementById('modalTitle').textContent = 'Tambah Penerima Bansos';
-            document.getElementById('bansosForm').action = '{{ route('admin.data.bansos.store') }}';
+            document.getElementById('bansosForm').action = '{{ route('admin.data.bansos.penerima.store') }}';
             document.getElementById('methodField').innerHTML = '';
             document.getElementById('bansosForm').reset();
         }
@@ -283,13 +283,13 @@
 
         function editPenerima(id) {
             // Fetch data and populate form
-            fetch('/admin/data/bansos/' + id + '/edit')
+            fetch('/admin/data/bansos/penerima/' + id + '/edit')
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('modal').classList.remove('hidden');
                     document.getElementById('modal').classList.add('flex');
                     document.getElementById('modalTitle').textContent = 'Edit Penerima Bansos';
-                    document.getElementById('bansosForm').action = '/admin/data/bansos/' + id;
+                    document.getElementById('bansosForm').action = '/admin/data/bansos/penerima/' + id;
                     document.getElementById('methodField').innerHTML = '@method('PUT')';
 
                     document.getElementById('nik').value = data.nik;

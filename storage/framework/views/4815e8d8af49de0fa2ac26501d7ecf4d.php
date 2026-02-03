@@ -1,8 +1,8 @@
-@extends('layouts.admin')
 
-@section('title', 'Data Stunting')
 
-@section('content')
+<?php $__env->startSection('title', 'Data Stunting'); ?>
+
+<?php $__env->startSection('content'); ?>
     <div class="space-y-6">
         <!-- Header -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -17,11 +17,12 @@
             </button>
         </div>
 
-        @if (session('success'))
+        <?php if(session('success')): ?>
             <div class="p-4 bg-green-100 border border-green-200 text-green-700 rounded-lg">
-                {{ session('success') }}
+                <?php echo e(session('success')); ?>
+
             </div>
-        @endif
+        <?php endif; ?>
 
         <!-- Table -->
         <div class="bg-white rounded-xl shadow-sm overflow-hidden">
@@ -52,74 +53,83 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        @forelse ($stuntings as $index => $stunting)
+                        <?php $__empty_1 = true; $__currentLoopData = $stuntings; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $stunting): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {{ $stuntings->firstItem() + $index }}
+                                    <?php echo e($stuntings->firstItem() + $index); ?>
+
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    {{ $stunting->tahun }}
+                                    <?php echo e($stunting->tahun); ?>
+
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $stunting->bulan ? \Carbon\Carbon::create()->month($stunting->bulan)->format('F') : '-' }}
+                                    <?php echo e($stunting->bulan ? \Carbon\Carbon::create()->month($stunting->bulan)->format('F') : '-'); ?>
+
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ number_format($stunting->jumlah_balita) }}
+                                    <?php echo e(number_format($stunting->jumlah_balita)); ?>
+
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ number_format($stunting->jumlah_stunting) }}
+                                    <?php echo e(number_format($stunting->jumlah_stunting)); ?>
+
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ number_format($stunting->jumlah_gizi_buruk ?? 0) }}
+                                    <?php echo e(number_format($stunting->jumlah_gizi_buruk ?? 0)); ?>
+
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ number_format($stunting->jumlah_gizi_kurang ?? 0) }}
+                                    <?php echo e(number_format($stunting->jumlah_gizi_kurang ?? 0)); ?>
+
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    @php
+                                    <?php
                                         $persentase =
                                             $stunting->jumlah_balita > 0
                                                 ? ($stunting->jumlah_stunting / $stunting->jumlah_balita) * 100
                                                 : 0;
-                                    @endphp
+                                    ?>
                                     <span
-                                        class="px-2 py-1 text-xs font-medium {{ $persentase > 20 ? 'bg-red-100 text-red-800' : ($persentase > 10 ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800') }} rounded-full">
-                                        {{ number_format($persentase, 1) }}%
+                                        class="px-2 py-1 text-xs font-medium <?php echo e($persentase > 20 ? 'bg-red-100 text-red-800' : ($persentase > 10 ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800')); ?> rounded-full">
+                                        <?php echo e(number_format($persentase, 1)); ?>%
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate" title="{{ $stunting->catatan }}">
-                                    {{ Str::limit($stunting->catatan, 30) ?? '-' }}
+                                <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate" title="<?php echo e($stunting->catatan); ?>">
+                                    <?php echo e(Str::limit($stunting->catatan, 30) ?? '-'); ?>
+
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <button type="button" onclick="editStunting({{ json_encode($stunting) }})"
+                                    <button type="button" onclick="editStunting(<?php echo e(json_encode($stunting)); ?>)"
                                         class="text-blue-600 hover:text-blue-900 mr-3">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <form action="{{ route('admin.data.stunting.destroy', $stunting->id) }}" method="POST"
+                                    <form action="<?php echo e(route('admin.data.stunting.destroy', $stunting->id)); ?>" method="POST"
                                         class="inline" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
-                                        @csrf
-                                        @method('DELETE')
+                                        <?php echo csrf_field(); ?>
+                                        <?php echo method_field('DELETE'); ?>
                                         <button type="submit" class="text-red-600 hover:text-red-900">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
                                 </td>
                             </tr>
-                        @empty
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                             <tr>
                                 <td colspan="10" class="px-6 py-4 text-center text-gray-500">
                                     Belum ada data stunting
                                 </td>
                             </tr>
-                        @endforelse
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
-            @if ($stuntings->hasPages())
+            <?php if($stuntings->hasPages()): ?>
                 <div class="px-6 py-4 border-t border-gray-200">
-                    {{ $stuntings->links() }}
+                    <?php echo e($stuntings->links()); ?>
+
                 </div>
-            @endif
+            <?php endif; ?>
         </div>
     </div>
 
@@ -134,14 +144,14 @@
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
-                <form action="{{ route('admin.data.stunting.store') }}" method="POST">
-                    @csrf
+                <form action="<?php echo e(route('admin.data.stunting.store')); ?>" method="POST">
+                    <?php echo csrf_field(); ?>
                     <div class="space-y-4">
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Tahun *</label>
-                                <input type="number" name="tahun" required min="2000" max="{{ date('Y') + 1 }}"
-                                    value="{{ date('Y') }}"
+                                <input type="number" name="tahun" required min="2000" max="<?php echo e(date('Y') + 1); ?>"
+                                    value="<?php echo e(date('Y')); ?>"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">
                             </div>
                             <div>
@@ -149,10 +159,10 @@
                                 <select name="bulan"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">
                                     <option value="">Pilih Bulan</option>
-                                    @for ($i = 1; $i <= 12; $i++)
-                                        <option value="{{ $i }}">
-                                            {{ \Carbon\Carbon::create()->month($i)->format('F') }}</option>
-                                    @endfor
+                                    <?php for($i = 1; $i <= 12; $i++): ?>
+                                        <option value="<?php echo e($i); ?>">
+                                            <?php echo e(\Carbon\Carbon::create()->month($i)->format('F')); ?></option>
+                                    <?php endfor; ?>
                                 </select>
                             </div>
                         </div>
@@ -213,14 +223,14 @@
                     </button>
                 </div>
                 <form id="edit-form" method="POST">
-                    @csrf
-                    @method('PUT')
+                    <?php echo csrf_field(); ?>
+                    <?php echo method_field('PUT'); ?>
                     <div class="space-y-4">
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Tahun *</label>
                                 <input type="number" name="tahun" id="edit-tahun" required min="2000"
-                                    max="{{ date('Y') + 1 }}"
+                                    max="<?php echo e(date('Y') + 1); ?>"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">
                             </div>
                             <div>
@@ -228,10 +238,10 @@
                                 <select name="bulan" id="edit-bulan"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">
                                     <option value="">Pilih Bulan</option>
-                                    @for ($i = 1; $i <= 12; $i++)
-                                        <option value="{{ $i }}">
-                                            {{ \Carbon\Carbon::create()->month($i)->format('F') }}</option>
-                                    @endfor
+                                    <?php for($i = 1; $i <= 12; $i++): ?>
+                                        <option value="<?php echo e($i); ?>">
+                                            <?php echo e(\Carbon\Carbon::create()->month($i)->format('F')); ?></option>
+                                    <?php endfor; ?>
                                 </select>
                             </div>
                         </div>
@@ -286,7 +296,7 @@
 
     <script>
         function editStunting(stunting) {
-            document.getElementById('edit-form').action = '{{ url('admin/data/stunting') }}/' + stunting.id;
+            document.getElementById('edit-form').action = '<?php echo e(url('admin/data/stunting')); ?>/' + stunting.id;
             document.getElementById('edit-tahun').value = stunting.tahun;
             document.getElementById('edit-bulan').value = stunting.bulan || '';
             document.getElementById('edit-jumlah_balita').value = stunting.jumlah_balita;
@@ -297,4 +307,6 @@
             document.getElementById('edit-modal').classList.remove('hidden');
         }
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\website-desa-tanalum\resources\views/admin/data-desa/stunting.blade.php ENDPATH**/ ?>

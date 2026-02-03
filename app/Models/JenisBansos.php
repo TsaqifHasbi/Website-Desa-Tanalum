@@ -34,7 +34,16 @@ class JenisBansos extends Model
 
         static::creating(function ($model) {
             if (empty($model->slug)) {
-                $model->slug = Str::slug($model->nama);
+                $baseSlug = Str::slug($model->nama);
+                $slug = $baseSlug;
+                $counter = 1;
+                
+                while (static::where('slug', $slug)->exists()) {
+                    $slug = $baseSlug . '-' . $counter;
+                    $counter++;
+                }
+                
+                $model->slug = $slug;
             }
         });
     }

@@ -13,10 +13,14 @@ class DataStunting extends Model
 
     protected $fillable = [
         'tahun',
+        'bulan',
         'jumlah_balita',
         'jumlah_stunting',
+        'jumlah_gizi_buruk',
+        'jumlah_gizi_kurang',
         'persentase',
         'detail',
+        'catatan',
         'keterangan',
     ];
 

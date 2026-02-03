@@ -587,19 +587,44 @@ class DataDesaController extends Controller
             'rt' => 'nullable|string|max:10',
             'rw' => 'nullable|string|max:10',
             'dusun' => 'nullable|string|max:255',
-            'tahun' => 'required|integer|min:2000|max:' . (date('Y') + 1),
-            'bulan' => 'nullable|integer|min:1|max:12',
-            'nominal' => 'nullable|numeric|min:0',
-            'status' => 'required|in:aktif,tidak_aktif',
+            'tahun_penerima' => 'required|integer|min:2000|max:' . (date('Y') + 1),
+            'keterangan' => 'nullable|string',
         ]);
+
+        // Handle status checkbox (checked = aktif, unchecked = nonaktif)
+        $validated['status'] = $request->has('status') ? 'aktif' : 'nonaktif';
 
         PenerimaBansos::create($validated);
 
         // Update statistik
-        $this->updateStatistikBansos($validated['jenis_bansos_id'], $validated['tahun']);
+        $this->updateStatistikBansos($validated['jenis_bansos_id'], $validated['tahun_penerima']);
 
-        return redirect()->route('admin.data.bansos.penerima')
+        return redirect()->route('admin.data.bansos')
             ->with('success', 'Penerima bansos berhasil ditambahkan.');
+    }
+
+    public function bansosPenerimaEdit(PenerimaBansos $penerima)
+    {
+        return response()->json($penerima);
+    }
+
+    public function bansosPenerimaUpdate(Request $request, PenerimaBansos $penerima)
+    {
+        $validated = $request->validate([
+            'jenis_bansos_id' => 'required|exists:jenis_bansos,id',
+            'nama' => 'required|string|max:255',
+            'nik' => 'required|string|size:16',
+            'alamat' => 'nullable|string',
+            'tahun_penerima' => 'required|integer|min:2000|max:' . (date('Y') + 1),
+        ]);
+
+        // Handle status checkbox (checked = aktif, unchecked = nonaktif)
+        $validated['status'] = $request->has('status') ? 'aktif' : 'nonaktif';
+
+        $penerima->update($validated);
+
+        return redirect()->route('admin.data.bansos')
+            ->with('success', 'Penerima bansos berhasil diperbarui.');
     }
 
     public function bansosPenerimaDestroy(PenerimaBansos $penerima)
@@ -613,18 +638,13 @@ class DataDesaController extends Controller
     protected function updateStatistikBansos($jenisId, $tahun)
     {
         $jumlah = PenerimaBansos::where('jenis_bansos_id', $jenisId)
-            ->where('tahun', $tahun)
+            ->where('tahun_penerima', $tahun)
             ->where('status', 'aktif')
             ->count();
 
-        $total = PenerimaBansos::where('jenis_bansos_id', $jenisId)
-            ->where('tahun', $tahun)
-            ->where('status', 'aktif')
-            ->sum('nominal');
-
         StatistikBansos::updateOrCreate(
             ['jenis_bansos_id' => $jenisId, 'tahun' => $tahun],
-            ['jumlah_penerima' => $jumlah, 'total_anggaran' => $total]
+            ['jumlah_penerima' => $jumlah]
         );
     }
 
@@ -638,13 +658,27 @@ class DataDesaController extends Controller
         // Prepare data for the view
         $idm = [
             'skor' => $idmData->skor_idm ?? 0,
-            'status' => $idmData ? ucwords(str_replace('_', ' ', $idmData->status_idm)) : 'Belum Diisi',
-            'iks' => $idmData->iks ?? 0,
-            'ike' => $idmData->ike ?? 0,
-            'ikl' => $idmData->ikl ?? 0,
+            'status' => $idmData ? ucwords(str_replace('_', ' ', $idmData->status)) : 'Belum Diisi',
+            'iks' => $idmData->skor_iks ?? 0,
+            'ike' => $idmData->skor_ike ?? 0,
+            'ikl' => $idmData->skor_ikl ?? 0,
         ];
 
-        return view('admin.data-desa.idm', compact('idms', 'idm', 'idmData'));
+        // Prepare form data from detail_indikator
+        $data = [
+            'iks' => [],
+            'ike' => [],
+            'ikl' => [],
+        ];
+        
+        if ($idmData && $idmData->detail_indikator) {
+            $detail = is_array($idmData->detail_indikator) ? $idmData->detail_indikator : json_decode($idmData->detail_indikator, true);
+            $data['iks'] = $detail['iks'] ?? [];
+            $data['ike'] = $detail['ike'] ?? [];
+            $data['ikl'] = $detail['ikl'] ?? [];
+        }
+
+        return view('admin.data-desa.idm', compact('idms', 'idm', 'idmData', 'data'));
     }
 
     public function idmStore(Request $request)
@@ -652,13 +686,13 @@ class DataDesaController extends Controller
         $validated = $request->validate([
             'tahun' => 'required|integer|min:2000|max:' . (date('Y') + 1) . '|unique:data_idm,tahun',
             'skor_idm' => 'required|numeric|min:0|max:1',
-            'status_idm' => 'required|in:sangat_tertinggal,tertinggal,berkembang,maju,mandiri',
-            'iks' => 'nullable|numeric|min:0|max:1',
-            'ike' => 'nullable|numeric|min:0|max:1',
-            'ikl' => 'nullable|numeric|min:0|max:1',
+            'status' => 'required|in:sangat_tertinggal,tertinggal,berkembang,maju,mandiri',
+            'skor_iks' => 'nullable|numeric|min:0|max:1',
+            'skor_ike' => 'nullable|numeric|min:0|max:1',
+            'skor_ikl' => 'nullable|numeric|min:0|max:1',
             'target_status' => 'nullable|string|max:50',
             'skor_minimal' => 'nullable|numeric|min:0|max:1',
-            'penambahan_skor' => 'nullable|numeric',
+            'penambahan' => 'nullable|numeric',
         ]);
 
         DataIdm::create($validated);
@@ -669,32 +703,96 @@ class DataDesaController extends Controller
 
     public function idmUpdate(Request $request)
     {
-        $validated = $request->validate([
-            'tahun' => 'required|integer|min:2000|max:' . (date('Y') + 1),
-            'skor_idm' => 'nullable|numeric|min:0|max:1',
-            'status_idm' => 'nullable|in:sangat_tertinggal,tertinggal,berkembang,maju,mandiri',
-            'iks' => 'nullable|numeric|min:0|max:1',
-            'ike' => 'nullable|numeric|min:0|max:1',
-            'ikl' => 'nullable|numeric|min:0|max:1',
-            'target_status' => 'nullable|string|max:50',
-            'skor_minimal' => 'nullable|numeric|min:0|max:1',
-            'penambahan_skor' => 'nullable|numeric',
-            'indikator' => 'nullable|array',
-        ]);
-
-        // Store indikator data as JSON if provided
-        if (isset($validated['indikator'])) {
-            $validated['detail_indikator'] = json_encode($validated['indikator']);
-            unset($validated['indikator']);
+        $tahun = $request->input('tahun', date('Y'));
+        
+        // Get or create IDM data
+        $idmData = DataIdm::firstOrNew(['tahun' => $tahun]);
+        
+        // Process IKS indicators
+        $iksData = $request->input('iks', []);
+        $iksTotal = 0;
+        $iksCount = 0;
+        foreach ($iksData as $category => $items) {
+            if (is_array($items)) {
+                foreach ($items as $key => $value) {
+                    if ($value !== null && $value !== '') {
+                        $iksTotal += floatval($value);
+                        $iksCount++;
+                    }
+                }
+            }
         }
+        // Calculate IKS score (average of indicators, normalized to 0-1 scale, max indicator value is 5)
+        $skor_iks = $iksCount > 0 ? ($iksTotal / $iksCount) / 5 : 0;
+        
+        // Process IKE indicators
+        $ikeData = $request->input('ike', []);
+        $ikeTotal = 0;
+        $ikeCount = 0;
+        foreach ($ikeData as $category => $items) {
+            if (is_array($items)) {
+                foreach ($items as $key => $value) {
+                    if ($value !== null && $value !== '') {
+                        $ikeTotal += floatval($value);
+                        $ikeCount++;
+                    }
+                }
+            }
+        }
+        // Calculate IKE score
+        $skor_ike = $ikeCount > 0 ? ($ikeTotal / $ikeCount) / 5 : 0;
+        
+        // Process IKL indicators  
+        $iklData = $request->input('ikl', []);
+        $iklTotal = 0;
+        $iklCount = 0;
+        foreach ($iklData as $category => $items) {
+            if (is_array($items)) {
+                foreach ($items as $key => $value) {
+                    if ($value !== null && $value !== '') {
+                        $iklTotal += floatval($value);
+                        $iklCount++;
+                    }
+                }
+            }
+        }
+        // Calculate IKL score
+        $skor_ikl = $iklCount > 0 ? ($iklTotal / $iklCount) / 5 : 0;
+        
+        // Calculate IDM score (weighted average: IKS=1/3, IKE=1/3, IKL=1/3)
+        $skor_idm = ($skor_iks + $skor_ike + $skor_ikl) / 3;
+        
+        // Determine status based on IDM score
+        $status = 'sangat_tertinggal';
+        if ($skor_idm >= 0.8155) {
+            $status = 'mandiri';
+        } elseif ($skor_idm >= 0.7072) {
+            $status = 'maju';
+        } elseif ($skor_idm >= 0.5989) {
+            $status = 'berkembang';
+        } elseif ($skor_idm >= 0.4907) {
+            $status = 'tertinggal';
+        }
+        
+        // Store all indicator data as JSON
+        $detail_indikator = [
+            'iks' => $iksData,
+            'ike' => $ikeData,
+            'ikl' => $iklData,
+        ];
+        
+        // Update IDM data
+        $idmData->tahun = $tahun;
+        $idmData->skor_idm = round($skor_idm, 4);
+        $idmData->skor_iks = round($skor_iks, 4);
+        $idmData->skor_ike = round($skor_ike, 4);
+        $idmData->skor_ikl = round($skor_ikl, 4);
+        $idmData->status = $status;
+        $idmData->detail_indikator = $detail_indikator;
+        $idmData->save();
 
-        DataIdm::updateOrCreate(
-            ['tahun' => $validated['tahun']],
-            $validated
-        );
-
-        return redirect()->route('admin.data.idm', ['tahun' => $validated['tahun']])
-            ->with('success', 'Data IDM berhasil diperbarui.');
+        return redirect()->route('admin.data.idm', ['tahun' => $tahun])
+            ->with('success', 'Data IDM berhasil diperbarui. Skor IDM: ' . number_format($skor_idm, 4) . ' (' . ucwords(str_replace('_', ' ', $status)) . ')');
     }
 
     public function idmDestroy(DataIdm $idm)
@@ -710,51 +808,96 @@ class DataDesaController extends Controller
     {
         $tahun = request('tahun', date('Y'));
         $sdgsData = DataSdgs::where('tahun', $tahun)->first();
-        $sdgss = DataSdgs::orderBy('tahun', 'desc')->paginate(10);
+        $sdgsHistory = DataSdgs::orderBy('tahun', 'desc')->paginate(10);
         $sdgsLabels = DataSdgs::getSdgsLabels();
+        
+        // Get latest data for display
+        $latestData = DataSdgs::orderBy('tahun', 'desc')->first();
+        $latestYear = $latestData->tahun ?? date('Y');
+        $currentScore = $latestData->skor_total ?? 0;
+        
+        // Prepare scores array for the grid (1-18)
+        $scores = [];
+        if ($latestData) {
+            for ($i = 1; $i <= 18; $i++) {
+                $scores[$i] = $latestData->{"sdg_{$i}"} ?? 0;
+            }
+        }
 
-        return view('admin.data-desa.sdgs', compact('sdgss', 'sdgsLabels', 'sdgsData'));
+        return view('admin.data-desa.sdgs', compact('sdgsHistory', 'sdgsLabels', 'sdgsData', 'latestYear', 'currentScore', 'scores'));
     }
 
     public function sdgsStore(Request $request)
     {
         $rules = [
             'tahun' => 'required|integer|min:2000|max:' . (date('Y') + 1) . '|unique:data_sdgs,tahun',
-            'skor_total' => 'nullable|numeric|min:0|max:100',
         ];
 
-        // Add validation for all SDGs scores
+        // Add validation for all SDGs scores (form uses skor_1, skor_2, etc.)
         for ($i = 1; $i <= 18; $i++) {
-            $rules["sdgs_{$i}"] = 'nullable|numeric|min:0|max:100';
+            $rules["skor_{$i}"] = 'nullable|numeric|min:0|max:100';
         }
 
         $validated = $request->validate($rules);
+        
+        // Map form fields to database columns and calculate total
+        $data = ['tahun' => $validated['tahun']];
+        $total = 0;
+        $count = 0;
+        
+        for ($i = 1; $i <= 18; $i++) {
+            $value = $validated["skor_{$i}"] ?? null;
+            $data["sdg_{$i}"] = $value;
+            if ($value !== null && $value !== '') {
+                $total += floatval($value);
+                $count++;
+            }
+        }
+        
+        // Calculate average score
+        $data['skor_total'] = $count > 0 ? round($total / $count, 2) : 0;
 
-        DataSdgs::create($validated);
+        DataSdgs::create($data);
 
         return redirect()->route('admin.data.sdgs')
             ->with('success', 'Data SDGs berhasil ditambahkan.');
     }
 
-    public function sdgsUpdate(Request $request)
+    public function sdgsEdit(DataSdgs $sdgs)
     {
-        $rules = [
-            'tahun' => 'required|integer|min:2000|max:' . (date('Y') + 1),
-            'skor_total' => 'nullable|numeric|min:0|max:100',
-        ];
+        return response()->json($sdgs);
+    }
+
+    public function sdgsUpdate(Request $request, DataSdgs $sdgs)
+    {
+        $rules = [];
 
         for ($i = 1; $i <= 18; $i++) {
-            $rules["sdgs_{$i}"] = 'nullable|numeric|min:0|max:100';
+            $rules["skor_{$i}"] = 'nullable|numeric|min:0|max:100';
         }
 
         $validated = $request->validate($rules);
+        
+        // Map form fields to database columns and calculate total
+        $data = [];
+        $total = 0;
+        $count = 0;
+        
+        for ($i = 1; $i <= 18; $i++) {
+            $value = $validated["skor_{$i}"] ?? null;
+            $data["sdg_{$i}"] = $value;
+            if ($value !== null && $value !== '') {
+                $total += floatval($value);
+                $count++;
+            }
+        }
+        
+        // Calculate average score
+        $data['skor_total'] = $count > 0 ? round($total / $count, 2) : 0;
 
-        DataSdgs::updateOrCreate(
-            ['tahun' => $validated['tahun']],
-            $validated
-        );
+        $sdgs->update($data);
 
-        return redirect()->route('admin.data.sdgs', ['tahun' => $validated['tahun']])
+        return redirect()->route('admin.data.sdgs')
             ->with('success', 'Data SDGs berhasil diperbarui.');
     }
 

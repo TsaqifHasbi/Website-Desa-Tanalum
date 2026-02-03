@@ -234,6 +234,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         Route::post('/bansos/import', [DataDesaController::class, 'bansosImport'])->name('bansos.import');
         Route::get('/bansos/penerima', [DataDesaController::class, 'bansosPenerima'])->name('bansos.penerima');
         Route::post('/bansos/penerima', [DataDesaController::class, 'bansosPenerimaStore'])->name('bansos.penerima.store');
+        Route::get('/bansos/penerima/{penerima}/edit', [DataDesaController::class, 'bansosPenerimaEdit'])->name('bansos.penerima.edit');
+        Route::put('/bansos/penerima/{penerima}', [DataDesaController::class, 'bansosPenerimaUpdate'])->name('bansos.penerima.update');
         Route::delete('/bansos/penerima/{penerima}', [DataDesaController::class, 'bansosPenerimaDestroy'])->name('bansos.penerima.destroy');
         Route::get('/idm', [DataDesaController::class, 'idm'])->name('idm');
         Route::post('/idm', [DataDesaController::class, 'idmStore'])->name('idm.store');
@@ -241,7 +243,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         Route::delete('/idm/{idm}', [DataDesaController::class, 'idmDestroy'])->name('idm.destroy');
         Route::get('/sdgs', [DataDesaController::class, 'sdgs'])->name('sdgs');
         Route::post('/sdgs', [DataDesaController::class, 'sdgsStore'])->name('sdgs.store');
-        Route::put('/sdgs', [DataDesaController::class, 'sdgsUpdate'])->name('sdgs.update');
+        Route::get('/sdgs/{sdgs}/edit', [DataDesaController::class, 'sdgsEdit'])->name('sdgs.edit');
+        Route::put('/sdgs/{sdgs}', [DataDesaController::class, 'sdgsUpdate'])->name('sdgs.update');
         Route::delete('/sdgs/{sdgs}', [DataDesaController::class, 'sdgsDestroy'])->name('sdgs.destroy');
         Route::get('/stunting', [DataDesaController::class, 'stunting'])->name('stunting');
         Route::post('/stunting', [DataDesaController::class, 'stuntingStore'])->name('stunting.store');
