@@ -180,11 +180,11 @@
                                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                                 </div>
                                 <div>
-                                    <label for="jumlah_dusun" class="block text-sm font-medium text-gray-700 mb-1">Jumlah
-                                        Dusun</label>
-                                    <input type="number" name="jumlah_dusun" id="jumlah_dusun"
-                                        value="{{ old('jumlah_dusun', $profil->jumlah_dusun ?? '') }}"
-                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                                    <label for="jumlah_dusun" class="block text-sm font-medium text-gray-700 mb-1">Jumlah Dusun</label>
+                                    <input type="number" id="jumlah_dusun"
+                                        value="{{ $profil->jumlah_dusun ?? '4' }}" readonly
+                                        class="w-full px-4 py-2 border border-gray-200 bg-gray-50 text-gray-500 rounded-lg cursor-not-allowed">
+                                    <p class="mt-1 text-[10px] text-gray-400 italic">* Otomatis dari data Wilayah/Dusun</p>
                                 </div>
                             </div>
 
@@ -230,6 +230,14 @@
                                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                                     placeholder="-0.xxxx, 117.xxxx">
                                 <p class="mt-1 text-sm text-gray-500">Contoh: -0.4948, 117.1436</p>
+                            </div>
+
+                            <div>
+                                <label for="peta_desa_iframe" class="block text-sm font-medium text-gray-700 mb-1">Embed Peta (Iframe Google Maps)</label>
+                                <textarea name="peta_desa_iframe" id="peta_desa_iframe" rows="4"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                                    placeholder="Tempel kode iframe dari Google Maps di sini">{{ old('peta_desa_iframe', $profil->peta_desa ?? '') }}</textarea>
+                                <p class="mt-1 text-sm text-gray-500">Jika diisi, peta ini akan digunakan menggantikan titik koordinat di atas.</p>
                             </div>
                         </div>
 

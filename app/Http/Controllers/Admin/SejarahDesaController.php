@@ -151,8 +151,8 @@ class SejarahDesaController extends Controller
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
             'foto' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'tahun_mulai' => 'nullable|integer|min:1900|max:' . (date('Y') + 10),
-            'tahun_selesai' => 'nullable|integer|min:1900|max:' . (date('Y') + 10) . '|gte:tahun_mulai',
+            'tahun_mulai' => 'nullable|integer|min:1800|max:' . (date('Y') + 10),
+            'tahun_selesai' => 'nullable|integer|min:1800|max:' . (date('Y') + 10) . '|gte:tahun_mulai',
             'keterangan' => 'nullable|string',
             'urutan' => 'nullable|integer',
             'is_active' => 'nullable|boolean',
@@ -187,8 +187,8 @@ class SejarahDesaController extends Controller
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
             'foto' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'tahun_mulai' => 'nullable|integer|min:1900|max:' . (date('Y') + 10),
-            'tahun_selesai' => 'nullable|integer|min:1900|max:' . (date('Y') + 10) . '|gte:tahun_mulai',
+            'tahun_mulai' => 'nullable|integer|min:1800|max:' . (date('Y') + 10),
+            'tahun_selesai' => 'nullable|integer|min:1800|max:' . (date('Y') + 10) . '|gte:tahun_mulai',
             'keterangan' => 'nullable|string',
             'urutan' => 'nullable|integer',
             'is_active' => 'nullable|boolean',

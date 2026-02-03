@@ -48,7 +48,7 @@
                                 <input type="number" name="tahun_mulai" id="tahun_mulai"
                                     value="{{ old('tahun_mulai', $kepala->tahun_mulai ?? '') }}"
                                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 @error('tahun_mulai') border-red-500 @enderror"
-                                    placeholder="Contoh: 1990" min="1900" max="{{ date('Y') + 10 }}">
+                                    placeholder="Contoh: 1990" min="1800" max="{{ date('Y') + 10 }}">
                                 @error('tahun_mulai')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
@@ -58,7 +58,7 @@
                                 <input type="number" name="tahun_selesai" id="tahun_selesai"
                                     value="{{ old('tahun_selesai', $kepala->tahun_selesai ?? '') }}"
                                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 @error('tahun_selesai') border-red-500 @enderror"
-                                    placeholder="Kosongkan jika masih menjabat" min="1900" max="{{ date('Y') + 10 }}">
+                                    placeholder="Kosongkan jika masih menjabat" min="1800" max="{{ date('Y') + 10 }}">
                                 @error('tahun_selesai')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror

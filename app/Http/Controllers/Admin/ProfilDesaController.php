@@ -30,42 +30,52 @@ class ProfilDesaController extends Controller
             'nama_desa' => 'required|string|max:255',
             'kode_desa' => 'nullable|string|max:50',
             'kecamatan' => 'required|string|max:255',
-            'kode_kecamatan' => 'nullable|string|max:50',
             'kabupaten' => 'required|string|max:255',
-            'kode_kabupaten' => 'nullable|string|max:50',
             'provinsi' => 'required|string|max:255',
-            'kode_provinsi' => 'nullable|string|max:50',
             'kode_pos' => 'nullable|string|max:10',
             'alamat_kantor' => 'nullable|string',
             'telepon' => 'nullable|string|max:20',
             'email' => 'nullable|email|max:255',
             'website' => 'nullable|url|max:255',
             'luas_wilayah' => 'nullable|numeric',
-            'jumlah_dusun' => 'nullable|integer',
-            'jumlah_rw' => 'nullable|integer',
-            'jumlah_rt' => 'nullable|integer',
+            'ketinggian' => 'nullable|string|max:100',
             'batas_utara' => 'nullable|string|max:255',
             'batas_selatan' => 'nullable|string|max:255',
             'batas_timur' => 'nullable|string|max:255',
             'batas_barat' => 'nullable|string|max:255',
-            'koordinat_lat' => 'nullable|numeric',
-            'koordinat_lng' => 'nullable|numeric',
+            'koordinat' => 'nullable|string|max:100',
             'visi' => 'nullable|string',
             'misi' => 'nullable|string',
             'sejarah' => 'nullable|string',
             'logo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'peta_desa' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
+            'peta_desa_iframe' => 'nullable|string',
             'foto_kantor' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
             'struktur_organisasi' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
         ]);
 
+        // Process coordinates
+        if ($request->filled('koordinat')) {
+            $coords = explode(',', $request->koordinat);
+            if (count($coords) === 2) {
+                $validated['latitude'] = trim($coords[0]);
+                $validated['longitude'] = trim($coords[1]);
+            }
+        }
+        unset($validated['koordinat']);
+
+        // Handle Peta Desa Iframe
+        if ($request->has('peta_desa_iframe')) {
+            $validated['peta_desa'] = $request->peta_desa_iframe;
+        }
+        unset($validated['peta_desa_iframe']);
+
         $profil = ProfilDesa::first();
 
         // Handle file uploads
-        foreach (['logo', 'peta_desa', 'foto_kantor', 'struktur_organisasi'] as $field) {
+        foreach (['logo', 'foto_kantor', 'struktur_organisasi'] as $field) {
             if ($request->hasFile($field)) {
                 // Delete old file
-                if ($profil->$field) {
+                if ($profil && $profil->$field) {
                     Storage::disk('public')->delete($profil->$field);
                 }
                 $validated[$field] = $request->file($field)->store('profil', 'public');

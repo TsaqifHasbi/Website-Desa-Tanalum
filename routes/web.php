@@ -221,19 +221,18 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     // PPID
     Route::prefix('ppid')->name('ppid.')->group(function () {
         Route::get('/', [AdminPpidController::class, 'index'])->name('index');
-        Route::get('/dokumen', [AdminPpidController::class, 'dokumen'])->name('dokumen');
-        Route::get('/dokumen/create', [AdminPpidController::class, 'createDokumen'])->name('dokumen.create');
-        Route::post('/dokumen', [AdminPpidController::class, 'storeDokumen'])->name('dokumen.store');
-        Route::get('/dokumen/{id}/edit', [AdminPpidController::class, 'editDokumen'])->name('dokumen.edit');
-        Route::put('/dokumen/{id}', [AdminPpidController::class, 'updateDokumen'])->name('dokumen.update');
-        Route::delete('/dokumen/{id}', [AdminPpidController::class, 'destroyDokumen'])->name('dokumen.destroy');
+        Route::get('/dokumen/create', [AdminPpidController::class, 'create'])->name('dokumen.create');
+        Route::post('/dokumen', [AdminPpidController::class, 'store'])->name('dokumen.store');
+        Route::get('/dokumen/{dokumen}/edit', [AdminPpidController::class, 'edit'])->name('dokumen.edit');
+        Route::put('/dokumen/{dokumen}', [AdminPpidController::class, 'update'])->name('dokumen.update');
+        Route::delete('/dokumen/{dokumen}', [AdminPpidController::class, 'destroy'])->name('dokumen.destroy');
         Route::get('/permohonan', [AdminPpidController::class, 'permohonan'])->name('permohonan');
-        Route::get('/permohonan/{id}', [AdminPpidController::class, 'showPermohonan'])->name('permohonan.show');
-        Route::put('/permohonan/{id}', [AdminPpidController::class, 'updatePermohonan'])->name('permohonan.update');
+        Route::get('/permohonan/{permohonan}', [AdminPpidController::class, 'permohonanShow'])->name('permohonan.show');
+        Route::put('/permohonan/{permohonan}', [AdminPpidController::class, 'permohonanUpdate'])->name('permohonan.update');
         Route::get('/kategori', [AdminPpidController::class, 'kategori'])->name('kategori');
         Route::post('/kategori', [AdminPpidController::class, 'kategoriStore'])->name('kategori.store');
-        Route::put('/kategori/{id}', [AdminPpidController::class, 'kategoriUpdate'])->name('kategori.update');
-        Route::delete('/kategori/{id}', [AdminPpidController::class, 'kategoriDestroy'])->name('kategori.destroy');
+        Route::put('/kategori/{kategori}', [AdminPpidController::class, 'kategoriUpdate'])->name('kategori.update');
+        Route::delete('/kategori/{kategori}', [AdminPpidController::class, 'kategoriDestroy'])->name('kategori.destroy');
     });
 
     // Data Desa (Statistik)

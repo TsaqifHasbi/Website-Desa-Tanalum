@@ -30,6 +30,7 @@ class ProfilDesa extends Model
         'misi',
         'sejarah',
         'luas_wilayah',
+        'ketinggian',
         'jumlah_penduduk',
         'jumlah_laki_laki',
         'jumlah_perempuan',
@@ -82,5 +83,41 @@ class ProfilDesa extends Model
         ]);
 
         return implode(', ', $parts);
+    }
+
+    /**
+     * Get jumlah dusun from Dusun model.
+     */
+    public function getJumlahDusunAttribute(): int
+    {
+        return \App\Models\Dusun::count();
+    }
+
+    /**
+     * Get jumlah RT from Dusun model.
+     */
+    public function getJumlahRtAttribute(): int
+    {
+        return \App\Models\Dusun::sum('jumlah_rt');
+    }
+
+    /**
+     * Get jumlah RW from Dusun model.
+     */
+    public function getJumlahRwAttribute(): int
+    {
+        return \App\Models\Dusun::sum('jumlah_rw');
+    }
+
+    /**
+     * Get combined latitude and longitude.
+     */
+    public function getKoordinatAttribute(): string
+    {
+        if (!$this->latitude || !$this->longitude) {
+            return '';
+        }
+
+        return $this->latitude . ', ' . $this->longitude;
     }
 }

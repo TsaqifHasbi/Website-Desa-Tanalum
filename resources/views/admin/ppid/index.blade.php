@@ -136,7 +136,7 @@
                                         <i class="fas fa-file-pdf text-red-600"></i>
                                     </div>
                                     <div>
-                                        <div class="text-sm font-medium text-gray-800">{{ Str::limit($dokumen->nama, 50) }}
+                                        <div class="text-sm font-medium text-gray-800">{{ Str::limit($dokumen->judul, 50) }}
                                         </div>
                                         <div class="text-xs text-gray-500">
                                             {{ $dokumen->nomor_dokumen ?? '-' }} |

@@ -145,7 +145,7 @@ class PpidController extends Controller
         $dokumen = DokumenPpid::where('slug', $slug)->active()->firstOrFail();
         $dokumen->incrementDownloads();
 
-        return Storage::download($dokumen->file_path, $dokumen->judul . '.' . pathinfo($dokumen->file_path, PATHINFO_EXTENSION));
+        return Storage::disk('public')->download($dokumen->file_path, $dokumen->judul . '.' . pathinfo($dokumen->file_path, PATHINFO_EXTENSION));
     }
 
     public function view($slug)
@@ -153,6 +153,6 @@ class PpidController extends Controller
         $dokumen = DokumenPpid::where('slug', $slug)->active()->firstOrFail();
         $dokumen->incrementViews();
 
-        return response()->file(Storage::path($dokumen->file_path));
+        return response()->file(Storage::disk('public')->path($dokumen->file_path));
     }
 }

@@ -28,33 +28,33 @@
                 <div class="space-y-6">
                     <!-- Nama Dokumen -->
                     <div>
-                        <label for="nama" class="block text-sm font-medium text-gray-700 mb-2">
+                        <label for="judul" class="block text-sm font-medium text-gray-700 mb-2">
                             Nama Dokumen <span class="text-red-500">*</span>
                         </label>
-                        <input type="text" name="nama" id="nama" value="{{ old('nama', $dokumen->nama ?? '') }}"
+                        <input type="text" name="judul" id="judul" value="{{ old('judul', $dokumen->judul ?? '') }}"
                             required
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">
-                        @error('nama')
+                        @error('judul')
                             <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <!-- Kategori -->
                     <div>
-                        <label for="kategori_ppid_id" class="block text-sm font-medium text-gray-700 mb-2">
+                        <label for="kategori_id" class="block text-sm font-medium text-gray-700 mb-2">
                             Kategori <span class="text-red-500">*</span>
                         </label>
-                        <select name="kategori_ppid_id" id="kategori_ppid_id" required
+                        <select name="kategori_id" id="kategori_id" required
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500">
                             <option value="">Pilih Kategori</option>
                             @foreach ($kategoris as $kategori)
                                 <option value="{{ $kategori->id }}"
-                                    {{ old('kategori_ppid_id', $dokumen->kategori_ppid_id ?? '') == $kategori->id ? 'selected' : '' }}>
+                                    {{ old('kategori_id', $dokumen->kategori_id ?? '') == $kategori->id ? 'selected' : '' }}>
                                     {{ $kategori->nama }} ({{ ucfirst(str_replace('_', ' ', $kategori->jenis)) }})
                                 </option>
                             @endforeach
                         </select>
-                        @error('kategori_ppid_id')
+                        @error('kategori_id')
                             <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                         @enderror
                     </div>

@@ -131,92 +131,75 @@
 
                 <!-- Kepala Desa Timeline -->
                 @if(count($kepalaDesa ?? []) > 0)
-                    <div class="relative">
-                        <!-- Timeline Line -->
-                        <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-1 bg-gradient-to-b from-primary-500 to-primary-300 h-full rounded-full"></div>
+                    <div class="relative pt-8">
+                        <!-- Vertical Line (Desktop: Center, Mobile: Left) -->
+                        <div class="absolute left-4 md:left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-primary-500 via-primary-400 to-gray-200 transform md:-translate-x-1/2 rounded-full"></div>
 
-                        <!-- Kepala Desa Items -->
-                        @foreach($kepalaDesa as $index => $kepala)
-                            <div class="relative flex flex-col md:flex-row items-center mb-12 last:mb-0" 
-                                data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
-                                
-                                <!-- Left Side (Even: Content, Odd: Image on Desktop) -->
-                                <div class="w-full md:w-5/12 {{ $index % 2 == 0 ? 'md:text-right md:pr-8' : 'md:order-2 md:text-left md:pl-8' }}">
-                                    @if($index % 2 == 0)
-                                        <!-- Content on Left -->
-                                        <div class="bg-gray-50 rounded-2xl p-6 hover:shadow-lg transition-shadow duration-300">
-                                            <h3 class="text-xl font-bold text-gray-900 mb-2">{{ $kepala->nama }}</h3>
-                                            <div class="inline-flex items-center px-3 py-1 bg-primary-100 text-primary-700 text-sm font-semibold rounded-full mb-3">
-                                                <i class="fas fa-calendar-alt mr-2"></i>
-                                                {{ $kepala->periode }}
+                        <div class="space-y-12 md:space-y-24">
+                            @foreach($kepalaDesa as $index => $kepala)
+                                <div class="relative flex flex-col md:flex-row items-center w-full" data-aos="fade-up">
+                                    
+                                    <!-- Timeline Dot -->
+                                    <div class="absolute left-4 md:left-1/2 w-6 h-6 bg-white border-4 border-primary-600 rounded-full transform -translate-x-1/2 z-10 shadow-sm hidden md:flex items-center justify-center">
+                                        <div class="w-2 h-2 bg-primary-600 rounded-full animate-pulse"></div>
+                                    </div>
+                                    <div class="absolute left-4 md:hidden w-4 h-4 bg-primary-600 rounded-full transform -translate-x-1/2 z-10 border-2 border-white shadow-sm mt-8"></div>
+
+                                    <!-- Content Container -->
+                                    <div class="flex flex-col md:flex-row items-center w-full md:gap-0 pl-10 md:pl-0">
+                                        
+                                        <!-- Card (Alternating on Desktop) -->
+                                        <div class="w-full md:w-[45%] {{ $index % 2 == 0 ? 'md:order-1' : 'md:order-3' }}">
+                                            <div class="bg-white rounded-3xl shadow-md hover:shadow-xl transition-all duration-500 overflow-hidden border border-gray-100 group">
+                                                <div class="flex flex-col sm:flex-row h-full">
+                                                    <!-- Image -->
+                                                    <div class="w-full sm:w-40 md:w-48 h-64 sm:h-auto shrink-0 relative overflow-hidden">
+                                                        @if($kepala->foto)
+                                                            <img src="{{ Storage::url($kepala->foto) }}" 
+                                                                alt="{{ $kepala->nama }}"
+                                                                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                                                        @else
+                                                            <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                                                                <i class="fas fa-user-tie text-5xl text-gray-300"></i>
+                                                            </div>
+                                                        @endif
+                                                        <div class="absolute inset-0 bg-primary-600/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                                    </div>
+
+                                                    <!-- Details -->
+                                                    <div class="p-6 flex-1 flex flex-col justify-center">
+                                                        <span class="text-xs font-bold text-primary-600 uppercase tracking-widest mb-2 block">Kepala Desa {{ $index + 1 }}</span>
+                                                        <h3 class="text-xl md:text-2xl font-bold text-gray-900 mb-2 leading-tight">{{ $kepala->nama }}</h3>
+                                                        <div class="inline-flex items-center text-sm font-semibold text-gray-500 mb-4">
+                                                            <div class="w-8 h-[2px] bg-primary-500 mr-2"></div>
+                                                            {{ $kepala->periode }}
+                                                        </div>
+                                                        @if($kepala->keterangan)
+                                                            <p class="text-gray-600 text-sm italic line-clamp-3">"{{ $kepala->keterangan }}"</p>
+                                                        @endif
+                                                    </div>
+                                                </div>
                                             </div>
-                                            @if($kepala->keterangan)
-                                                <p class="text-gray-600 text-sm">{{ $kepala->keterangan }}</p>
-                                            @endif
                                         </div>
-                                    @else
-                                        <!-- Image on Left (for Mobile and Desktop) -->
-                                        <div class="flex {{ $index % 2 == 0 ? 'justify-end' : 'justify-start' }}">
-                                            @if($kepala->foto)
-                                                <div class="w-48 h-56 rounded-2xl overflow-hidden shadow-lg ring-4 ring-white">
-                                                    <img src="{{ Storage::url($kepala->foto) }}" alt="{{ $kepala->nama }}"
-                                                        class="w-full h-full object-cover">
-                                                </div>
-                                            @else
-                                                <div class="w-48 h-56 rounded-2xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-lg ring-4 ring-white">
-                                                    <i class="fas fa-user text-5xl text-white/80"></i>
-                                                </div>
-                                            @endif
-                                        </div>
-                                    @endif
-                                </div>
 
-                                <!-- Center Timeline Dot -->
-                                <div class="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-primary-600 rounded-full border-4 border-white shadow-lg z-10 items-center justify-center">
-                                    <div class="w-2 h-2 bg-white rounded-full"></div>
+                                        <!-- Spacer for Center Dot -->
+                                        <div class="hidden md:block w-[10%] order-2"></div>
+                                        
+                                        <!-- Place Holder for Empty Side -->
+                                        <div class="hidden md:block w-[45%] {{ $index % 2 == 0 ? 'order-3' : 'order-1' }}"></div>
+                                    </div>
                                 </div>
-
-                                <!-- Right Side (Even: Image, Odd: Content on Desktop) -->
-                                <div class="w-full md:w-5/12 {{ $index % 2 == 0 ? 'md:order-2 md:text-left md:pl-8' : 'md:text-right md:pr-8' }} mt-4 md:mt-0">
-                                    @if($index % 2 == 0)
-                                        <!-- Image on Right -->
-                                        <div class="flex {{ $index % 2 == 0 ? 'justify-start' : 'justify-end' }}">
-                                            @if($kepala->foto)
-                                                <div class="w-48 h-56 rounded-2xl overflow-hidden shadow-lg ring-4 ring-white">
-                                                    <img src="{{ Storage::url($kepala->foto) }}" alt="{{ $kepala->nama }}"
-                                                        class="w-full h-full object-cover">
-                                                </div>
-                                            @else
-                                                <div class="w-48 h-56 rounded-2xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-lg ring-4 ring-white">
-                                                    <i class="fas fa-user text-5xl text-white/80"></i>
-                                                </div>
-                                            @endif
-                                        </div>
-                                    @else
-                                        <!-- Content on Right -->
-                                        <div class="bg-gray-50 rounded-2xl p-6 hover:shadow-lg transition-shadow duration-300">
-                                            <h3 class="text-xl font-bold text-gray-900 mb-2">{{ $kepala->nama }}</h3>
-                                            <div class="inline-flex items-center px-3 py-1 bg-primary-100 text-primary-700 text-sm font-semibold rounded-full mb-3">
-                                                <i class="fas fa-calendar-alt mr-2"></i>
-                                                {{ $kepala->periode }}
-                                            </div>
-                                            @if($kepala->keterangan)
-                                                <p class="text-gray-600 text-sm">{{ $kepala->keterangan }}</p>
-                                            @endif
-                                        </div>
-                                    @endif
-                                </div>
-                            </div>
-                        @endforeach
+                            @endforeach
+                        </div>
                     </div>
                 @else
-                    <!-- Empty State / Placeholder -->
-                    <div class="text-center py-12" data-aos="fade-up">
-                        <div class="w-24 h-24 mx-auto bg-gray-100 rounded-full flex items-center justify-center mb-6">
-                            <i class="fas fa-landmark text-4xl text-gray-400"></i>
+                    <!-- Empty State -->
+                    <div class="text-center py-20 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200" data-aos="fade-up">
+                        <div class="w-24 h-24 mx-auto bg-white rounded-full flex items-center justify-center mb-6 shadow-sm">
+                            <i class="fas fa-landmark text-4xl text-primary-200"></i>
                         </div>
-                        <p class="text-gray-500 text-lg">Data riwayat kepemerintahan belum tersedia.</p>
-                        <p class="text-gray-400 mt-2">Informasi akan ditambahkan segera.</p>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Belum Ada Data</h3>
+                        <p class="text-gray-500 max-w-sm mx-auto">Riwayat kepemerintahan sedang dalam tahap pengumpulan data dan akan segera diperbarui.</p>
                     </div>
                 @endif
             </div>

@@ -99,7 +99,7 @@
                                         <!-- Document Info -->
                                         <div class="flex-1 min-w-0">
                                             <h3 class="text-lg font-semibold text-gray-800 mb-1">
-                                                {{ $dokumen->nama }}
+                                                {{ $dokumen->judul }}
                                             </h3>
                                             <p class="text-sm text-gray-600 mb-2 line-clamp-2">
                                                 {{ $dokumen->deskripsi ?? '-' }}
