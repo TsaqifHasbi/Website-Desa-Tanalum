@@ -41,7 +41,7 @@
                         @endif
                         <div class="prose max-w-none text-gray-600">
                             {!! $profil->deskripsi ??
-                                '<p>Desa Tanalum merupakan salah satu desa yang terletak di Kecamatan Marang Kayu, Kabupaten Kutai Kartanegara, Provinsi Kalimantan Timur.</p>' !!}
+                                '<p>Desa Tanalum merupakan salah satu desa yang terletak di Kecamatan Rembang, Kabupaten Purbalingga, Provinsi Jawa Tengah. Desa ini memiliki sejarah panjang yang dimulai dari pemukiman masyarakat pesisir yang mengandalkan hasil perkebunan dan pertanian sebagai mata pencaharian utama. Seiring berjalannya waktu, Desa Tanalum berkembang menjadi desa yang memiliki potensi wisata curug yang menarik.</p>' !!}
                         </div>
                     </div>
 

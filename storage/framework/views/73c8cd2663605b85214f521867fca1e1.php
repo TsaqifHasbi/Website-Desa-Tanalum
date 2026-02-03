@@ -1,8 +1,8 @@
-@extends('layouts.admin')
 
-@section('title', 'Potensi Desa')
 
-@section('content')
+<?php $__env->startSection('title', 'Potensi Desa'); ?>
+
+<?php $__env->startSection('content'); ?>
     <div class="space-y-6">
         <!-- Header -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -11,12 +11,12 @@
                 <p class="text-gray-600">Kelola data potensi desa</p>
             </div>
             <div class="flex items-center gap-3">
-                <a href="{{ route('admin.potensi.kategori') }}"
+                <a href="<?php echo e(route('admin.potensi.kategori')); ?>"
                     class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition flex items-center gap-2">
                     <i class="fas fa-tags"></i>
                     <span>Kategori</span>
                 </a>
-                <a href="{{ route('admin.potensi.create') }}"
+                <a href="<?php echo e(route('admin.potensi.create')); ?>"
                     class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition flex items-center gap-2">
                     <i class="fas fa-plus"></i>
                     <span>Tambah Potensi</span>
@@ -24,29 +24,31 @@
             </div>
         </div>
 
-        @if (session('success'))
+        <?php if(session('success')): ?>
             <div class="p-4 bg-green-100 border border-green-200 text-green-700 rounded-lg">
-                {{ session('success') }}
+                <?php echo e(session('success')); ?>
+
             </div>
-        @endif
+        <?php endif; ?>
 
         <!-- Filter -->
         <div class="bg-white rounded-xl shadow-sm p-4">
-            <form action="{{ route('admin.potensi.index') }}" method="GET" class="flex flex-wrap gap-4">
+            <form action="<?php echo e(route('admin.potensi.index')); ?>" method="GET" class="flex flex-wrap gap-4">
                 <div class="flex-1 min-w-[200px]">
-                    <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari potensi..."
+                    <input type="text" name="q" value="<?php echo e(request('q')); ?>" placeholder="Cari potensi..."
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                 </div>
                 <div class="w-48">
                     <select name="kategori"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                         <option value="">Semua Kategori</option>
-                        @foreach ($kategoris as $kategori)
-                            <option value="{{ $kategori->id }}"
-                                {{ request('kategori') == $kategori->id ? 'selected' : '' }}>
-                                {{ $kategori->nama }}
+                        <?php $__currentLoopData = $kategoris; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $kategori): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($kategori->id); ?>"
+                                <?php echo e(request('kategori') == $kategori->id ? 'selected' : ''); ?>>
+                                <?php echo e($kategori->nama); ?>
+
                             </option>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </select>
                 </div>
                 <button type="submit"
@@ -74,60 +76,61 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
-                        @forelse($potensis as $potensi)
+                        <?php $__empty_1 = true; $__currentLoopData = $potensis; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $potensi): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                             <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-4">
-                                        @if ($potensi->gambar_utama)
-                                            <img src="{{ asset('storage/' . $potensi->gambar_utama) }}" alt="{{ $potensi->nama }}"
+                                        <?php if($potensi->gambar_utama): ?>
+                                            <img src="<?php echo e(asset('storage/' . $potensi->gambar_utama)); ?>" alt="<?php echo e($potensi->nama); ?>"
                                                 class="w-16 h-16 object-cover rounded-lg">
-                                        @else
+                                        <?php else: ?>
                                             <div class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
                                                 <i class="fas fa-image text-gray-400 text-xl"></i>
                                             </div>
-                                        @endif
+                                        <?php endif; ?>
                                         <div>
-                                            <h3 class="font-semibold text-gray-800">{{ $potensi->nama }}</h3>
+                                            <h3 class="font-semibold text-gray-800"><?php echo e($potensi->nama); ?></h3>
                                             <p class="text-sm text-gray-500 line-clamp-1">
-                                                {{ Str::limit(strip_tags($potensi->deskripsi), 60) }}</p>
+                                                <?php echo e(Str::limit(strip_tags($potensi->deskripsi), 60)); ?></p>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
-                                    @if ($potensi->kategori)
+                                    <?php if($potensi->kategori): ?>
                                         <span class="px-3 py-1 bg-primary-100 text-primary-700 rounded-full text-sm">
-                                            {{ $potensi->kategori->nama }}
+                                            <?php echo e($potensi->kategori->nama); ?>
+
                                         </span>
-                                    @else
+                                    <?php else: ?>
                                         <span class="text-gray-400">-</span>
-                                    @endif
+                                    <?php endif; ?>
                                 </td>
                                 <td class="px-6 py-4">
-                                    @if ($potensi->is_active)
+                                    <?php if($potensi->is_active): ?>
                                         <span
                                             class="inline-flex items-center gap-1 px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">
                                             <i class="fas fa-check-circle text-xs"></i>
                                             Aktif
                                         </span>
-                                    @else
+                                    <?php else: ?>
                                         <span
                                             class="inline-flex items-center gap-1 px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm">
                                             <i class="fas fa-times-circle text-xs"></i>
                                             Nonaktif
                                         </span>
-                                    @endif
+                                    <?php endif; ?>
                                 </td>
                                 <td class="px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
-                                        <a href="{{ route('admin.potensi.edit', $potensi) }}"
+                                        <a href="<?php echo e(route('admin.potensi.edit', $potensi)); ?>"
                                             class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition" title="Edit">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <form action="{{ route('admin.potensi.destroy', $potensi) }}" method="POST"
+                                        <form action="<?php echo e(route('admin.potensi.destroy', $potensi)); ?>" method="POST"
                                             class="inline"
                                             onsubmit="return confirm('Apakah Anda yakin ingin menghapus potensi ini?')">
-                                            @csrf
-                                            @method('DELETE')
+                                            <?php echo csrf_field(); ?>
+                                            <?php echo method_field('DELETE'); ?>
                                             <button type="submit"
                                                 class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
                                                 title="Hapus">
@@ -137,29 +140,32 @@
                                     </div>
                                 </td>
                             </tr>
-                        @empty
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                             <tr>
                                 <td colspan="4" class="px-6 py-12 text-center text-gray-500">
                                     <div class="flex flex-col items-center">
                                         <i class="fas fa-leaf text-4xl text-gray-300 mb-3"></i>
                                         <p>Belum ada data potensi desa</p>
-                                        <a href="{{ route('admin.potensi.create') }}"
+                                        <a href="<?php echo e(route('admin.potensi.create')); ?>"
                                             class="mt-2 text-primary-600 hover:underline">
                                             Tambah potensi pertama
                                         </a>
                                     </div>
                                 </td>
                             </tr>
-                        @endforelse
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
 
-            @if ($potensis->hasPages())
+            <?php if($potensis->hasPages()): ?>
                 <div class="px-6 py-4 border-t border-gray-200">
-                    {{ $potensis->links() }}
+                    <?php echo e($potensis->links()); ?>
+
                 </div>
-            @endif
+            <?php endif; ?>
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\website-desa-tanalum\resources\views/admin/potensi/index.blade.php ENDPATH**/ ?>

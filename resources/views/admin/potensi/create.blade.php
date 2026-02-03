@@ -37,19 +37,19 @@
 
                     <!-- Kategori -->
                     <div>
-                        <label for="kategori_potensi_id"
+                        <label for="kategori_id"
                             class="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
-                        <select id="kategori_potensi_id" name="kategori_potensi_id"
+                        <select id="kategori_id" name="kategori_id"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                             <option value="">Pilih Kategori</option>
                             @foreach ($kategoris as $kategori)
                                 <option value="{{ $kategori->id }}"
-                                    {{ old('kategori_potensi_id') == $kategori->id ? 'selected' : '' }}>
+                                    {{ old('kategori_id') == $kategori->id ? 'selected' : '' }}>
                                     {{ $kategori->nama }}
                                 </option>
                             @endforeach
                         </select>
-                        @error('kategori_potensi_id')
+                        @error('kategori_id')
                             <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                         @enderror
                     </div>

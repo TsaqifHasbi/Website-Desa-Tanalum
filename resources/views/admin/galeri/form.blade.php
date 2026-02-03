@@ -33,11 +33,13 @@
                         <div class="flex gap-4">
                             <label class="flex items-center">
                                 <input type="radio" name="tipe" value="foto" x-model="tipe"
+                                    @change="$dispatch('tipe-changed', $el.value)"
                                     class="w-4 h-4 text-primary-600 border-gray-300 focus:ring-primary-500">
                                 <span class="ml-2 text-gray-700"><i class="fas fa-image mr-1"></i> Foto</span>
                             </label>
                             <label class="flex items-center">
                                 <input type="radio" name="tipe" value="video" x-model="tipe"
+                                    @change="$dispatch('tipe-changed', $el.value)"
                                     class="w-4 h-4 text-primary-600 border-gray-300 focus:ring-primary-500">
                                 <span class="ml-2 text-gray-700"><i class="fas fa-video mr-1"></i> Video</span>
                             </label>
@@ -84,56 +86,36 @@
                             placeholder="Keterangan singkat tentang galeri ini">{{ old('deskripsi', $galeri->deskripsi ?? '') }}</textarea>
                     </div>
 
-                    <!-- File Upload -->
-                    <div x-data="{
-                        preview: '{{ $galeri && $galeri->file_path ? Storage::url($galeri->file_path) : '' }}',
-                        tipe: '{{ old('tipe', $galeri->tipe ?? 'foto') }}'
-                    }">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">File Media
-                            {{ $galeri ? '' : '*' }}</label>
+                    <div x-data="{ tipe: '{{ old('tipe', $galeri->tipe ?? 'foto') }}' }" @tipe-changed.window="tipe = $event.detail">
+                        <!-- File Upload -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">File Media
+                                {{ $galeri ? '' : '*' }}</label>
 
-                        <div class="mt-2">
-                            <!-- Preview for Photo -->
-                            <template x-if="preview && tipe === 'foto'">
-                                <div class="mb-4">
-                                    <img :src="preview" class="max-w-xs rounded-lg shadow">
-                                </div>
-                            </template>
-
-                            <!-- Preview for Video -->
-                            <template x-if="preview && tipe === 'video'">
-                                <div class="mb-4">
-                                    <video :src="preview" controls class="max-w-md rounded-lg shadow"></video>
-                                </div>
-                            </template>
-
-                            <input type="file" name="file" id="file" accept="image/*,video/*"
-                                @change="
-                                   if ($event.target.files[0]) {
-                                       preview = URL.createObjectURL($event.target.files[0]);
-                                       tipe = $event.target.files[0].type.startsWith('video') ? 'video' : 'foto';
-                                   }
-                               "
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 @error('file') border-red-500 @enderror">
-                            <p class="mt-1 text-sm text-gray-500">
-                                Foto: JPG, PNG, WebP (Maks. 5MB) | Video: MP4, WebM (Maks. 50MB)
-                            </p>
-                            @error('file')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
+                            <div class="mt-2">
+                                <input type="file" name="file" id="file" :accept="tipe === 'foto' ? 'image/*' : 'video/*'"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 @error('file') border-red-500 @enderror">
+                                <p class="mt-1 text-sm text-gray-500">
+                                    <span x-show="tipe === 'foto'">Foto: JPG, PNG, WebP (Maks. 10MB)</span>
+                                    <span x-show="tipe === 'video'">Video: MP4, WebM (Maks. 50MB)</span>
+                                </p>
+                                @error('file')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Video URL (Alternative) -->
-                    <div x-show="tipe === 'video'" x-data="{ tipe: '{{ old('tipe', $galeri->tipe ?? 'foto') }}' }">
-                        <label for="video_url" class="block text-sm font-medium text-gray-700 mb-1">URL Video
-                            (Alternatif)</label>
-                        <input type="url" name="video_url" id="video_url"
-                            value="{{ old('video_url', $galeri->video_url ?? '') }}"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                            placeholder="https://youtube.com/watch?v=...">
-                        <p class="mt-1 text-sm text-gray-500">Masukkan URL YouTube atau Vimeo sebagai alternatif upload file
-                        </p>
+                        <!-- Video URL (Alternative) -->
+                        <div x-show="tipe === 'video'" class="space-y-2">
+                            <label for="video_url" class="block text-sm font-medium text-gray-700 mb-1">URL Video
+                                (YouTube/Vimeo)</label>
+                            <input type="url" name="video_url" id="video_url"
+                                value="{{ old('video_url', $galeri->video_url ?? '') }}"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                                placeholder="https://youtube.com/watch?v=...">
+                            <p class="mt-1 text-sm text-gray-500">Masukkan URL Video sebagai alternatif jika tidak mengupload file.
+                            </p>
+                        </div>
                     </div>
 
                     <!-- Status -->

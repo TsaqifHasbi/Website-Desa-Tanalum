@@ -83,11 +83,68 @@ class Galeri extends Model
     }
 
     /**
+     * Check if the video is from YouTube.
+     */
+    public function getIsYoutubeAttribute(): bool
+    {
+        if ($this->tipe !== 'video' || !$this->video_url) {
+            return false;
+        }
+
+        $url = strtolower($this->video_url);
+        // Check for common domains or if it looks like a raw 11-char ID
+        return str_contains($url, 'youtube.com') || 
+               str_contains($url, 'youtu.be') || 
+               (strlen($this->video_url) === 11 && preg_match('/^[a-zA-Z0-9_-]{11}$/', $this->video_url));
+    }
+
+    /**
+     * Get YouTube Video ID.
+     */
+    public function getYoutubeVideoIdAttribute(): ?string
+    {
+        if (!$this->is_youtube) {
+            return null;
+        }
+
+        $url = $this->video_url;
+        
+        // 1. Check if it's already a raw ID
+        if (strlen($url) === 11 && preg_match('/^[a-zA-Z0-9_-]{11}$/', $url)) {
+            return $url;
+        }
+
+        // 2. Comprehensive YouTube Regex (covers shorts, live, embed, v, etc)
+        $pattern = '%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?|shorts|live)/|.*[?&]v=)|youtu\.be/)([^"&?/\s]{11})%i';
+        
+        if (preg_match($pattern, $url, $match)) {
+            return $match[1];
+        }
+
+        return null;
+    }
+
+    /**
+     * Get YouTube Embed URL.
+     */
+    public function getYoutubeEmbedUrlAttribute(): ?string
+    {
+        if (!$this->is_youtube || !$this->youtube_video_id) {
+            return null;
+        }
+
+        return "https://www.youtube.com/embed/{$this->youtube_video_id}?autoplay=1&rel=0";
+    }
+
+    /**
      * Get file URL.
      */
     public function getFileUrlAttribute(): string
     {
-        return asset('storage/' . $this->file_path);
+        if ($this->file_path) {
+            return asset('storage/' . $this->file_path);
+        }
+        return '';
     }
 
     /**
@@ -99,10 +156,16 @@ class Galeri extends Model
             return asset('storage/' . $this->thumbnail);
         }
 
-        if ($this->tipe === 'foto') {
+        if ($this->tipe === 'foto' && $this->file_path) {
             return $this->file_url;
         }
 
-        return asset('images/default-video-thumb.jpg');
+        if ($this->is_youtube && $this->youtube_video_id) {
+            // 0.jpg is the most reliable default thumbnail for any YouTube video
+            return "https://img.youtube.com/vi/{$this->youtube_video_id}/0.jpg";
+        }
+
+        // Return a generic video placeholder if no thumbnail found
+        return asset('img/video-placeholder.jpg');
     }
 }

@@ -15,6 +15,7 @@ class WisataDesa extends Model
     protected $fillable = [
         'nama',
         'slug',
+        'kategori',
         'deskripsi',
         'konten',
         'gambar_utama',
@@ -100,10 +101,18 @@ class WisataDesa extends Model
     public function getJamOperasionalAttribute(): string
     {
         if ($this->jam_buka && $this->jam_tutup) {
-            return date('H:i', strtotime($this->jam_buka)) . ' - ' . date('H:i', strtotime($this->jam_tutup));
+            // Check if they are valid time strings for formatting
+            $buka = strtotime($this->jam_buka);
+            $tutup = strtotime($this->jam_tutup);
+            
+            if ($buka && $tutup) {
+                return date('H:i', $buka) . ' - ' . date('H:i', $tutup);
+            }
+            
+            return $this->jam_buka . ' - ' . $this->jam_tutup;
         }
 
-        return '-';
+        return $this->jam_buka ?: ($this->jam_tutup ?: '-');
     }
 
     /**

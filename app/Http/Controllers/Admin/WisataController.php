@@ -40,6 +40,7 @@ class WisataController extends Controller
             'koordinat' => 'nullable|string|max:100',
             'harga_tiket' => 'nullable|numeric|min:0',
             'jam_buka' => 'nullable|string|max:100',
+            'jam_tutup' => 'nullable|string|max:100',
             'kontak' => 'nullable|string|max:50',
             'fasilitas' => 'nullable|string',
             'gambar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
@@ -58,6 +59,16 @@ class WisataController extends Controller
         if ($request->hasFile('gambar')) {
             $validated['gambar_utama'] = $request->file('gambar')->store('wisata', 'public');
             unset($validated['gambar']);
+        }
+
+        // Handle Koordinat (Lat, Lng)
+        if ($request->filled('koordinat')) {
+            $coords = explode(',', $request->koordinat);
+            if (count($coords) === 2) {
+                $validated['latitude'] = trim($coords[0]);
+                $validated['longitude'] = trim($coords[1]);
+            }
+            unset($validated['koordinat']);
         }
 
         Wisata::create($validated);
@@ -90,6 +101,7 @@ class WisataController extends Controller
             'koordinat' => 'nullable|string|max:100',
             'harga_tiket' => 'nullable|numeric|min:0',
             'jam_buka' => 'nullable|string|max:100',
+            'jam_tutup' => 'nullable|string|max:100',
             'kontak' => 'nullable|string|max:50',
             'fasilitas' => 'nullable|string',
             'gambar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
@@ -111,6 +123,16 @@ class WisataController extends Controller
             }
             $validated['gambar_utama'] = $request->file('gambar')->store('wisata', 'public');
             unset($validated['gambar']);
+        }
+
+        // Handle Koordinat (Lat, Lng)
+        if ($request->filled('koordinat')) {
+            $coords = explode(',', $request->koordinat);
+            if (count($coords) === 2) {
+                $validated['latitude'] = trim($coords[0]);
+                $validated['longitude'] = trim($coords[1]);
+            }
+            unset($validated['koordinat']);
         }
 
         $wisata->update($validated);

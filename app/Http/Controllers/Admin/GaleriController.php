@@ -46,8 +46,14 @@ class GaleriController extends Controller
             'deskripsi' => 'nullable|string',
             'kategori_id' => 'nullable|exists:kategori_galeri,id',
             'tipe' => 'required|in:foto,video',
-            'file' => 'required_if:tipe,foto|nullable|image|mimes:jpg,jpeg,png,webp|max:10240',
-            'video_url' => 'required_if:tipe,video|nullable|url',
+            'file' => $request->tipe === 'foto' 
+                ? ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:10240'] 
+                : ['nullable', 'file', 'mimes:mp4,webm,ogg,mov', 'max:51200'],
+            'video_url' => [
+                'nullable',
+                'url',
+                $request->tipe === 'video' && !$request->hasFile('file') ? 'required' : '',
+            ],
             'urutan' => 'nullable|integer',
             'is_featured' => 'nullable|boolean',
             'is_active' => 'nullable|boolean',
@@ -91,7 +97,9 @@ class GaleriController extends Controller
             'deskripsi' => 'nullable|string',
             'kategori_id' => 'nullable|exists:kategori_galeri,id',
             'tipe' => 'required|in:foto,video',
-            'file' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:10240',
+            'file' => $request->tipe === 'foto' 
+                ? ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:10240'] 
+                : ['nullable', 'file', 'mimes:mp4,webm,ogg,mov', 'max:51200'],
             'video_url' => 'nullable|url',
             'urutan' => 'nullable|integer',
             'is_featured' => 'nullable|boolean',

@@ -29,12 +29,14 @@ class PotensiController extends Controller
     {
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
+            'kategori' => 'nullable|string|max:100',
             'deskripsi' => 'nullable|string',
             'alamat' => 'nullable|string',
             'koordinat_lat' => 'nullable|numeric',
             'koordinat_lng' => 'nullable|numeric',
             'fasilitas' => 'nullable|string',
             'jam_buka' => 'nullable|string|max:100',
+            'jam_tutup' => 'nullable|string|max:100',
             'harga_tiket' => 'nullable|string|max:255',
             'kontak' => 'nullable|string|max:255',
             'gambar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
@@ -56,7 +58,8 @@ class PotensiController extends Controller
 
         // Handle main image
         if ($request->hasFile('gambar')) {
-            $validated['gambar'] = $request->file('gambar')->store('wisata', 'public');
+            $validated['gambar_utama'] = $request->file('gambar')->store('wisata', 'public');
+            unset($validated['gambar']);
         }
 
         // Handle gallery
@@ -88,12 +91,14 @@ class PotensiController extends Controller
     {
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
+            'kategori' => 'nullable|string|max:100',
             'deskripsi' => 'nullable|string',
             'alamat' => 'nullable|string',
             'koordinat_lat' => 'nullable|numeric',
             'koordinat_lng' => 'nullable|numeric',
             'fasilitas' => 'nullable|string',
             'jam_buka' => 'nullable|string|max:100',
+            'jam_tutup' => 'nullable|string|max:100',
             'harga_tiket' => 'nullable|string|max:255',
             'kontak' => 'nullable|string|max:255',
             'gambar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
@@ -119,10 +124,11 @@ class PotensiController extends Controller
 
         // Handle main image
         if ($request->hasFile('gambar')) {
-            if ($wisata->gambar) {
-                Storage::disk('public')->delete($wisata->gambar);
+            if ($wisata->gambar_utama) {
+                Storage::disk('public')->delete($wisata->gambar_utama);
             }
-            $validated['gambar'] = $request->file('gambar')->store('wisata', 'public');
+            $validated['gambar_utama'] = $request->file('gambar')->store('wisata', 'public');
+            unset($validated['gambar']);
         }
 
         // Handle gallery
@@ -154,8 +160,8 @@ class PotensiController extends Controller
 
     public function wisataDestroy(WisataDesa $wisata)
     {
-        if ($wisata->gambar) {
-            Storage::disk('public')->delete($wisata->gambar);
+        if ($wisata->gambar_utama) {
+            Storage::disk('public')->delete($wisata->gambar_utama);
         }
 
         if ($wisata->galeri) {
@@ -211,7 +217,8 @@ class PotensiController extends Controller
 
         // Handle image
         if ($request->hasFile('gambar')) {
-            $validated['gambar'] = $request->file('gambar')->store('potensi', 'public');
+            $validated['gambar_utama'] = $request->file('gambar')->store('potensi', 'public');
+            unset($validated['gambar']);
         }
 
         PotensiDesa::create($validated);
@@ -256,10 +263,11 @@ class PotensiController extends Controller
 
         // Handle image
         if ($request->hasFile('gambar')) {
-            if ($potensi->gambar) {
-                Storage::disk('public')->delete($potensi->gambar);
+            if ($potensi->gambar_utama) {
+                Storage::disk('public')->delete($potensi->gambar_utama);
             }
-            $validated['gambar'] = $request->file('gambar')->store('potensi', 'public');
+            $validated['gambar_utama'] = $request->file('gambar')->store('potensi', 'public');
+            unset($validated['gambar']);
         }
 
         $potensi->update($validated);
@@ -270,8 +278,8 @@ class PotensiController extends Controller
 
     public function potensiDestroy(PotensiDesa $potensi)
     {
-        if ($potensi->gambar) {
-            Storage::disk('public')->delete($potensi->gambar);
+        if ($potensi->gambar_utama) {
+            Storage::disk('public')->delete($potensi->gambar_utama);
         }
 
         $potensi->delete();

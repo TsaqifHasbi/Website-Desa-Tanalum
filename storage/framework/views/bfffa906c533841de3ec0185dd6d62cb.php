@@ -1,15 +1,15 @@
-@extends('layouts.app')
 
-@section('title', 'Galeri')
 
-@section('content')
+<?php $__env->startSection('title', 'Galeri'); ?>
+
+<?php $__env->startSection('content'); ?>
     <!-- Hero Section -->
     <section class="relative py-20 bg-gradient-to-r from-primary-600 to-primary-700">
         <div class="container mx-auto px-4">
             <div class="text-center text-white">
                 <h1 class="text-4xl md:text-5xl font-bold mb-4">Galeri Desa</h1>
                 <p class="text-lg text-primary-100">Dokumentasi kegiatan dan potensi
-                    {{ $profil->nama_desa ?? 'Desa Tanalum' }}</p>
+                    <?php echo e($profil->nama_desa ?? 'Desa Tanalum'); ?></p>
             </div>
         </div>
     </section>
@@ -18,7 +18,7 @@
     <div class="bg-white shadow-sm">
         <div class="container mx-auto px-4">
             <nav class="flex items-center space-x-2 py-4 text-sm">
-                <a href="{{ route('home') }}" class="text-gray-500 hover:text-primary-600">Beranda</a>
+                <a href="<?php echo e(route('home')); ?>" class="text-gray-500 hover:text-primary-600">Beranda</a>
                 <span class="text-gray-400">/</span>
                 <span class="text-primary-600 font-medium">Galeri</span>
             </nav>
@@ -30,38 +30,39 @@
         <div class="container mx-auto px-4">
             <!-- Filter -->
             <div class="flex flex-wrap justify-center gap-2 mb-12" data-aos="fade-up">
-                <a href="{{ route('galeri.index') }}"
-                    class="px-6 py-2 rounded-lg font-medium transition {{ !request('kategori') && !request('tipe') ? 'bg-primary-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100' }}">
+                <a href="<?php echo e(route('galeri.index')); ?>"
+                    class="px-6 py-2 rounded-lg font-medium transition <?php echo e(!request('kategori') && !request('tipe') ? 'bg-primary-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'); ?>">
                     Semua
                 </a>
-                <a href="{{ route('galeri.index', ['tipe' => 'foto']) }}"
-                    class="px-6 py-2 rounded-lg font-medium transition {{ request('tipe') == 'foto' ? 'bg-primary-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100' }}">
+                <a href="<?php echo e(route('galeri.index', ['tipe' => 'foto'])); ?>"
+                    class="px-6 py-2 rounded-lg font-medium transition <?php echo e(request('tipe') == 'foto' ? 'bg-primary-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'); ?>">
                     <i class="fas fa-image mr-2"></i> Foto
                 </a>
-                <a href="{{ route('galeri.index', ['tipe' => 'video']) }}"
-                    class="px-6 py-2 rounded-lg font-medium transition {{ request('tipe') == 'video' ? 'bg-primary-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100' }}">
+                <a href="<?php echo e(route('galeri.index', ['tipe' => 'video'])); ?>"
+                    class="px-6 py-2 rounded-lg font-medium transition <?php echo e(request('tipe') == 'video' ? 'bg-primary-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'); ?>">
                     <i class="fas fa-video mr-2"></i> Video
                 </a>
-                @foreach ($kategoris as $kategori)
-                    <a href="{{ route('galeri.index', ['kategori' => $kategori->slug]) }}"
-                        class="px-6 py-2 rounded-lg font-medium transition {{ request('kategori') == $kategori->slug ? 'bg-primary-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100' }}">
-                        {{ $kategori->nama }}
+                <?php $__currentLoopData = $kategoris; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $kategori): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <a href="<?php echo e(route('galeri.index', ['kategori' => $kategori->slug])); ?>"
+                        class="px-6 py-2 rounded-lg font-medium transition <?php echo e(request('kategori') == $kategori->slug ? 'bg-primary-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'); ?>">
+                        <?php echo e($kategori->nama); ?>
+
                     </a>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>
 
-            @if ($galeris->count() > 0)
+            <?php if($galeris->count() > 0): ?>
                 <!-- Gallery Grid -->
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" x-data="{
                     lightbox: false,
                     currentMedia: null,
                     currentIndex: 0,
-                    mediaList: {{ json_encode($galeris->map(fn($g) => [
+                    mediaList: <?php echo e(json_encode($galeris->map(fn($g) => [
                         'type' => $g->tipe,
                         'url' => $g->tipe === 'foto' ? Storage::url($g->file_path) : ($g->is_youtube ? $g->youtube_embed_url : Storage::url($g->file_path)),
                         'title' => $g->judul,
                         'is_youtube' => $g->is_youtube
-                    ])->values()) }},
+                    ])->values())); ?>,
                     openLightbox(index) {
                         this.currentIndex = index;
                         this.currentMedia = this.mediaList[index];
@@ -76,53 +77,54 @@
                         this.currentMedia = this.mediaList[this.currentIndex];
                     }
                 }">
-                    @foreach ($galeris as $index => $galeri)
+                    <?php $__currentLoopData = $galeris; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $galeri): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <div class="group relative aspect-square overflow-hidden rounded-xl bg-gray-100" data-aos="fade-up"
-                            data-aos-delay="{{ ($index % 8) * 50 }}">
+                            data-aos-delay="<?php echo e(($index % 8) * 50); ?>">
                             
                             <!-- Thumbnail with Fallback -->
                             <div class="w-full h-full bg-gray-200 flex items-center justify-center overflow-hidden">
-                                <img src="{{ $galeri->thumbnail_url }}" alt="{{ $galeri->judul }}"
+                                <img src="<?php echo e($galeri->thumbnail_url); ?>" alt="<?php echo e($galeri->judul); ?>"
                                     class="w-full h-full object-cover group-hover:scale-110 transition duration-300"
                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                 <div class="hidden flex-col items-center justify-center text-gray-400 p-4">
-                                    <i class="fas {{ $galeri->tipe === 'foto' ? 'fa-image' : 'fa-play-circle' }} text-4xl mb-2"></i>
-                                    <span class="text-[10px] text-center uppercase font-bold">{{ $galeri->tipe === 'foto' ? 'Foto' : 'Video' }}</span>
+                                    <i class="fas <?php echo e($galeri->tipe === 'foto' ? 'fa-image' : 'fa-play-circle'); ?> text-4xl mb-2"></i>
+                                    <span class="text-[10px] text-center uppercase font-bold"><?php echo e($galeri->tipe === 'foto' ? 'Foto' : 'Video'); ?></span>
                                 </div>
                             </div>
                             
                             <!-- Overlay -->
                             <div class="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition flex items-center justify-center cursor-pointer"
-                                @click="openLightbox({{ $index }})">
+                                @click="openLightbox(<?php echo e($index); ?>)">
                                 <div class="opacity-0 group-hover:opacity-100 transition text-white text-center px-4">
-                                    @if($galeri->tipe === 'foto')
+                                    <?php if($galeri->tipe === 'foto'): ?>
                                         <i class="fas fa-expand text-3xl mb-2"></i>
-                                    @else
+                                    <?php else: ?>
                                         <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-2 backdrop-blur-sm">
                                             <i class="fas fa-play text-xl ml-1"></i>
                                         </div>
-                                    @endif
-                                    <p class="font-medium line-clamp-2 text-sm">{{ $galeri->judul }}</p>
+                                    <?php endif; ?>
+                                    <p class="font-medium line-clamp-2 text-sm"><?php echo e($galeri->judul); ?></p>
                                 </div>
                             </div>
 
                             <!-- Badges -->
                             <div class="absolute top-2 left-2">
-                                @if($galeri->tipe === 'video')
+                                <?php if($galeri->tipe === 'video'): ?>
                                     <span class="inline-flex items-center px-2 py-1 bg-red-600 text-white text-[10px] font-bold rounded shadow-sm uppercase tracking-wider">
                                         <i class="fas fa-video mr-1"></i> Video
                                     </span>
-                                @endif
+                                <?php endif; ?>
                             </div>
                             <div class="absolute top-2 right-2">
-                                @if ($galeri->kategori)
+                                <?php if($galeri->kategori): ?>
                                     <span class="inline-flex items-center px-2 py-1 bg-black/50 text-white text-[10px] font-bold rounded shadow-sm uppercase tracking-wider backdrop-blur-sm">
-                                        {{ $galeri->kategori->nama }}
+                                        <?php echo e($galeri->kategori->nama); ?>
+
                                     </span>
-                                @endif
+                                <?php endif; ?>
                             </div>
                         </div>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
                     <!-- Lightbox -->
                     <div x-show="lightbox" 
@@ -190,21 +192,24 @@
 
                 <!-- Pagination -->
                 <div class="mt-8">
-                    {{ $galeris->withQueryString()->links() }}
+                    <?php echo e($galeris->withQueryString()->links()); ?>
+
                 </div>
-            @else
+            <?php else: ?>
                 <div class="text-center py-16 bg-white rounded-2xl shadow-sm">
                     <i class="fas fa-images text-6xl text-gray-300 mb-4"></i>
                     <h3 class="text-xl font-semibold text-gray-600 mb-2">Tidak Ada Galeri</h3>
                     <p class="text-gray-500">
-                        @if (request('kategori') || request('tipe'))
+                        <?php if(request('kategori') || request('tipe')): ?>
                             Tidak ditemukan galeri yang sesuai dengan filter Anda.
-                        @else
+                        <?php else: ?>
                             Belum ada foto atau video yang diunggah.
-                        @endif
+                        <?php endif; ?>
                     </p>
                 </div>
-            @endif
+            <?php endif; ?>
         </div>
     </section>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\website-desa-tanalum\resources\views/galeri/index.blade.php ENDPATH**/ ?>
