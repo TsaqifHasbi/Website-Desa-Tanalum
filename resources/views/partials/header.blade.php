@@ -49,24 +49,24 @@
     </div> --}}
 
     <!-- Main Navigation -->
-    <nav class="container mx-auto px-4">
-        <div class="flex items-center justify-between px-16 h-24">
+    <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-20 lg:h-24 transition-all duration-300">
             <!-- Logo -->
-            <a href="{{ route('home') }}" class="flex items-center space-x-3">
+            <a href="{{ route('home') }}" class="flex items-center space-x-2 md:space-x-3 gap-1">
                 @php $logo = App\Models\Setting::getValue('site_logo', 'slider/logo-tanalum.png'); @endphp
                 @if ($logo && Storage::disk('public')->exists($logo))
-                    <img src="{{ Storage::url($logo) }}" alt="Logo" class="h-16 w-auto">
+                    <img src="{{ Storage::url($logo) }}" alt="Logo" class="h-10 md:h-14 lg:h-16 w-auto transition-all duration-300">
                 @else
-                    <div class="w-20 h-20 bg-primary-600 rounded-full flex items-center justify-center">
-                        <i class="fas fa-landmark text-white text-lg"></i>
+                    <div class="w-10 h-10 md:w-16 md:h-16 bg-primary-600 rounded-full flex items-center justify-center">
+                        <i class="fas fa-landmark text-white text-sm md:text-lg"></i>
                     </div>
                 @endif
-                <div>
-                    <h1 class="font-bold text-xl leading-tight transition-colors duration-300"
+                <div class="flex flex-col justify-center">
+                    <h1 class="font-bold text-base md:text-lg lg:text-xl leading-tight transition-colors duration-300 line-clamp-1"
                         :class="scrolled || !isHomePage ? 'text-gray-800' : 'text-white'">
                         {{ $profil->nama_desa ?? 'Desa Tanalum' }}
                     </h1>
-                    <p class="text-md transition-colors duration-300"
+                    <p class="text-xs md:text-sm lg:text-md transition-colors duration-300 hidden sm:block"
                         :class="scrolled || !isHomePage ? 'text-gray-500' : 'text-gray-200'">
                         Kecamatan {{ $profil->kecamatan ?? 'Kec. Rembang' }}</p>
                 </div>
@@ -209,7 +209,7 @@
         <!-- Mobile Menu -->
         <div x-show="mobileMenuOpen" x-cloak x-transition:enter="transition ease-out duration-200"
             x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
-            class="lg:hidden py-4 border-t border-gray-100">
+            class="lg:hidden py-4 border-t border-gray-100 bg-white shadow-lg">
             <div class="space-y-2">
                 <a href="{{ route('home') }}"
                     class="block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 rounded-lg">Beranda</a>

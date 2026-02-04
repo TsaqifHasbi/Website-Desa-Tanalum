@@ -15,6 +15,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
 
+    <!-- Favicon -->
+    @php 
+        $logo = App\Models\Setting::getValue('site_logo', 'slider/logo-tanalum.png');
+        $faviconUrl = ($logo && Storage::disk('public')->exists($logo)) ? Storage::url($logo) : asset('favicon.ico');
+    @endphp
+    <link rel="icon" href="{{ $faviconUrl }}">
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>

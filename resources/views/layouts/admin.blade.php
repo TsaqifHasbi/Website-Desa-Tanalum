@@ -9,12 +9,11 @@
     <title>@yield('title', 'Dashboard') - Admin Panel</title>
 
     <!-- Favicon -->
-    @php $favicon = App\Models\Setting::getValue('site_favicon'); @endphp
-    @if ($favicon)
-        <link rel="icon" href="{{ Storage::url($favicon) }}" type="image/x-icon">
-    @else
-        <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
-    @endif
+    @php 
+        $logo = App\Models\Setting::getValue('site_logo', 'slider/logo-tanalum.png');
+        $faviconUrl = ($logo && Storage::disk('public')->exists($logo)) ? Storage::url($logo) : asset('favicon.ico');
+    @endphp
+    <link rel="icon" href="{{ $faviconUrl }}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

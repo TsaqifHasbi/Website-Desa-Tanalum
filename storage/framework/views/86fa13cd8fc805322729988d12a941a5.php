@@ -193,30 +193,7 @@ unset($__errorArgs, $__bag); ?>
                                 </h3>
 
                                 <div class="space-y-4">
-                                    <div>
-                                        <label for="kategori" class="block text-sm font-medium text-gray-700 mb-1">Kategori
-                                            Informasi *</label>
-                                        <select name="kategori" id="kategori" required
-                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
-                                            <option value="">Pilih Kategori</option>
-                                            <option value="profil_desa"
-                                                <?php echo e(old('kategori') == 'profil_desa' ? 'selected' : ''); ?>>Profil Desa
-                                            </option>
-                                            <option value="apbdes" <?php echo e(old('kategori') == 'apbdes' ? 'selected' : ''); ?>>
-                                                APBDes</option>
-                                            <option value="peraturan"
-                                                <?php echo e(old('kategori') == 'peraturan' ? 'selected' : ''); ?>>Peraturan Desa
-                                            </option>
-                                            <option value="pelayanan"
-                                                <?php echo e(old('kategori') == 'pelayanan' ? 'selected' : ''); ?>>Pelayanan Publik
-                                            </option>
-                                            <option value="pembangunan"
-                                                <?php echo e(old('kategori') == 'pembangunan' ? 'selected' : ''); ?>>Pembangunan
-                                            </option>
-                                            <option value="lainnya" <?php echo e(old('kategori') == 'lainnya' ? 'selected' : ''); ?>>
-                                                Lainnya</option>
-                                        </select>
-                                    </div>
+
 
                                     <div>
                                         <label for="informasi_diminta"

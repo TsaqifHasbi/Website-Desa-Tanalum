@@ -4,6 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Favicon -->
+    @php 
+        $logo = App\Models\Setting::getValue('site_logo', 'slider/logo-tanalum.png');
+        $faviconUrl = ($logo && Storage::disk('public')->exists($logo)) ? Storage::url($logo) : asset('favicon.ico');
+    @endphp
+    <link rel="icon" href="{{ $faviconUrl }}">
+
     <title>Login - Admin Panel</title>
 
     <!-- Tailwind CSS -->

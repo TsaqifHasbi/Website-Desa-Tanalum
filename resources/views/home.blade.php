@@ -372,7 +372,7 @@
                     <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mt-2">Produk UMKM</h2>
                 </div>
 
-                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
                     @foreach ($produks as $index => $produk)
                         <div class="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-lg transition group"
                             data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">

@@ -9,12 +9,11 @@
     <title><?php echo $__env->yieldContent('title', 'Dashboard'); ?> - Admin Panel</title>
 
     <!-- Favicon -->
-    <?php $favicon = App\Models\Setting::getValue('site_favicon'); ?>
-    <?php if($favicon): ?>
-        <link rel="icon" href="<?php echo e(Storage::url($favicon)); ?>" type="image/x-icon">
-    <?php else: ?>
-        <link rel="icon" href="<?php echo e(asset('favicon.ico')); ?>" type="image/x-icon">
-    <?php endif; ?>
+    <?php 
+        $logo = App\Models\Setting::getValue('site_logo', 'slider/logo-tanalum.png');
+        $faviconUrl = ($logo && Storage::disk('public')->exists($logo)) ? Storage::url($logo) : asset('favicon.ico');
+    ?>
+    <link rel="icon" href="<?php echo e($faviconUrl); ?>">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
