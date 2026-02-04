@@ -59,12 +59,12 @@
                 $bpd = \App\Models\AparaturDesa::where('jenis', 'bpd')->where('is_active', true)->get();
             ?>
 
-            <div class="flex flex-col items-center">
-                <!-- Level 1: Kepala Desa & BPD -->
-                <div class="flex items-center justify-center gap-20 relative mb-12">
-                     <!-- BPD (Mitra Kerja/Garis Koordinasi) -->
+            <div class="flex flex-col items-center w-full">
+                <!-- Level 1: Kepala Desa & BPD (Kades as anchor) -->
+                <div class="relative w-full flex justify-center mb-16">
+                     <!-- BPD (Positioned relative to Kades, but not pushing Kades) -->
                      <?php if($bpd->count() > 0): ?>
-                     <div class="relative group">
+                     <div class="absolute right-[calc(50%+160px)] top-1/2 -translate-y-1/2 group">
                          <div class="w-64 bg-yellow-50 border-2 border-yellow-400 rounded-xl p-4 shadow-md text-center">
                              <h3 class="font-bold text-gray-800 border-b border-yellow-200 pb-2 mb-2">BPD</h3>
                              <div class="flex -space-x-2 justify-center overflow-hidden py-2">
@@ -81,12 +81,12 @@
                              </div>
                              <p class="text-xs text-gray-600 mt-1"><?php echo e($bpd->count()); ?> Anggota</p>
                          </div>
-                         <!-- Garis Koordinasi (Dotted) -->
+                         <!-- Garis Koordinasi (Dotted) connecting to Kades -->
                          <div class="absolute top-1/2 left-full w-20 border-t-2 border-dashed border-gray-400 -translate-y-1/2"></div>
                      </div>
                      <?php endif; ?>
 
-                    <!-- Kepala Desa -->
+                    <!-- Kepala Desa (The Center Pillar) -->
                     <div class="relative z-10">
                         <div class="w-64 bg-white border-2 border-primary-600 rounded-xl p-4 shadow-lg text-center transform hover:scale-105 transition duration-300">
                             <div class="w-24 h-24 mx-auto rounded-full border-4 border-primary-100 overflow-hidden mb-3">
@@ -104,15 +104,15 @@
                                 <p class="text-xs text-gray-500">NIP: <?php echo e($kepalaDesa->nip); ?></p>
                             <?php endif; ?>
                         </div>
-                        <!-- Garis ke Bawah -->
-                        <div class="absolute top-full left-1/2 w-0.5 h-12 bg-gray-800 -translate-x-1/2"></div>
+                        <!-- Centered Line to Sekdes -->
+                        <div class="absolute top-full left-1/2 w-0.5 h-16 bg-gray-800 -translate-x-1/2"></div>
                     </div>
                 </div>
 
                 <!-- Level 2: Sekretaris Desa -->
                 <?php if($sekretaris): ?>
-                <div class="relative mb-12">
-                    <div class="w-64 bg-white border-l-4 border-orange-500 rounded-xl p-4 shadow-md text-center transform hover:scale-105 transition duration-300">
+                <div class="relative mb-16 flex flex-col items-center">
+                    <div class="w-64 bg-white border-l-4 border-orange-500 rounded-xl p-4 shadow-md text-center transform hover:scale-105 transition duration-300 z-10">
                         <div class="w-20 h-20 mx-auto rounded-full border-2 border-orange-100 overflow-hidden mb-2">
                              <?php if($sekretaris->foto): ?>
                                 <img src="<?php echo e(Storage::url($sekretaris->foto)); ?>" alt="<?php echo e($sekretaris->nama); ?>" class="w-full h-full object-cover">
@@ -125,24 +125,31 @@
                         <h3 class="font-bold text-gray-800"><?php echo e($sekretaris->nama); ?></h3>
                          <div class="inline-block bg-orange-100 text-orange-700 text-xs px-2 py-0.5 rounded-full mt-1">Carik / Sekdes</div>
                     </div>
-                    <!-- Garis ke Atas (nyambung dari Kades) -->
-                    <!-- Garis ke Bawah (ke Kasi/Kaur) -->
-                    <div class="absolute top-full left-1/2 w-0.5 h-12 bg-gray-800 -translate-x-1/2"></div>
                     
-                    <!-- Garis Horizontal Staff (Cabang) -->
-                    <div class="absolute top-[calc(100%+3rem)] left-1/2 -translate-x-1/2 w-[600px] border-t-2 border-gray-800"></div>
+                    <!-- Vertical Line to branching level -->
+                    <div class="w-0.5 h-12 bg-gray-800"></div>
                 </div>
                 <?php endif; ?>
 
                 <!-- Level 3: Kaur & Kasi -->
-                <div class="flex justify-center gap-8 mb-16 pt-0 relative">
-                    <!-- Column Left: KAUR (Urusan) -->
-                     <?php $__currentLoopData = $kaur; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <div class="relative flex flex-col items-center">
-                        <!-- Garis vertikal dr horizontal line -->
-                        <div class="h-8 w-0.5 bg-gray-800 -mt-8 mb-0"></div> 
+                <?php 
+                    $pembantu = $kaur->concat($kasi);
+                    $totalPembantu = $pembantu->count();
+                ?>
+                
+                <div class="flex justify-center -mt-px w-full">
+                    <?php $__currentLoopData = $pembantu; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $k): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <div class="flex flex-col items-center relative">
+                        <!-- Horizontal Connecting Line -->
+                        <div class="absolute top-0 left-0 right-0 border-t-2 border-gray-800 
+                            <?php echo e($index === 0 ? 'left-1/2' : ''); ?> 
+                            <?php echo e($index === $totalPembantu - 1 ? 'right-1/2' : ''); ?>">
+                        </div>
                         
-                        <div class="w-48 bg-white border-t-4 border-blue-500 rounded-lg p-3 shadow-md text-center mt-0 hover:shadow-lg transition">
+                        <!-- Short Vertical to Card -->
+                        <div class="w-0.5 h-8 bg-gray-800"></div>
+
+                        <div class="w-48 bg-white border-t-4 <?php echo e(stripos($k->jabatan, 'Kaur') !== false ? 'border-blue-500' : 'border-green-500'); ?> rounded-lg p-3 shadow-md text-center mx-4 hover:shadow-lg transition z-10">
                              <div class="w-16 h-16 mx-auto rounded-full border border-gray-200 overflow-hidden mb-2">
                                 <?php if($k->foto): ?>
                                     <img src="<?php echo e(Storage::url($k->foto)); ?>" alt="<?php echo e($k->nama); ?>" class="w-full h-full object-cover">
@@ -153,51 +160,36 @@
                                 <?php endif; ?>
                             </div>
                             <h4 class="font-semibold text-gray-800 text-sm leading-tight"><?php echo e($k->nama); ?></h4>
-                            <p class="text-xs text-blue-600 mt-1 font-medium"><?php echo e($k->jabatan); ?></p>
+                            <p class="text-xs <?php echo e(stripos($k->jabatan, 'Kaur') !== false ? 'text-blue-600' : 'text-green-600'); ?> mt-1 font-medium"><?php echo e($k->jabatan); ?></p>
                         </div>
-                    </div>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-
-                    <!-- Column Right: KASI (Seksi) -->
-                    <?php $__currentLoopData = $kasi; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <div class="relative flex flex-col items-center">
-                         <!-- Garis vertikal dr horizontal line -->
-                         <div class="h-8 w-0.5 bg-gray-800 -mt-8 mb-0"></div>
-
-                        <div class="w-48 bg-white border-t-4 border-green-500 rounded-lg p-3 shadow-md text-center mt-0 hover:shadow-lg transition">
-                            <div class="w-16 h-16 mx-auto rounded-full border border-gray-200 overflow-hidden mb-2">
-                                <?php if($k->foto): ?>
-                                    <img src="<?php echo e(Storage::url($k->foto)); ?>" alt="<?php echo e($k->nama); ?>" class="w-full h-full object-cover">
-                                <?php else: ?>
-                                    <div class="w-full h-full bg-gray-100 flex items-center justify-center">
-                                        <i class="fas fa-user text-gray-400"></i>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
-                            <h4 class="font-semibold text-gray-800 text-sm leading-tight"><?php echo e($k->nama); ?></h4>
-                            <p class="text-xs text-green-600 mt-1 font-medium"><?php echo e($k->jabatan); ?></p>
-                        </div>
+                        
+                        <!-- Middle connector for Kadus (only from the center of the row) -->
+                        <?php if($kadus->count() > 0 && floor($totalPembantu/2) == $index): ?>
+                        <div class="w-0.5 h-12 bg-gray-800"></div>
+                        <?php else: ?>
+                        <!-- Spacer to keep layout balanced -->
+                        <div class="h-12 w-0.5 opacity-0"></div>
+                        <?php endif; ?>
                     </div>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </div>
 
                 <!-- Level 4: Kepala Dusun -->
                  <?php if($kadus->count() > 0): ?>
-                 <div class="relative w-full flex justify-center mt-8">
-                     <!-- Garis penghubung besar dari level Sekdes/Kaur -->
-                     <!-- Kita buat garis baru dari tengah-tengah atas -->
-                      <div class="absolute -top-16 left-1/2 w-0.5 h-16 bg-gray-800 -translate-x-1/2"></div>
-                      
-                      <!-- Garis Horizontal Kadus -->
-                      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 border-t-2 border-gray-800"></div>
+                 <div class="flex flex-col items-center -mt-px w-full">
+                     <div class="flex justify-center -mt-px">
+                         <?php $__currentLoopData = $kadus; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $k): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <div class="flex flex-col items-center relative">
+                            <!-- Horizontal Line -->
+                            <div class="absolute top-0 left-0 right-0 border-t-2 border-gray-800 
+                                <?php echo e($index === 0 ? 'left-1/2' : ''); ?> 
+                                <?php echo e($index === $kadus->count() - 1 ? 'right-1/2' : ''); ?>">
+                            </div>
 
-                     <div class="flex justify-center gap-6 pt-8 w-full">
-                         <?php $__currentLoopData = $kadus; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                        <div class="relative flex flex-col items-center">
-                             <!-- Garis Vertikal Kecil -->
-                             <div class="absolute -top-8 w-0.5 h-8 bg-gray-800"></div>
+                             <!-- Vertical Line -->
+                             <div class="w-0.5 h-8 bg-gray-800"></div>
 
-                            <div class="w-40 bg-white border-b-4 border-purple-500 rounded-lg p-3 shadow-md text-center hover:shadow-lg transition">
+                            <div class="w-44 bg-white border-b-4 border-purple-500 rounded-lg p-3 shadow-md text-center mx-3 hover:shadow-lg transition z-10">
                                 <div class="w-14 h-14 mx-auto rounded-full border border-gray-200 overflow-hidden mb-2">
                                     <?php if($k->foto): ?>
                                         <img src="<?php echo e(Storage::url($k->foto)); ?>" alt="<?php echo e($k->nama); ?>" class="w-full h-full object-cover">

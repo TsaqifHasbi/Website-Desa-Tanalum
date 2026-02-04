@@ -176,70 +176,90 @@
         <!-- Mobile Menu -->
         <div x-show="mobileMenuOpen" x-cloak x-transition:enter="transition ease-out duration-200"
             x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
-            class="lg:hidden py-4 border-t border-gray-100 bg-white shadow-lg">
-            <div class="space-y-2">
+            :class="scrolled || !isHomePage ? 'bg-white border-t border-gray-100' : 'bg-black/20 backdrop-blur-lg border-t border-white/10'"
+            class="lg:hidden py-4 shadow-lg">
+            <div class="space-y-2 px-2">
                 <a href="<?php echo e(route('home')); ?>"
-                    class="block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 rounded-lg">Beranda</a>
+                    class="block px-4 py-2 rounded-lg transition-colors duration-300"
+                    :class="scrolled || !isHomePage ? 'text-gray-700 hover:bg-primary-50 hover:text-primary-600' : 'text-white hover:bg-white/20'">Beranda</a>
 
                 <div x-data="{ open: false }">
                     <button @click="open = !open"
-                        class="w-full flex items-center justify-between px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 rounded-lg">
+                        class="w-full flex items-center justify-between px-4 py-2 rounded-lg transition-colors duration-300"
+                        :class="scrolled || !isHomePage ? 'text-gray-700 hover:bg-primary-50 hover:text-primary-600' : 'text-white hover:bg-white/20'">
                         <span>Profil Desa</span>
                         <i class="fas fa-chevron-down text-xs transition-transform"
                             :class="{ 'rotate-180': open }"></i>
                     </button>
                     <div x-show="open" class="pl-4 mt-1 space-y-1">
                         <a href="<?php echo e(route('profil.index')); ?>"
-                            class="block px-4 py-2 text-sm text-gray-600 hover:text-primary-600">Tentang Desa</a>
+                            class="block px-4 py-2 text-sm rounded-lg"
+                            :class="scrolled || !isHomePage ? 'text-gray-600 hover:text-primary-600' : 'text-white/80 hover:text-white'">Tentang Desa</a>
                         <a href="<?php echo e(route('profil.visi-misi')); ?>"
-                            class="block px-4 py-2 text-sm text-gray-600 hover:text-primary-600">Visi & Misi</a>
+                            class="block px-4 py-2 text-sm rounded-lg"
+                            :class="scrolled || !isHomePage ? 'text-gray-600 hover:text-primary-600' : 'text-white/80 hover:text-white'">Visi & Misi</a>
                         <a href="<?php echo e(route('profil.sejarah')); ?>"
-                            class="block px-4 py-2 text-sm text-gray-600 hover:text-primary-600">Sejarah Desa</a>
+                            class="block px-4 py-2 text-sm rounded-lg"
+                            :class="scrolled || !isHomePage ? 'text-gray-600 hover:text-primary-600' : 'text-white/80 hover:text-white'">Sejarah Desa</a>
                         <a href="<?php echo e(route('profil.struktur')); ?>"
-                            class="block px-4 py-2 text-sm text-gray-600 hover:text-primary-600">Struktur
-                            Organisasi</a>
+                            class="block px-4 py-2 text-sm rounded-lg"
+                            :class="scrolled || !isHomePage ? 'text-gray-600 hover:text-primary-600' : 'text-white/80 hover:text-white'">Struktur Organisasi</a>
                         <a href="<?php echo e(route('profil.peta')); ?>"
-                            class="block px-4 py-2 text-sm text-gray-600 hover:text-primary-600">Peta Desa</a>
+                            class="block px-4 py-2 text-sm rounded-lg"
+                            :class="scrolled || !isHomePage ? 'text-gray-600 hover:text-primary-600' : 'text-white/80 hover:text-white'">Peta Desa</a>
                         <a href="<?php echo e(route('profil.demografi')); ?>"
-                            class="block px-4 py-2 text-sm text-gray-600 hover:text-primary-600">Demografi</a>
+                            class="block px-4 py-2 text-sm rounded-lg"
+                            :class="scrolled || !isHomePage ? 'text-gray-600 hover:text-primary-600' : 'text-white/80 hover:text-white'">Demografi</a>
                     </div>
                 </div>
 
                 <div x-data="{ open: false }">
                     <button @click="open = !open"
-                        class="w-full flex items-center justify-between px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 rounded-lg">
+                        class="w-full flex items-center justify-between px-4 py-2 rounded-lg transition-colors duration-300"
+                        :class="scrolled || !isHomePage ? 'text-gray-700 hover:bg-primary-50 hover:text-primary-600' : 'text-white hover:bg-white/20'">
                         <span>Infografis</span>
                         <i class="fas fa-chevron-down text-xs transition-transform"
                             :class="{ 'rotate-180': open }"></i>
                     </button>
                     <div x-show="open" class="pl-4 mt-1 space-y-1">
                         <a href="<?php echo e(route('infografis.penduduk')); ?>"
-                            class="block px-4 py-2 text-sm text-gray-600 hover:text-primary-600">Data Penduduk</a>
+                            class="block px-4 py-2 text-sm rounded-lg"
+                            :class="scrolled || !isHomePage ? 'text-gray-600 hover:text-primary-600' : 'text-white/80 hover:text-white'">Data Penduduk</a>
                         <a href="<?php echo e(route('infografis.apbdes')); ?>"
-                            class="block px-4 py-2 text-sm text-gray-600 hover:text-primary-600">APBDes</a>
+                            class="block px-4 py-2 text-sm rounded-lg"
+                            :class="scrolled || !isHomePage ? 'text-gray-600 hover:text-primary-600' : 'text-white/80 hover:text-white'">APBDes</a>
                         <a href="<?php echo e(route('infografis.stunting')); ?>"
-                            class="block px-4 py-2 text-sm text-gray-600 hover:text-primary-600">Stunting</a>
+                            class="block px-4 py-2 text-sm rounded-lg"
+                            :class="scrolled || !isHomePage ? 'text-gray-600 hover:text-primary-600' : 'text-white/80 hover:text-white'">Stunting</a>
                         <a href="<?php echo e(route('infografis.bansos')); ?>"
-                            class="block px-4 py-2 text-sm text-gray-600 hover:text-primary-600">Bantuan Sosial</a>
+                            class="block px-4 py-2 text-sm rounded-lg"
+                            :class="scrolled || !isHomePage ? 'text-gray-600 hover:text-primary-600' : 'text-white/80 hover:text-white'">Bantuan Sosial</a>
                         <a href="<?php echo e(route('infografis.idm')); ?>"
-                            class="block px-4 py-2 text-sm text-gray-600 hover:text-primary-600">IDM</a>
+                            class="block px-4 py-2 text-sm rounded-lg"
+                            :class="scrolled || !isHomePage ? 'text-gray-600 hover:text-primary-600' : 'text-white/80 hover:text-white'">IDM</a>
                         <a href="<?php echo e(route('infografis.sdgs')); ?>"
-                            class="block px-4 py-2 text-sm text-gray-600 hover:text-primary-600">SDGs Desa</a>
+                            class="block px-4 py-2 text-sm rounded-lg"
+                            :class="scrolled || !isHomePage ? 'text-gray-600 hover:text-primary-600' : 'text-white/80 hover:text-white'">SDGs Desa</a>
                     </div>
                 </div>
 
                 <a href="<?php echo e(route('berita.index')); ?>"
-                    class="block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 rounded-lg">Berita</a>
+                    class="block px-4 py-2 rounded-lg"
+                    :class="scrolled || !isHomePage ? 'text-gray-700 hover:bg-primary-50 hover:text-primary-600' : 'text-white hover:bg-white/20'">Berita</a>
                 <a href="<?php echo e(route('belanja.index')); ?>"
-                    class="block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 rounded-lg">Belanja</a>
+                    class="block px-4 py-2 rounded-lg"
+                    :class="scrolled || !isHomePage ? 'text-gray-700 hover:bg-primary-50 hover:text-primary-600' : 'text-white hover:bg-white/20'">Belanja</a>
                 <a href="<?php echo e(route('wisata.index')); ?>"
-                    class="block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 rounded-lg">Wisata</a>
+                    class="block px-4 py-2 rounded-lg"
+                    :class="scrolled || !isHomePage ? 'text-gray-700 hover:bg-primary-50 hover:text-primary-600' : 'text-white hover:bg-white/20'">Wisata</a>
                 <a href="<?php echo e(route('galeri.index')); ?>"
-                    class="block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 rounded-lg">Galeri</a>
+                    class="block px-4 py-2 rounded-lg"
+                    :class="scrolled || !isHomePage ? 'text-gray-700 hover:bg-primary-50 hover:text-primary-600' : 'text-white hover:bg-white/20'">Galeri</a>
                 <a href="<?php echo e(route('ppid.index')); ?>"
-                    class="block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 rounded-lg">PPID</a>
+                    class="block px-4 py-2 rounded-lg"
+                    :class="scrolled || !isHomePage ? 'text-gray-700 hover:bg-primary-50 hover:text-primary-600' : 'text-white hover:bg-white/20'">PPID</a>
                 <a href="<?php echo e(route('pengaduan.create')); ?>"
-                    class="block px-4 py-2 text-white bg-primary-600 hover:bg-primary-700 rounded-lg text-center">
+                    class="block px-4 py-2 text-white bg-primary-600 hover:bg-primary-700 rounded-lg text-center mx-2 mt-2">
                     <i class="fas fa-headset mr-2"></i>Pengaduan
                 </a>
             </div>
