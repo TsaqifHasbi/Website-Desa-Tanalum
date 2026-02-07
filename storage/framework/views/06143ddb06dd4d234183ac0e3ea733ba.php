@@ -27,225 +27,327 @@
     </div>
 
     <!-- Content -->
-    <section class="py-16 bg-white overflow-x-auto">
-        <div class="container mx-auto px-4 min-w-[1024px]">
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4 overflow-x-auto">
             <?php
-                // Grouping Data Appratur
                 $sekretaris = $aparaturs->first(fn($i) => stripos($i->jabatan, 'Sekretaris') !== false);
-                
                 $kaur = $aparaturs->filter(fn($i) => 
                     (stripos($i->jabatan, 'Kaur') !== false || stripos($i->jabatan, 'Urusan') !== false) && 
-                    stripos($i->jabatan, 'Sekretaris') === false && 
-                    stripos($i->jabatan, 'Kepala Desa') === false
-                );
-
+                    stripos($i->jabatan, 'Sekretaris') === false && stripos($i->jabatan, 'Kepala Desa') === false
+                )->values();
                 $kasi = $aparaturs->filter(fn($i) => 
                     (stripos($i->jabatan, 'Kasi') !== false || stripos($i->jabatan, 'Seksi') !== false)
-                );
-
+                )->values();
                 $kadus = $aparaturs->filter(fn($i) => 
                     stripos($i->jabatan, 'Kadus') !== false || stripos($i->jabatan, 'Dusun') !== false || stripos($i->jabatan, 'Wilayah') !== false
-                );
-
-                // Sisanya (Staff lain/Pelaksana)
-                $staff = $aparaturs->filter(fn($i) => 
-                    stripos($i->jabatan, 'Kepala Desa') === false &&
-                    stripos($i->jabatan, 'Sekretaris') === false &&
-                    !$kaur->contains('id', $i->id) &&
-                    !$kasi->contains('id', $i->id) &&
-                    !$kadus->contains('id', $i->id)
-                );
-
-                $bpd = \App\Models\AparaturDesa::where('jenis', 'bpd')->where('is_active', true)->get();
+                )->values();
             ?>
 
-            <div class="flex flex-col items-center w-full">
-                <!-- Level 1: Kepala Desa & BPD (Kades as anchor) -->
-                <div class="relative w-full flex justify-center mb-16">
-                     <!-- BPD (Positioned relative to Kades, but not pushing Kades) -->
-                     <?php if($bpd->count() > 0): ?>
-                     <div class="absolute right-[calc(50%+160px)] top-1/2 -translate-y-1/2 group">
-                         <div class="w-64 bg-yellow-50 border-2 border-yellow-400 rounded-xl p-4 shadow-md text-center">
-                             <h3 class="font-bold text-gray-800 border-b border-yellow-200 pb-2 mb-2">BPD</h3>
-                             <div class="flex -space-x-2 justify-center overflow-hidden py-2">
-                                 <?php $__currentLoopData = $bpd->take(5); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $anggota): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                     <?php if($anggota->foto): ?>
-                                         <img class="inline-block h-10 w-10 rounded-full ring-2 ring-white object-cover" src="<?php echo e(Storage::url($anggota->foto)); ?>" alt="<?php echo e($anggota->nama); ?>">
-                                     <?php else: ?>
-                                         <div class="inline-block h-10 w-10 rounded-full ring-2 ring-white bg-yellow-200 flex items-center justify-center text-xs ml-0">
-                                             <?php echo e(substr($anggota->nama, 0, 1)); ?>
+            <style>
+                .org-chart {
+                    position: relative;
+                    width: 1100px;
+                    height: 650px;
+                    margin: 0 auto;
+                }
+                .org-box {
+                    position: absolute;
+                    border-radius: 12px;
+                    padding: 12px 16px;
+                    color: #fff;
+                    text-align: center;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+                }
+                .org-box .photo {
+                    width: 50px;
+                    height: 50px;
+                    border-radius: 50%;
+                    margin: 0 auto 8px;
+                    border: 3px solid rgba(255,255,255,0.5);
+                    overflow: hidden;
+                    background: rgba(255,255,255,0.2);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                .org-box .photo img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+                .org-box .photo i {
+                    font-size: 24px;
+                    opacity: 0.8;
+                }
+                .org-box .name { font-weight: 700; font-size: 13px; margin-bottom: 2px; }
+                .org-box .title { font-size: 11px; opacity: 0.9; }
+                .org-box-sm {
+                    position: absolute;
+                    border-radius: 10px;
+                    padding: 10px 12px;
+                    color: #fff;
+                    text-align: center;
+                    box-shadow: 0 3px 15px rgba(0,0,0,0.12);
+                }
+                .org-box-sm .photo {
+                    width: 36px;
+                    height: 36px;
+                    border-radius: 50%;
+                    margin: 0 auto 6px;
+                    border: 2px solid rgba(255,255,255,0.5);
+                    overflow: hidden;
+                    background: rgba(255,255,255,0.2);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                .org-box-sm .photo img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+                .org-box-sm .photo i {
+                    font-size: 16px;
+                    opacity: 0.8;
+                }
+                .org-box-sm .name { font-weight: 600; font-size: 11px; margin-bottom: 2px; }
+                .org-box-sm .title { font-size: 9px; opacity: 0.9; }
+                .bg-kades { background: linear-gradient(135deg, #0891b2, #0e7490); }
+                .bg-bpd { background: linear-gradient(135deg, #10b981, #059669); }
+                .bg-sekdes { background: linear-gradient(135deg, #f97316, #ea580c); }
+                .bg-kaur { background: linear-gradient(135deg, #fbbf24, #d97706); }
+                .bg-kasi { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+                .bg-kadus { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+                .line { position: absolute; background: #6b7280; }
+                .line-dash { position: absolute; border-top: 2px dashed #9ca3af; }
+            </style>
 
-                                         </div>
-                                     <?php endif; ?>
-                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                             </div>
-                             <p class="text-xs text-gray-600 mt-1"><?php echo e($bpd->count()); ?> Anggota</p>
-                         </div>
-                         <!-- Garis Koordinasi (Dotted) connecting to Kades -->
-                         <div class="absolute top-1/2 left-full w-20 border-t-2 border-dashed border-gray-400 -translate-y-1/2"></div>
-                     </div>
-                     <?php endif; ?>
-
-                    <!-- Kepala Desa (The Center Pillar) -->
-                    <div class="relative z-10">
-                        <div class="w-64 bg-white border-2 border-primary-600 rounded-xl p-4 shadow-lg text-center transform hover:scale-105 transition duration-300">
-                            <div class="w-24 h-24 mx-auto rounded-full border-4 border-primary-100 overflow-hidden mb-3">
-                                <?php if($kepalaDesa && $kepalaDesa->foto): ?>
-                                    <img src="<?php echo e(Storage::url($kepalaDesa->foto)); ?>" alt="<?php echo e($kepalaDesa->nama); ?>" class="w-full h-full object-cover">
-                                <?php else: ?>
-                                    <div class="w-full h-full bg-primary-50 flex items-center justify-center">
-                                        <i class="fas fa-user text-3xl text-primary-300"></i>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
-                            <h3 class="font-bold text-gray-800 text-lg"><?php echo e($kepalaDesa->nama ?? 'Kepala Desa'); ?></h3>
-                            <div class="inline-block bg-primary-600 text-white text-xs px-2 py-1 rounded-full mt-1 mb-1">Kepala Desa</div>
-                            <?php if($kepalaDesa && $kepalaDesa->nip): ?>
-                                <p class="text-xs text-gray-500">NIP: <?php echo e($kepalaDesa->nip); ?></p>
-                            <?php endif; ?>
-                        </div>
-                        <!-- Centered Line to Sekdes -->
-                        <div class="absolute top-full left-1/2 w-0.5 h-16 bg-gray-800 -translate-x-1/2"></div>
-                    </div>
-                </div>
-
-                <!-- Level 2: Sekretaris Desa -->
-                <?php if($sekretaris): ?>
-                <div class="relative mb-16 flex flex-col items-center">
-                    <div class="w-64 bg-white border-l-4 border-orange-500 rounded-xl p-4 shadow-md text-center transform hover:scale-105 transition duration-300 z-10">
-                        <div class="w-20 h-20 mx-auto rounded-full border-2 border-orange-100 overflow-hidden mb-2">
-                             <?php if($sekretaris->foto): ?>
-                                <img src="<?php echo e(Storage::url($sekretaris->foto)); ?>" alt="<?php echo e($sekretaris->nama); ?>" class="w-full h-full object-cover">
-                            <?php else: ?>
-                                <div class="w-full h-full bg-orange-50 flex items-center justify-center">
-                                    <i class="fas fa-user text-2xl text-orange-300"></i>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                        <h3 class="font-bold text-gray-800"><?php echo e($sekretaris->nama); ?></h3>
-                         <div class="inline-block bg-orange-100 text-orange-700 text-xs px-2 py-0.5 rounded-full mt-1">Carik / Sekdes</div>
-                    </div>
-                    
-                    <!-- Vertical Line to branching level -->
-                    <div class="w-0.5 h-12 bg-gray-800"></div>
-                </div>
-                <?php endif; ?>
-
-                <!-- Level 3: Kaur & Kasi -->
-                <?php 
-                    $pembantu = $kaur->concat($kasi);
-                    $totalPembantu = $pembantu->count();
-                ?>
+            <div class="org-chart">
                 
-                <div class="flex justify-center -mt-px w-full">
-                    <?php $__currentLoopData = $pembantu; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $k): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <div class="flex flex-col items-center relative">
-                        <!-- Horizontal Connecting Line -->
-                        <div class="absolute top-0 left-0 right-0 border-t-2 border-gray-800 
-                            <?php echo e($index === 0 ? 'left-1/2' : ''); ?> 
-                            <?php echo e($index === $totalPembantu - 1 ? 'right-1/2' : ''); ?>">
-                        </div>
-                        
-                        <!-- Short Vertical to Card -->
-                        <div class="w-0.5 h-8 bg-gray-800"></div>
-
-                        <div class="w-48 bg-white border-t-4 <?php echo e(stripos($k->jabatan, 'Kaur') !== false ? 'border-blue-500' : 'border-green-500'); ?> rounded-lg p-3 shadow-md text-center mx-4 hover:shadow-lg transition z-10">
-                             <div class="w-16 h-16 mx-auto rounded-full border border-gray-200 overflow-hidden mb-2">
-                                <?php if($k->foto): ?>
-                                    <img src="<?php echo e(Storage::url($k->foto)); ?>" alt="<?php echo e($k->nama); ?>" class="w-full h-full object-cover">
-                                <?php else: ?>
-                                    <div class="w-full h-full bg-gray-100 flex items-center justify-center">
-                                        <i class="fas fa-user text-gray-400"></i>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
-                            <h4 class="font-semibold text-gray-800 text-sm leading-tight"><?php echo e($k->nama); ?></h4>
-                            <p class="text-xs <?php echo e(stripos($k->jabatan, 'Kaur') !== false ? 'text-blue-600' : 'text-green-600'); ?> mt-1 font-medium"><?php echo e($k->jabatan); ?></p>
-                        </div>
-                        
-                        <!-- Middle connector for Kadus (only from the center of the row) -->
-                        <?php if($kadus->count() > 0 && floor($totalPembantu/2) == $index): ?>
-                        <div class="w-0.5 h-12 bg-gray-800"></div>
+                
+                
+                
+                <div class="org-box bg-kades" style="left: 440px; top: 0; width: 170px;">
+                    <div class="photo">
+                        <?php if($kepalaDesa && $kepalaDesa->foto): ?>
+                            <img src="<?php echo e(Storage::url($kepalaDesa->foto)); ?>" alt="<?php echo e($kepalaDesa->nama); ?>">
                         <?php else: ?>
-                        <!-- Spacer to keep layout balanced -->
-                        <div class="h-12 w-0.5 opacity-0"></div>
+                            <i class="fas fa-user"></i>
                         <?php endif; ?>
                     </div>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <div class="name"><?php echo e($kepalaDesa->nama ?? 'Kepala Desa'); ?></div>
+                    <div class="title">Kepala Desa</div>
                 </div>
-
-                <!-- Level 4: Kepala Dusun -->
-                 <?php if($kadus->count() > 0): ?>
-                 <div class="flex flex-col items-center -mt-px w-full">
-                     <div class="flex justify-center -mt-px">
-                         <?php $__currentLoopData = $kadus; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $k): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                        <div class="flex flex-col items-center relative">
-                            <!-- Horizontal Line -->
-                            <div class="absolute top-0 left-0 right-0 border-t-2 border-gray-800 
-                                <?php echo e($index === 0 ? 'left-1/2' : ''); ?> 
-                                <?php echo e($index === $kadus->count() - 1 ? 'right-1/2' : ''); ?>">
-                            </div>
-
-                             <!-- Vertical Line -->
-                             <div class="w-0.5 h-8 bg-gray-800"></div>
-
-                            <div class="w-44 bg-white border-b-4 border-purple-500 rounded-lg p-3 shadow-md text-center mx-3 hover:shadow-lg transition z-10">
-                                <div class="w-14 h-14 mx-auto rounded-full border border-gray-200 overflow-hidden mb-2">
-                                    <?php if($k->foto): ?>
-                                        <img src="<?php echo e(Storage::url($k->foto)); ?>" alt="<?php echo e($k->nama); ?>" class="w-full h-full object-cover">
-                                    <?php else: ?>
-                                        <div class="w-full h-full bg-gray-100 flex items-center justify-center">
-                                            <i class="fas fa-map-marker-alt text-gray-400"></i>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-                                <h4 class="font-semibold text-gray-800 text-sm leading-tight"><?php echo e($k->nama); ?></h4>
-                                <p class="text-xs text-purple-600 mt-1 font-medium"><?php echo e($k->jabatan); ?></p>
-                            </div>
-                        </div>
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                     </div>
-                 </div>
-                 <?php endif; ?>
-            </div>
-
-            <!-- Staff Lain (Jika ada yg tidak masuk kategori) -->
-            <?php if($staff->count() > 0): ?>
-                <div class="mt-20 border-t border-gray-200 pt-10">
-                    <h3 class="text-center font-bold text-gray-700 text-xl mb-8">Staf & Perangkat Desa Lainnya</h3>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                        <?php $__currentLoopData = $staff; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $s): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                            <div class="bg-white rounded-lg p-4 shadow-sm text-center border border-gray-100">
-                                <div class="w-16 h-16 mx-auto rounded-full bg-gray-100 mb-2 overflow-hidden">
-                                     <?php if($s->foto): ?>
-                                        <img src="<?php echo e(Storage::url($s->foto)); ?>" alt="<?php echo e($s->nama); ?>" class="w-full h-full object-cover">
-                                    <?php else: ?>
-                                        <div class="w-full h-full flex items-center justify-center">
-                                            <i class="fas fa-user text-gray-400"></i>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-                                <h4 class="font-bold text-gray-800 text-sm"><?php echo e($s->nama); ?></h4>
-                                <p class="text-xs text-gray-500"><?php echo e($s->jabatan); ?></p>
-                            </div>
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                
+                
+                <div class="line-dash" style="left: 615px; top: 50px; width: 50px;"></div>
+                
+                
+                <div class="org-box bg-bpd" style="left: 670px; top: 0; width: 180px;">
+                    <div class="photo">
+                        <i class="fas fa-users"></i>
                     </div>
+                    <div class="name">BPD</div>
+                    <div class="title">Badan Permusyawaratan Desa</div>
                 </div>
-            <?php endif; ?>
-
-            <!-- Navigation -->
-            <div class="flex flex-col sm:flex-row justify-between gap-4 mt-16 max-w-4xl mx-auto">
-                <a href="<?php echo e(route('profil.visi-misi')); ?>"
-                    class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg transition">
-                    <i class="fas fa-arrow-left mr-2"></i>
-                    Visi & Misi
-                </a>
-                <a href="<?php echo e(route('profil.peta')); ?>"
-                    class="inline-flex items-center justify-center px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition">
-                    Data Geografis
-                    <i class="fas fa-arrow-right ml-2"></i>
-                </a>
+                
+                
+                
+                
+                <div class="line" style="left: 524px; top: 120px; width: 2px; height: 55px;"></div>
+                
+                
+                
+                
+                <div class="line" style="left: 170px; top: 160px; width: 760px; height: 2px;"></div>
+                
+                
+                
+                
+                <div class="line" style="left: 170px; top: 160px; width: 2px; height: 30px;"></div>
+                <div class="org-box bg-sekdes" style="left: 80px; top: 190px; width: 180px;">
+                    <div class="photo">
+                        <?php if($sekretaris && $sekretaris->foto): ?>
+                            <img src="<?php echo e(Storage::url($sekretaris->foto)); ?>" alt="<?php echo e($sekretaris->nama); ?>">
+                        <?php else: ?>
+                            <i class="fas fa-user"></i>
+                        <?php endif; ?>
+                    </div>
+                    <div class="name"><?php echo e($sekretaris->nama ?? 'Sekretaris'); ?></div>
+                    <div class="title">Sekretaris Desa</div>
+                </div>
+                
+                
+                <div class="line" style="left: 170px; top: 310px; width: 2px; height: 45px;"></div>
+                
+                
+                <div class="line" style="left: 30px; top: 340px; width: 285px; height: 2px;"></div>
+                
+                
+                <div class="line" style="left: 30px; top: 340px; width: 2px; height: 25px;"></div>
+                <div class="org-box-sm bg-kaur" style="left: -30px; top: 365px; width: 120px;">
+                    <div class="photo">
+                        <?php if(isset($kaur[0]) && $kaur[0]->foto): ?>
+                            <img src="<?php echo e(Storage::url($kaur[0]->foto)); ?>" alt="<?php echo e($kaur[0]->nama); ?>">
+                        <?php else: ?>
+                            <i class="fas fa-user"></i>
+                        <?php endif; ?>
+                    </div>
+                    <div class="name"><?php echo e($kaur[0]->nama ?? '-'); ?></div>
+                    <div class="title"><?php echo e($kaur[0]->jabatan ?? 'Kaur TU & Umum'); ?></div>
+                </div>
+                
+                
+                <div class="line" style="left: 170px; top: 340px; width: 2px; height: 25px;"></div>
+                <div class="org-box-sm bg-kaur" style="left: 110px; top: 365px; width: 120px;">
+                    <div class="photo">
+                        <?php if(isset($kaur[1]) && $kaur[1]->foto): ?>
+                            <img src="<?php echo e(Storage::url($kaur[1]->foto)); ?>" alt="<?php echo e($kaur[1]->nama); ?>">
+                        <?php else: ?>
+                            <i class="fas fa-user"></i>
+                        <?php endif; ?>
+                    </div>
+                    <div class="name"><?php echo e($kaur[1]->nama ?? '-'); ?></div>
+                    <div class="title"><?php echo e($kaur[1]->jabatan ?? 'Kaur Keuangan'); ?></div>
+                </div>
+                
+                
+                <div class="line" style="left: 315px; top: 340px; width: 2px; height: 25px;"></div>
+                <div class="org-box-sm bg-kaur" style="left: 255px; top: 365px; width: 120px;">
+                    <div class="photo">
+                        <?php if(isset($kaur[2]) && $kaur[2]->foto): ?>
+                            <img src="<?php echo e(Storage::url($kaur[2]->foto)); ?>" alt="<?php echo e($kaur[2]->nama); ?>">
+                        <?php else: ?>
+                            <i class="fas fa-user"></i>
+                        <?php endif; ?>
+                    </div>
+                    <div class="name"><?php echo e($kaur[2]->nama ?? '-'); ?></div>
+                    <div class="title"><?php echo e($kaur[2]->jabatan ?? 'Kaur Perencanaan'); ?></div>
+                </div>
+                
+                
+                
+                
+                
+                <div class="line" style="left: 650px; top: 160px; width: 2px; height: 30px;"></div>
+                <div class="org-box-sm bg-kasi" style="left: 585px; top: 190px; width: 130px;">
+                    <div class="photo">
+                        <?php if(isset($kasi[0]) && $kasi[0]->foto): ?>
+                            <img src="<?php echo e(Storage::url($kasi[0]->foto)); ?>" alt="<?php echo e($kasi[0]->nama); ?>">
+                        <?php else: ?>
+                            <i class="fas fa-user"></i>
+                        <?php endif; ?>
+                    </div>
+                    <div class="name"><?php echo e($kasi[0]->nama ?? '-'); ?></div>
+                    <div class="title"><?php echo e($kasi[0]->jabatan ?? 'Kasi Pemerintahan'); ?></div>
+                </div>
+                
+                
+                <div class="line" style="left: 790px; top: 160px; width: 2px; height: 30px;"></div>
+                <div class="org-box-sm bg-kasi" style="left: 725px; top: 190px; width: 130px;">
+                    <div class="photo">
+                        <?php if(isset($kasi[1]) && $kasi[1]->foto): ?>
+                            <img src="<?php echo e(Storage::url($kasi[1]->foto)); ?>" alt="<?php echo e($kasi[1]->nama); ?>">
+                        <?php else: ?>
+                            <i class="fas fa-user"></i>
+                        <?php endif; ?>
+                    </div>
+                    <div class="name"><?php echo e($kasi[1]->nama ?? '-'); ?></div>
+                    <div class="title"><?php echo e($kasi[1]->jabatan ?? 'Kasi Pelayanan'); ?></div>
+                </div>
+                
+                
+                <div class="line" style="left: 930px; top: 160px; width: 2px; height: 30px;"></div>
+                <div class="org-box-sm bg-kasi" style="left: 865px; top: 190px; width: 130px;">
+                    <div class="photo">
+                        <?php if(isset($kasi[2]) && $kasi[2]->foto): ?>
+                            <img src="<?php echo e(Storage::url($kasi[2]->foto)); ?>" alt="<?php echo e($kasi[2]->nama); ?>">
+                        <?php else: ?>
+                            <i class="fas fa-user"></i>
+                        <?php endif; ?>
+                    </div>
+                    <div class="name"><?php echo e($kasi[2]->nama ?? '-'); ?></div>
+                    <div class="title"><?php echo e($kasi[2]->jabatan ?? 'Kasi Kesejahteraan'); ?></div>
+                </div>
+                
+                
+                
+                
+                <div class="line" style="left: 524px; top: 160px; width: 2px; height: 360px;"></div>
+                
+                
+                <div class="line" style="left: 150px; top: 520px; width: 750px; height: 2px;"></div>
+                
+                
+                <div class="line" style="left: 150px; top: 520px; width: 2px; height: 25px;"></div>
+                <div class="org-box-sm bg-kadus" style="left: 80px; top: 545px; width: 140px;">
+                    <div class="photo">
+                        <?php if(isset($kadus[0]) && $kadus[0]->foto): ?>
+                            <img src="<?php echo e(Storage::url($kadus[0]->foto)); ?>" alt="<?php echo e($kadus[0]->nama); ?>">
+                        <?php else: ?>
+                            <i class="fas fa-user"></i>
+                        <?php endif; ?>
+                    </div>
+                    <div class="name"><?php echo e($kadus[0]->nama ?? '-'); ?></div>
+                    <div class="title"><?php echo e($kadus[0]->jabatan ?? 'Kepala Dusun I'); ?></div>
+                </div>
+                
+                
+                <div class="line" style="left: 415px; top: 520px; width: 2px; height: 25px;"></div>
+                <div class="org-box-sm bg-kadus" style="left: 345px; top: 545px; width: 140px;">
+                    <div class="photo">
+                        <?php if(isset($kadus[1]) && $kadus[1]->foto): ?>
+                            <img src="<?php echo e(Storage::url($kadus[1]->foto)); ?>" alt="<?php echo e($kadus[1]->nama); ?>">
+                        <?php else: ?>
+                            <i class="fas fa-user"></i>
+                        <?php endif; ?>
+                    </div>
+                    <div class="name"><?php echo e($kadus[1]->nama ?? '-'); ?></div>
+                    <div class="title"><?php echo e($kadus[1]->jabatan ?? 'Kepala Dusun II'); ?></div>
+                </div>
+                
+                
+                <div class="line" style="left: 645px; top: 520px; width: 2px; height: 25px;"></div>
+                <div class="org-box-sm bg-kadus" style="left: 575px; top: 545px; width: 140px;">
+                    <div class="photo">
+                        <?php if(isset($kadus[2]) && $kadus[2]->foto): ?>
+                            <img src="<?php echo e(Storage::url($kadus[2]->foto)); ?>" alt="<?php echo e($kadus[2]->nama); ?>">
+                        <?php else: ?>
+                            <i class="fas fa-user"></i>
+                        <?php endif; ?>
+                    </div>
+                    <div class="name"><?php echo e($kadus[2]->nama ?? '-'); ?></div>
+                    <div class="title"><?php echo e($kadus[2]->jabatan ?? 'Kepala Dusun III'); ?></div>
+                </div>
+                
+                
+                <div class="line" style="left: 900px; top: 520px; width: 2px; height: 25px;"></div>
+                <div class="org-box-sm bg-kadus" style="left: 830px; top: 545px; width: 140px;">
+                    <div class="photo">
+                        <?php if(isset($kadus[3]) && $kadus[3]->foto): ?>
+                            <img src="<?php echo e(Storage::url($kadus[3]->foto)); ?>" alt="<?php echo e($kadus[3]->nama); ?>">
+                        <?php else: ?>
+                            <i class="fas fa-user"></i>
+                        <?php endif; ?>
+                    </div>
+                    <div class="name"><?php echo e($kadus[3]->nama ?? '-'); ?></div>
+                    <div class="title"><?php echo e($kadus[3]->jabatan ?? 'Kepala Dusun IV'); ?></div>
+                </div>
+                
             </div>
+            
+            
+            <div class="flex justify-center gap-10 mt-8 text-sm text-gray-600">
+                <div class="flex items-center gap-2">
+                    <div class="w-10 h-0.5 bg-gray-500"></div>
+                    <span>Garis Komando</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-10 border-t-2 border-dashed border-gray-400"></div>
+                    <span>Garis Koordinasi</span>
+                </div>
+            </div>
+            
         </div>
     </section>
 <?php $__env->stopSection(); ?>
